@@ -1,0 +1,61 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User{
+    id  Int @id @default(autoincrement())
+    username String @unique @db.VarChar(255)
+    password String @unique @db.VarChar(255)
+    picture  String?
+    email    String @unique @db.VarChar(255)
+    refreshToken String? @unique @db.VarChar(255)
+    session Session []
+  
+}
+
+model Session{
+    id  String @id @default(uuid())
+    userId Int
+    user  User @relation(fields: [userId], references: [id])
+    sessionName String
+    createdAt DateTime? @default(now()) @db.Timestamp(6)
+    query   Query[]
+    response Response []
+    @@index([id])
+    @@index([userId])
+
+}
+
+model  Query{
+   id  Int @id @default(autoincrement())
+   userquery String? @db.Text
+   fileLink String?
+   sessionId String
+   createdAt DateTime? @default(now()) @db.Timestamp(6)
+   session Session @relation(fields: [sessionId], references: [id])
+   response Response?
+  @@index([sessionId])   
+}
+
+model Response{
+id  Int @id @default(autoincrement())
+sessionId String
+llmResponse  String @db.Text
+queryId Int @unique
+session Session? @relation(fields: [sessionId], references: [id]) 
+query Query? @relation(fields: [queryId], references: [id])
+
+}
