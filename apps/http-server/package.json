@@ -12,11 +12,20 @@
     "@repo/typescript-config": "workspace:*"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.864.0",
+    "@prisma/client": "^6.14.0",
     "@types/body-parser": "^1.19.6",
     "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/kafkajs": "^1.9.0",
+    "@types/multer": "^2.0.0",
     "body-parser": "^2.2.0",
     "dotenv": "^17.2.1",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "kafkajs": "^2.2.4",
+    "multer": "^2.0.2",
+    "prisma": "workspace:*"
   },
   "keywords": [],
   "author": "",

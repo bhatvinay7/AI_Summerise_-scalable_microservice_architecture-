@@ -8,18 +8,18 @@ const kafka = new Kafka({
   brokers: ["kafka1:9092", "kafka2:9093", "kafka3:9094"],
 });
 
-const consumer = kafka.consumer({ groupId: "upload-file"});
+const consumer = kafka.consumer({ groupId: "upload-file" });
 const app = express();
 const port = 3000;
 
 try {
   const run = async () => {
     await consumer.connect();
-    await consumer.subscribe({ topic: "upload-file", fromBeginning: false     });
+    await consumer.subscribe({ topic: "upload-file", fromBeginning: false });
 
     await consumer.run({
       autoCommit: false,
-      
+
       eachMessage: async ({ topic, partition, message }) => {
         // console.log({
         //   partition,
@@ -30,13 +30,13 @@ try {
           const sessionId = JSON.parse(message?.value?.toString()!).sessionId;
           redis.set(`#{sessionId}`, JSON.stringify(message?.value?.toString()));
 
-           await consumer.commitOffsets([{
-                    topic,
-                    partition,
-                    offset: (parseInt(message.offset) + 1).toString(), // Commit the next expected offset
-                }]);
-
-
+          await consumer.commitOffsets([
+            {
+              topic,
+              partition,
+              offset: (parseInt(message.offset) + 1).toString(), // Commit the next expected offset
+            },
+          ]);
         } catch (error: any) {
           console.error("Error in consumer:", error);
         }
@@ -53,8 +53,6 @@ try {
 
 // app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded({ extended: true }));
-
-app.use(express.json());
 
 app.listen(port, () => {
   console.log(`Server running at `);
