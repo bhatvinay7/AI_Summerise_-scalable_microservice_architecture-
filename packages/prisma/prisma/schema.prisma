@@ -17,8 +17,8 @@ datasource db {
 
 model User{
     id  Int @id @default(autoincrement())
-    username String @unique @db.VarChar(255)
-    password String @unique @db.VarChar(255)
+    username String 
+    password String 
     picture  String?
     email    String @unique @db.VarChar(255)
     refreshToken String? @unique @db.VarChar(255)
@@ -30,7 +30,7 @@ model Session{
     id  String @id @default(uuid())
     userId Int
     user  User @relation(fields: [userId], references: [id])
-    sessionName String
+    sessionName String?
     createdAt DateTime? @default(now()) @db.Timestamp(6)
     query   Query[]
     response Response []
