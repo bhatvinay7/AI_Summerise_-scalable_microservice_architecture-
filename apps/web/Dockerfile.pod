@@ -13,8 +13,8 @@ COPY apps/${APP}/package.json ./apps/${APP}/
 COPY pnpm-lock.yaml ./
 COPY  pnpm-workspace.yaml ./
 COPY packages/ ./packages/
-RUN pnpm install --frozen-lockfile 
 COPY . .
+RUN pnpm install --frozen-lockfile 
 #############################################
 FROM installer AS builder
 ARG APP=web
