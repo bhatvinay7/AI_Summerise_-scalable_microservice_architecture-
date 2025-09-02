@@ -1,0 +1,53 @@
+FROM node:20-slim as base
+
+RUN npm install -g pnpm turbo
+
+# #############################################
+# FROM base AS pruned
+# WORKDIR /app
+# ARG APP=web
+# COPY . .
+# RUN turbo prune --scope=$APP --docker --include-dependencies=all
+
+#############################################
+FROM base AS installer
+ARG APP=web
+WORKDIR /app
+# COPY --from=pruned /app/out/json/ ./
+# COPY --from=pruned /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY package.json pnpm.lock* ./
+COPY apps/${APP}/package.json ./apps/${APP}/
+COPY pnpm-lock.yaml ./
+COPY  pnpm-workspace.yaml ./
+COPY packages/ ./packages/
+RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
+pnpm install --frozen-lockfile 
+COPY . .
+RUN turbo prune $APP --docker
+#############################################
+FROM installer AS builder
+ARG APP=web
+WORKDIR /app
+WORKDIR /app/apps/${APP}
+RUN pnpm run build
+
+#############################################
+FROM builder AS runner
+ARG APP=web
+WORKDIR /app
+
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/apps/${APP}/node_modules ./apps/${APP}/node_modules
+COPY --from=builder /app/apps/${APP}/.next ./apps/${APP}/.next
+COPY --from=builder /app/apps/${APP}/public ./apps/${APP}/public
+COPY --from=builder /app/apps/${APP}/package.json ./apps/${APP}/package.json
+WORKDIR /app/apps/${APP}
+
+
+# # Copy node_modules from installer (needed for next start)
+
+# # Copy app
+
+EXPOSE 3000
+ENV HOSTNAME=0.0.0.0
+CMD ["pnpm", "run", "start"]
