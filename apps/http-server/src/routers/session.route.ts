@@ -4,6 +4,6 @@ import express,{Router} from 'express'
 const router:Router=express.Router()
 
 
-router.get('/getuserSession',getSession)
+router.get('/session',getSession)
 router.get('/getSessionData/:sessionId',getSessionData)
 export default router

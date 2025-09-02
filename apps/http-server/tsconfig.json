@@ -1,21 +1,33 @@
 {
-    "extends":"@repo/typescript-config/base.json",
-    "compilerOptions": {
-        "outDir": "./dist",
-        "rootDir": "./src",
-        "forceConsistentCasingInFileNames": true
-    },  
+  "extends": "@repo/typescript-config/base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "baseUrl": ".",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "typeRoots": ["./node_modules/@types", "./types"],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+    //     "paths": {
+    //      "prisma": ["../../packages/prisma/prisma/src"],
+    //      "@repo/typescript-config":["../../packages/typescript-config/*"]
+    //    },
+  },
 
-    "include": [
-        "**/*.ts",
-        "**/*.tsx",
-        "next-env.d.ts",
-        "next.config.js",
-        ".next/types/**/*.ts"
+  "include": [
+    "src/**/*",
+    "**/*.ts",
+    "**/*.tsx",
+    "next-env.d.ts",
+    "next.config.js",
+    ".next/types/**/*.ts"
   ],
-    "exclude": [
-        "node_modules"
-    ]   
-
-
+  "exclude": ["node_modules","dist"]
 }

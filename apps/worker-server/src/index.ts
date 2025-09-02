@@ -1,0 +1,152 @@
+import { Kafka, KafkaMessage } from "kafkajs";
+import prisma from "prisma/client";
+import express from "express";
+import { natsCOnnection, sc } from "../src/nats-server/nats";
+import redisClient from "./redis/redisClient";
+const app = express();
+
+const kafka = new Kafka({
+  clientId: "my-app",
+  brokers: ["notekafka1:9092", "notekafka2:9093", "notekafka3:9094"],
+  retry: {
+    initialRetryTime: 300,
+    retries: 10,
+  },
+});
+const producer = kafka.producer();
+const consumer = kafka.consumer({ groupId: "query-consumer-group" });
+import { fetchResponse } from "./llm/responsGenerater";
+interface Message {
+  userId: number;
+  message: string;
+  join: boolean;
+  ispushed: boolean;
+  sessionId?: string | null;
+}
+
+const run = async () => {
+  // Producing
+  await producer.connect();
+  await consumer.connect();
+  await consumer.subscribe({ topic: "llm-query", fromBeginning: false });
+
+  consumer.run({
+    eachMessage: async ({
+      topic,
+      partition,
+      message,
+    }: {
+      topic: string;
+      partition: number;
+      message: KafkaMessage;
+    }) => {
+      // console.log({
+      //   partition,
+      //   offset: message.offset,
+      //   value: message?.value?.toString(),
+      // });
+      const parsedMessage: Message = JSON.parse(message?.value?.toString()!);
+
+      if (!parsedMessage || !parsedMessage.message) {
+        console.error("Invalid message format or missing content");
+        return;
+      }
+
+      try {
+        let response = null;
+        let sessionId:string= parsedMessage?.sessionId as string;
+        if (parsedMessage.sessionId) {
+          const sessionData = await redisClient.get(
+            `${parsedMessage.sessionId}`
+          );
+          natsCOnnection?.publish(
+            "file-state-manager",
+            sc.encode(
+              JSON.stringify({
+                userId: parsedMessage.userId,
+                message: "generating the response",
+                type:"notification",
+              })
+            )
+          );
+          response = await fetchResponse(
+            `${parsedMessage.message}/n ${sessionData}`
+          );
+        }
+        const Session = await prisma.session.findFirst({
+          where: {
+            userId: parsedMessage.userId!,
+            id: parsedMessage.sessionId as string,
+          },
+        });
+
+        if (!Session) {
+          const newSession = await prisma.session.create({
+            data: {
+              userId: parsedMessage.userId,
+              sessionName: "",
+              createdAt: new Date().toISOString(),
+            },
+          });
+          sessionId = newSession.id as string;
+          const query = await prisma.query.create({
+            data: {
+              userquery: parsedMessage.message,
+              sessionId: newSession.id as string,
+              response: {
+                create: {
+                  llmResponse: response as string,
+                },
+              },
+            },
+            include: {
+              response: true,
+            },
+          });
+        } else {
+          const query = await prisma.query.create({
+            data: {
+              userquery: parsedMessage.message,
+              sessionId: Session.id as string,
+              response: {
+                create: {
+                  llmResponse: response as string,
+                },
+              },
+            },
+            include: {
+              response: true,
+            },
+          });
+        }
+        await producer.send({
+          topic: "llm-response",
+          messages: [
+            {
+              value: JSON.stringify({
+                userId: parsedMessage.userId,
+                response: response,
+                sessionId: sessionId as string,
+              }),
+            },
+          ],
+        });
+      } catch (error) {
+        console.error("Error processing message:", error);
+      }
+    },
+  });
+};
+
+try {
+  run().catch(async (Error) => {
+    // await natsCOnnection.drain();
+    console.log(Error.message);
+  });
+} catch (error) {
+  console.error("Error connecting to Kafka:");
+}
+
+app.listen(3003, () => {
+  console.log("WebSocket server is running on port 3003");
+});

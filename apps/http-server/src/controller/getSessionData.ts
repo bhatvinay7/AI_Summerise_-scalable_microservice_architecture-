@@ -1,5 +1,5 @@
-import express,{Request,Response} from "express";
-import prisma from 'prisma'
+import {Request,Response} from "express";
+import prisma from 'prisma/client'
 const getSessionData=async(req:Request,res:Response)=>{
       try{
           const sessionId=req.params.sessionId
@@ -15,7 +15,7 @@ const getSessionData=async(req:Request,res:Response)=>{
                     sessionName:true,
                     query:{
                         select:{
-                            filelink:true,
+                            fileLink:true,
                             createdAt:true,
                             userquery:true,
                             response:{

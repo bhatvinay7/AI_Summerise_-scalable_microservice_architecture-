@@ -1,0 +1,16 @@
+import Home from '../components/ui/home'
+export default function Page() {
+  // const handleSend = ({ text, file }: { text: string; file: string }) => {
+  //   const next = {
+  //     id: Date.now(),
+  //     side: "right",
+  //     text: text || "",
+  //     fileName: file,
+  //   };
+
+  return (
+    <div className=" h-screen w-full bg-[#2f2f2d] text-white ">
+      <Home/>
+    </div>
+  );
+}

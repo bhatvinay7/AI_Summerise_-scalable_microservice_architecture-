@@ -1,68 +1,78 @@
 services:
   http-server:
     build:
-      context: ./apps/http-server
-      dockerfile: Dockerfile.dev
-    container_name: http_server
+      context: .
+      dockerfile: apps/http-server/Dockerfile.dev
+    container_name: http-server
     ports:
       - "3001:3001"
+    volumes:
+      - ./apps/http-server:/app/apps/http-server
+      - /app/apps/http-server/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true 
+
     
-  filehandler-service:
+  filehandler-server:
     build:
-      context: ./apps/filehandler-service
-      dockerfile: Dockerfile.dev
-    container_name: filehandler_service
+      context: .
+      dockerfile: apps/filehandler-server/Dockerfile.dev
+    container_name: filehandler-server
     ports:
       - "3002:3002"
+    volumes:
+      - ./apps/filehandler-server:/app/apps/filehandler-server
+      - /app/apps/filehandler-server/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true    
   
-  workwer-server:
+      
+  
+  worker-server:
     build:
-      context: ./apps/workwer-server
-      dockerfile: Dockerfile.dev
-    container_name: workwer_server
+      context: .
+      dockerfile: apps/worker-server/Dockerfile.dev
+    container_name: worker-server
     ports:
       - "3003:3003"
-
-  prisma:
-    build:
-      context: ./apps/packages/prisma
-      dockerfile: Dockerfile.dev
-    container_name: prisma
-    ports:
-      - "3004:3004"
+    volumes:
+      - ./apps/worker-server:/app/apps/worker-server
+      - /app/apps/worker-server/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true    
     
   web-frontend:
     build:
-      context: ./apps/web
-      dockerfile: Dockerfile.dev
-    container_name: web_frontend
+      context: .
+      dockerfile: apps/web/Dockerfile.dev
+    container_name: web-frontend
     ports:
       - "3000:3000"
     depends_on:
-      - http_server
+      - http-server
     volumes:
-      - ./apps/web:/app
-      - /app/node_modules
+      - ./apps/web:/app/apps/web
+      - /app/apps/web/node_modules
     environment:
       - CHOKIDAR_USEPOLLING=true  
-  ws_server:
+  ws-server:
     build:
-      context: ./apps/ws-server
-      dockerfile: Dockerfile.dev
-    container_name: ws_server
+      context: .
+      dockerfile: apps/ws-server/Dockerfile.dev
+    container_name: ws-server
     ports:
       - "8080:8080"
     depends_on:
-      - reach_backend
+      - worker-server
     volumes:
-      - ./ws-server:/app
-      - /app/node_modules
+      - ./apps/ws-server:/app/apps/ws-server
+      - /app/apps/ws-server/node_modules
     environment:
       - CHOKIDAR_USEPOLLING=true  
 
   zookeeper:
     image: bitnami/zookeeper:3.8
-    container_name: zookeeper
+    container_name: notezookeeper
     ports:
       - "2181:2181"
     environment:
@@ -72,7 +82,7 @@ services:
 
   kafka1:
     image: bitnami/kafka:3.4
-    container_name: kafka1
+    container_name: notekafka1
     ports:
       - "9092:9092"
     environment:
@@ -80,18 +90,17 @@ services:
       - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
       - ALLOW_PLAINTEXT_LISTENER=yes
       - KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9092
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka1:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://notekafka1:9092
       - KAFKA_CFG_DELETE_TOPIC_ENABLE=true
-      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
-      - KAFKA_CFG_LOG_RETENTION_MS=1800000
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=false
+      - KAFKA_CFG_LOG_RETENTION_MS=180000
     volumes:
       - kafka1_data:/bitnami/kafka
-    depends_on:
-      - reach_backend
+    
 
   kafka2:
     image: bitnami/kafka:3.4
-    container_name: kafka2
+    container_name: notekafka2
     ports:
       - "9093:9093"
     environment:
@@ -99,18 +108,17 @@ services:
       - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
       - ALLOW_PLAINTEXT_LISTENER=yes
       - KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9093
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka2:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://notekafka2:9093
       - KAFKA_CFG_DELETE_TOPIC_ENABLE=true
-      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
-      - KAFKA_CFG_LOG_RETENTION_MS=1800000
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=false
+      - KAFKA_CFG_LOG_RETENTION_MS=180000
     volumes:
       - kafka2_data:/bitnami/kafka
-    depends_on:
-      - reach_backend
+    
 
   kafka3:
     image: bitnami/kafka:3.4
-    container_name: kafka3
+    container_name: notekafka3
     ports:
       - "9094:9094"
     environment:
@@ -118,14 +126,24 @@ services:
       - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
       - ALLOW_PLAINTEXT_LISTENER=yes
       - KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9094
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka3:9094
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://notekafka3:9094
       - KAFKA_CFG_DELETE_TOPIC_ENABLE=true
-      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
-      - KAFKA_CFG_LOG_RETENTION_MS=1800000
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=false
+      - KAFKA_CFG_LOG_RETENTION_MS=180000
     volumes:
       - kafka3_data:/bitnami/kafka
-    depends_on:
-      - reach_backend
+
+  natsServer:
+    image: nats:latest
+    container_name: nats-server
+    ports:
+      - "4222:4222" # Client port
+      - "8222:8222" # HTTP monitoring port
+      - "6222:6222" # Clustering port (if needed for multi-node setups)
+    volumes:
+    - ./nats-server.conf:/etc/nats/nats-server.conf:ro   # mount config
+    - ./data:/data/jetstream                            # persistence
+    # command: nats-server -c /etc/nats/nats-server.conf 
 
 volumes:
   zookeeper_data:

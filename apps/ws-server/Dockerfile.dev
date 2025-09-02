@@ -1,0 +1,30 @@
+FROM node:20.2-alpine3.17 as base
+RUN npm install -g pnpm turbo ts-node 
+
+FROM base AS installer
+ARG APP=ws-server
+WORKDIR /app
+COPY package.json pnpm.lock* ./
+COPY pnpm-lock.yaml ./
+COPY  pnpm-workspace.yaml ./
+COPY apps/${APP}/package.json ./apps/${APP}/
+COPY packages/ ./packages/
+RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
+pnpm install --frozen-lockfile
+COPY . .
+
+#############################################
+FROM installer AS builder
+ARG APP=ws-server
+WORKDIR /app
+
+#############################################
+FROM builder AS runner
+ARG APP=ws-server
+WORKDIR /app
+COPY --from=builder /app ./
+WORKDIR /app/apps/${APP}
+
+EXPOSE 8080
+CMD ["pnpm", "run", "dev"] 
+

@@ -1,0 +1,36 @@
+# Ignore all node_modules directories
+**/node_modules
+node_modules
+*/node_modules
+# Ignore build outputs
+.next
+**/.next
+**/dist
+**/build
+**/.next
+**/.turbo
+node_modules
+.pnpm-store
+*.log
+dist
+build
+# Ignore logs
+**/*.log
+**/logs
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore git
+.git
+.gitignore
+
+# Ignore IDE files
+.vscode
+.idea
+*.swp
+*.swo
+
+# Ignore test coverage
+**/coverage

@@ -1,0 +1,35 @@
+FROM node:20.2-alpine3.17 as base
+RUN npm install -g pnpm turbo ts-node 
+
+
+
+FROM base AS installer
+ARG APP=worker-server
+WORKDIR /app
+COPY package.json pnpm.lock* ./
+COPY pnpm-lock.yaml ./
+COPY  pnpm-workspace.yaml ./
+COPY apps/${APP}/package.json ./apps/${APP}/
+COPY packages/ ./packages/
+RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
+pnpm install --frozen-lockfile 
+COPY . .
+RUN cd packages/prisma && pnpm prisma generate
+
+
+#############################################
+FROM installer AS builder
+ARG APP=worker-server
+WORKDIR /app
+
+
+
+#############################################
+FROM builder AS runner
+ARG APP=worker-server
+WORKDIR /app
+COPY --from=builder /app ./
+WORKDIR /app/apps/${APP}
+
+EXPOSE 3003
+CMD ["pnpm", "run", "dev"] 
