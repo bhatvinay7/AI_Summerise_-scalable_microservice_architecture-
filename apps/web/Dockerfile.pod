@@ -13,7 +13,7 @@ COPY package.json yarn.lock* ./
 COPY apps/web/package.json ./apps/web/
 COPY packages/ ./packages/
 
-RUN pnpm install --ignore-scripts
+RUN npm install -g pnpm turbo
 
 FROM base AS builder
 WORKDIR /app
