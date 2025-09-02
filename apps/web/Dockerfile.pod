@@ -6,6 +6,7 @@ RUN set -ex; \
     apk add --no-cache \
     libc6-compat \
     openssl
+RUN npm install -g pnpm turbo
 
 WORKDIR /app
 
@@ -13,7 +14,6 @@ COPY package.json pnpm.lock* ./
 COPY apps/web/package.json ./apps/web/
 COPY packages/ ./packages/
 
-RUN npm install -g pnpm turbo
 
 FROM base AS builder
 WORKDIR /app
@@ -29,7 +29,7 @@ FROM base AS runner
 WORKDIR /app
 
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/node_modules ./apps/web/node_modules
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/ ./apps/web/.next
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
 
 EXPOSE 3000
@@ -37,4 +37,4 @@ ENV NODE_ENV production
 ENV PORT 3000
 ENV HOSTNAME "0.0.0.0"
 
-CMD ["pnpm","run" "start"]
+CMD ["pnpm","run", "start"]
