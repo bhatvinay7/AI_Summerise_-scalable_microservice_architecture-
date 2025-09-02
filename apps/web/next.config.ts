@@ -1,8 +1,9 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-
-    experimental: { // Required for /app directory
-  },
-};
-
-export default nextConfig;
+import path from 'path'
+ module.exports = {
+      reactStrictMode: true,
+      output: "standalone", // Required for standalone output
+      experimental: {
+        outputFileTracingRoot: path.join(__dirname, "../../"), // Adjust this path based on your app's location relative to the monorepo root
+      },
+    };

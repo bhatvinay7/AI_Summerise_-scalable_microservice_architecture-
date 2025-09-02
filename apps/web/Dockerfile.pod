@@ -37,4 +37,4 @@ COPY --from=installer --chown=nextjs:nodejs /app/apps/web/public ./apps/web/publ
  
 EXPOSE 3000
 ENV HOSTNAME=0.0.0.0
-CMD ["pnpm", "run", "start"]
+CMD ["node", "server.js"]
