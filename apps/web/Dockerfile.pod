@@ -9,21 +9,17 @@ FROM base AS builder
 RUN apk add --no-cache openssl
 WORKDIR /app
 COPY . .
-RUN turbo prune --scope=web --docker
  
 FROM base AS installer
+ARG APP=web
 WORKDIR /app
  
-
-COPY --from=builder /app/out/json/ .
-COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
-COPY --from=builder /app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
+COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=builder /app/pnpm-workspace.yaml ./pnpm-workspace.yaml
 RUN pnpm install --frozen-lockfile
  
-COPY --from=builder /app/out/full/ .
-COPY turbo.json turbo.json
- 
-RUN run build --filter=web... 
+WORKDIR /app/apps/${APP}
+RUN pnpm run build 
  
 FROM base AS runner
 WORKDIR /app
