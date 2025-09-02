@@ -2,14 +2,6 @@ FROM node:20-slim as base
 
 RUN npm install -g pnpm turbo
 
-# #############################################
-# FROM base AS pruned
-# WORKDIR /app
-# ARG APP=web
-# COPY . .
-# RUN turbo prune --scope=$APP --docker --include-dependencies=all
-
-#############################################
 FROM base AS installer
 ARG APP=web
 WORKDIR /app
@@ -20,8 +12,7 @@ COPY apps/${APP}/package.json ./apps/${APP}/
 COPY pnpm-lock.yaml ./
 COPY  pnpm-workspace.yaml ./
 COPY packages/ ./packages/
-RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
-pnpm install --frozen-lockfile 
+RUN pnpm install --frozen-lockfile 
 COPY . .
 RUN turbo prune $APP --docker
 #############################################
@@ -42,11 +33,6 @@ COPY --from=builder /app/apps/${APP}/.next ./apps/${APP}/.next
 COPY --from=builder /app/apps/${APP}/public ./apps/${APP}/public
 COPY --from=builder /app/apps/${APP}/package.json ./apps/${APP}/package.json
 WORKDIR /app/apps/${APP}
-
-
-# # Copy node_modules from installer (needed for next start)
-
-# # Copy app
 
 EXPOSE 3000
 ENV HOSTNAME=0.0.0.0

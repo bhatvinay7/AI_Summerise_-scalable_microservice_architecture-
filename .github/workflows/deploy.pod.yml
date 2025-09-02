@@ -1,0 +1,264 @@
+on:
+  push:
+    branches: [dev]
+  pull_request:
+    branches: [dev]
+env:
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  IMAGE_PREFIX: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}    
+
+jobs:
+    build-and-push:
+        runs-on: ubuntu-latest
+        steps:   
+        - name: Checkout repository
+          uses: actions/checkout@v4
+
+        - name: Log in to Docker Hub
+          uses: docker/login-action@v3
+          with:
+            username: ${{ env.DOCKER_USERNAME }}
+            password: ${{ env.DOCKER_PASSWORD }}
+
+        - name: Build and push http-server Docker image
+          uses: docker/build-push-action@v5
+          with:
+            context: .
+            file: ./apps/http-server/Dockerfile.pod
+            push: true   
+            tags: | 
+              ${{ env.DOCKER_USERNAME }}/http-server:latest
+              ${{ env.DOCKER_PASSWORD }}/http-server:${{ github.sha }}
+
+        - name: Build and push filehandler-server Docker image
+          uses: docker/build-push-action@v5
+          with:
+            context: .
+            file: ./apps/filehandler-server/Dockerfile.pod
+            push: true   
+            tags: | 
+              ${{ env.DOCKER_USERNAME }}/filehandler-server:latest
+              ${{ env.DOCKER_PASSWORD }}/filehandler-server:${{ github.sha }}
+
+        - name: Build and push worker-server Docker image
+          uses: docker/build-push-action@v5
+          with:
+            context: .
+            file: ./apps/worker-server/Dockerfile.pod
+            push: true   
+            tags: | 
+              ${{ env.DOCKER_USERNAME }}/worker-server:latest
+              ${{ env.DOCKER_PASSWORD }}/worker-server:${{ github.sha }} 
+
+        - name: Build and push ws-server Docker image
+          uses: docker/build-push-action@v5
+          with:
+            context: .
+            file: ./apps/ws-server/Dockerfile.pod
+            push: true   
+            tags: | 
+              ${{ env.DOCKER_USERNAME }}/ws-server:latest
+              ${{ env.DOCKER_PASSWORD }}/ws-server:${{ github.sha }}   
+
+        - name: Build and push web Docker image
+          uses: docker/build-push-action@v5
+          with:
+            context: .
+            file: ./apps/web/Dockerfile.pod
+            push: true   
+            tags: | 
+              ${{ env.DOCKER_USERNAME}}/web:latest
+              ${{ env.DOCKER_PASSWORD }}/web:${{ github.sha }}
+
+    deploy:
+      runs-on: ubuntu-latest
+      needs: build-and-push
+      steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy to VM via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: | 
+            if ! command -v curl &> /dev/null; then
+                sudo apt-get update
+                sudo apt-get install -y curl
+            fi
+
+            if ! command -v node &> /dev/null; then
+              curl -fsSL https://deb.nodesource.com/setup_20.2.0 | sudo -E bash -
+              sudo apt-get install -y nodejs
+            else
+              echo "Node.js already installed: $(node -v)"
+            fi
+
+           
+            sudo apt-get update -y
+            sudo apt-get install -y nginx
+            sudo systemctl start nginx
+
+            echo "Stopping all containers..."
+
+            docker stop $(docker ps -q) || true
+
+            echo "Removing all containers..."
+            docker rm $(docker ps -aq) || true
+
+            echo "Removing all images..."
+
+            docker rmi -f $(docker images -q) || true   
+
+            docker network create note-network || true
+
+           
+            echo "username=${{ secrets.username }}" >> env.redis
+            echo "password=${{ secrets.password }}" >> env.redis
+            echo "host=${{ secrets.host }}" >> env.redis
+            echo "port=${{ secrets.port }}" >> env.redis
+            
+            echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> env.http
+            echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> env.http
+            echo "bucketName=${{ secrets.bucketName }}" >> env.http
+            echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> env.http
+            echo "ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }}" >> env.http
+            echo "ServerSideEncryption=${{ secrets.ServerSideEncryption }}" >> env.http
+            echo "REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET }}" >> env.http
+            echo "ServerSideEncryption=${{ secrets.ServerSideEncryption }}" >> env.http
+            echo "NEXT_PUBLIC_FRONTEND_URL=${{ secrets.NEXT_PUBLIC_FRONTEND_URL }}" >> env.http
+
+            echo "KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181" >> env.kafka
+            echo "ALLOW_PLAINTEXT_LISTENER=yes" >> env.kafka
+            echo "KAFKA_CFG_DELETE_TOPIC_ENABLE=true" >> env.kafka
+            echo "KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=false" >> env.kafka
+            echo "KAFKA_CFG_LOG_RETENTION_MS=180000" >> env.kafka
+ 
+
+
+            IMAGE1=${{secrets.DOCKER_USERNAME }}/http-server:${{ github.sha }}
+            IMAGE2=${{secrets.DOCKER_USERNAME }}/filehandler-server:${{ github.sha }}
+            IMAGE3=${{secrets.DOCKER_USERNAME }}/worker-server:${{ github.sha }}
+            IMAGE4=${{secrets.DOCKER_USERNAME }}/ws-server:${{ github.sha }}
+            IMAGE5=${{secrets.DOCKER_USERNAME }}/web:${{ github.sha }}
+            IMAGE6=bitnami/kafka:3.4
+            IMAGE7=nats:latest
+            IMAGE8=bitnami/zookeeper:3.8
+
+            echo "Pulling the  images from  docker hub"
+            
+
+            docker pull $IMAGE1
+            docker pull $IMAGE2
+            docker pull $IMAGE3
+            docker pull $IMAGE4
+            docker pull $IMAGE5
+            docker pull $IMAGE6
+            docker pull $IMAGE7
+            docker pull $IMAGE8
+            
+            NETWORK="note-network" 
+            docker run -d \
+             -p 3001:3001
+             --name http-server \
+             --env-file env.http \
+             -e
+             --network $NETWORK \
+             $IMAGE1
+
+            docker run -d \
+            -p 3002:3002
+            --name filehandler-server  \
+            --env-file env.redis \
+            --network $NETWORK \
+            $IMAGE2
+
+            docker run -d \
+            -p 3003:3003
+            --name worker-server  \
+            --env-file env.redis \
+            -e GROQ_API_KEY="${{secrets.GROQ_API_KEY}}"
+            --network $NETWORK \
+            $IMAGE3
+
+            docker run -d \
+            -p 8080:8080
+            --name ws-server  \
+            --env-file env.redis \
+            -e REFRESH_TOKEN_SECRET="${{secrets.REFRESH_TOKEN_SECRET}}"
+            --network $NETWORK \
+            $IMAGE4 
+
+
+            docker run -d \
+            -p 3000:3000
+            --name web  \
+            -e NEXT_PUBLIC_FRONTEND_URL="${{secrets.NEXT_PUBLIC_FRONTEND_URL}}"
+            -e NEXT_PUBLIC_BACKEND_URL="${{secrets.NEXT_BACKEND_URL}}"
+            -e ACCESS_TOKEN_SECRET="${{secrets.ACCESS_TOKEN_SECRET}}"
+            -e REFRESH_TOKEN_SECRET="${{secrets.REFRESH_TOKEN_SECRET}}"
+            --network $NETWORK \
+            $IMAGE5
+
+            docker run -d \
+            -p 9092:9092
+            --name notekafka1  \
+            --env-file env.kafka \
+            -e "KAFKA_BROKER_ID=1"
+            -e "KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181"
+            -e "KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9093"
+            -e "KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://notekafka1:9092"
+            -v ~/kafka1_data:/bitnami/kafka \
+            --network $NETWORK \
+            $IMAGE6
+
+            docker run -d \
+            -p 9093:9093
+            --name notekafka2  \
+            --env-file env.kafka \
+            -e "KAFKA_BROKER_ID=2"
+            -e "KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181"
+            -e "KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9093"
+            -e "KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://notekafka2:9093"
+            -v ~/kafka2_data:/bitnami/kafka \
+            --network $NETWORK \
+            $IMAGE6
+
+            docker run -d \
+            -p 9094:9094
+            --name notekafka3  \
+            --env-file env.kafka \
+            -e "KAFKA_BROKER_ID=3"
+            -e "KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181"
+            -e "KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9094"
+            -e "KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://notekafka3:9094"
+
+            -v ~/kafka3_data:/bitnami/kafka \
+            --network $NETWORK \
+            $IMAGE6
+
+            docker run -d \
+            -p 2181:2181
+            --name notezookeeper  \
+            -e "ALLOW_ANONYMOUS_LOGIN=yes"
+            -v ~/zookeeper_data:/bitnami/zookeeper \
+            --network $NETWORK \
+            $IMAGE7
+
+            docker run -d \
+            --name nats-server  \
+            -p 4222:4222 \
+            -p 8222:8222 \
+            -p 6222:6222 \
+            -v $(pwd)/nats-server.conf:/etc/nats/nats-server.conf \
+            --network $NETWORK \
+            $IMAGE8 -c /etc/nats/nats-server.conf
+
+
+        
+
+
+    

@@ -3,7 +3,6 @@ import { Kafka, KafkaMessage } from "kafkajs";
 import { sc, natsCOnnection } from "../src/nats-server/nats";
 import getFileBufferData from "./utils/getFileBufferData";
 import redis from "./redis/redisClient";
-import fs from "fs";
 import dotenv from "dotenv";
 dotenv.config();
 const kafka = new Kafka({
