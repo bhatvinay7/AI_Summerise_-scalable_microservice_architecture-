@@ -21,6 +21,7 @@ ARG APP=web
 WORKDIR /app
 COPY --from=installer /app/node_modules ./node_modules
 WORKDIR /app/apps/${APP}
+RUN pnpm install
 RUN pnpm run build
 
 #############################################
