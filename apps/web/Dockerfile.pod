@@ -3,7 +3,7 @@ ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN apk add --no-cache libc6-compat && \
     corepack enable && \
-    pnpm install turbo --global
+    pnpm install turbo ts-node --global
  
 FROM base AS builder
 RUN apk add --no-cache openssl
