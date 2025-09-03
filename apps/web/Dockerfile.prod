@@ -11,7 +11,7 @@ WORKDIR /app
 COPY pnpm-lock.yaml ./
 COPY pnpm-workspace.yaml ./
 COPY package.json ./package.json
-COPY package/ ./package/
+COPY packages/ ./packages/
 COPY apps/${APP}/package.json ./apps/${APP}/
 RUN pnpm install --frozen-lockfile
 COPY . .
@@ -19,7 +19,7 @@ COPY . .
 FROM builder AS installer
 ARG APP=web
 WORKDIR /app 
-COPY --from=buider /app/node_modules ./node_modules
+COPY --from=builder /app/node_modules ./node_modules
 WORKDIR /app/apps/${APP}
 RUN pnpm run build 
  
