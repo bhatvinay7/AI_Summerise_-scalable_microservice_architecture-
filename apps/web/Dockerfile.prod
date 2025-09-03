@@ -22,7 +22,7 @@ WORKDIR /app
 COPY --from=builder /app ./
 COPY --from=builder /app/node_modules ./node_modules
 WORKDIR /app/apps/${APP}
-RUN pnpm run build 
+RUN pnpm build --filter ${APP}
  
 FROM installer AS runner
 WORKDIR /app
