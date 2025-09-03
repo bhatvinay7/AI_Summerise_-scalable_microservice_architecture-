@@ -27,6 +27,8 @@ jobs:
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/http-server:latest
             ${{ secrets.DOCKER_USERNAME }}/http-server:${{ github.sha }}
+          build-args: |
+            DATABASE_URL=${{ secrets.DATABASE_URL }}  
 
       - name: Build and push filehandler-server Docker image
         uses: docker/build-push-action@v5
@@ -47,6 +49,9 @@ jobs:
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/worker-server:latest
             ${{ secrets.DOCKER_USERNAME }}/worker-server:${{ github.sha }}
+
+          build-args: |
+            DATABASE_URL=${{ secrets.DATABASE_URL }}  
 
       - name: Build and push ws-server Docker image
         uses: docker/build-push-action@v5
