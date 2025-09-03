@@ -1,6 +1,7 @@
 FROM node:20-alpine AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
+
 RUN apk add --no-cache libc6-compat && \
     corepack enable && \
     npm  install -g pnpm turbo
@@ -19,10 +20,10 @@ COPY . .
 FROM builder AS installer
 ARG APP=web
 WORKDIR /app 
-COPY . .
+COPY --from=builder /app  ./
 COPY --from=builder /app/node_modules ./node_modules
 WORKDIR /app/apps/${APP}
-RUN pnpm  --filter=${APP}... build
+RUN pnpm run build
  
 FROM installer AS runner
 WORKDIR /app
