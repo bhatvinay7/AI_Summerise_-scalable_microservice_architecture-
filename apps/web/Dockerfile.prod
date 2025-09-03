@@ -1,5 +1,5 @@
 FROM node:latest AS base
-
+ENV PATH=/app/node_modules/.bin:$PATH
 FROM base AS installer
 ARG APP=web
 WORKDIR /app
