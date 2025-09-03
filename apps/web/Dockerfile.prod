@@ -1,7 +1,7 @@
 FROM node:latest AS base
 
-
 FROM base AS installer
+ARG APP=web
 WORKDIR /app
 COPY package.json pnpm.lock* ./
 COPY apps/${APP}/package.json ./apps/${APP}/
