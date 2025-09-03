@@ -1,5 +1,6 @@
 FROM node:latest AS base
 ENV PATH=/app/node_modules/.bin:$PATH
+RUN npm install -g pnpm turbo ts-node next
 FROM base AS installer
 ARG APP=web
 WORKDIR /app
