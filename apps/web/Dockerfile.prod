@@ -3,19 +3,19 @@ ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 
 RUN apk add --no-cache libc6-compat && \
-    corepack enable && \
-    npm  install -g pnpm turbo
- 
+corepack enable && \
+npm  install -g pnpm turbo
+
 FROM base AS builder
 ARG APP=web
 WORKDIR /app
+COPY . .
 COPY pnpm-lock.yaml ./pnpm-lock.yaml
 COPY pnpm-workspace.yaml ./pnpm-workspace.yaml
 COPY package.json ./package.json
 COPY packages/ ./packages/
 COPY apps/${APP}/package.json ./apps/${APP}/
-RUN pnpm install --frozen-lockfile
-COPY . .
+RUN pnpm install --frozen-lockfile --force
  
 FROM builder AS installer
 ARG APP=web
