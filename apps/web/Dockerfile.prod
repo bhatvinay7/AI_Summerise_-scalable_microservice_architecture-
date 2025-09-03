@@ -1,6 +1,6 @@
 FROM node:latest AS base
 
-FROM base AS builder
+FROM base AS prunner
 WORKDIR /app
 RUN npm install -g turbo 
 COPY . .
@@ -8,7 +8,7 @@ RUN turbo prune web --docker
 
 FROM base AS installer
 WORKDIR /app
-COPY --from=builder /app/out/json/ .
+COPY --from=prunner /app/out/json/ .
 COPY package.json pnpm.lock* ./
 COPY apps/${APP}/package.json ./apps/${APP}/
 COPY pnpm-lock.yaml ./
@@ -16,11 +16,16 @@ COPY  pnpm-workspace.yaml ./
 COPY packages/ ./packages/
 RUN pnpm install 
 
+FROM base AS  builder
+WORKDIR /app
+COPY --from=installer /app ./
+RUN pnpm run build
+
 FROM base AS runner
 WORKDIR /app
-COPY --from=installer /app/out/full/ .
-COPY --from=installer /app/apps/web/.next/standalone ./
-COPY --from=installer /app/apps/web/.next/static ./apps/web/.next/static
-COPY --from=installer /app/apps/web/public ./apps/web/public
+COPY --from=builder /app/out/full/ .
+COPY --from=builder /app/apps/web/.next/standalone ./
+COPY --from=builder /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=builder /app/apps/web/public ./apps/web/public
 
 CMD node apps/web/server.js
