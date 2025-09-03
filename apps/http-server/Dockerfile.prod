@@ -8,6 +8,7 @@ COPY pnpm-lock.yaml ./
 COPY  pnpm-workspace.yaml ./
 COPY apps/${APP}/package.json ./apps/${APP}/
 COPY packages/ ./packages/
+COPY .npmrc ./
 RUN pnpm install --frozen-lockfile 
 COPY . .
 RUN cd packages/prisma && pnpm prisma generate

@@ -7,6 +7,7 @@ COPY package.json pnpm.lock* ./
 COPY apps/${APP}/package.json ./apps/${APP}/
 COPY pnpm-lock.yaml ./
 COPY  pnpm-workspace.yaml ./
+COPY .npmrc ./
 COPY packages/ ./packages/
 RUN pnpm install --filter=web...
 COPY . .
