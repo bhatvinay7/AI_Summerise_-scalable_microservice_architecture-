@@ -22,7 +22,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./apps/http-server/Dockerfile.pod
+          file: ./apps/http-server/Dockerfile.prod
           push: true
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/http-server:latest
@@ -32,7 +32,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./apps/filehandler-server/Dockerfile.pod
+          file: ./apps/filehandler-server/Dockerfile.prod
           push: true
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/filehandler-server:latest
@@ -42,7 +42,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./apps/worker-server/Dockerfile.pod
+          file: ./apps/worker-server/Dockerfile.prod
           push: true
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/worker-server:latest
@@ -52,7 +52,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./apps/ws-server/Dockerfile.pod
+          file: ./apps/ws-server/Dockerfile.prod
           push: true
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/ws-server:latest
@@ -62,7 +62,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./apps/web/Dockerfile.pod
+          file: ./apps/web/Dockerfile.prod
           push: true
           tags: |
             ${{ secrets.DOCKER_USERNAME}}/web:latest
