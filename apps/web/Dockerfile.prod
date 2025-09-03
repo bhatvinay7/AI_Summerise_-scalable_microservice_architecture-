@@ -19,6 +19,7 @@ COPY . .
 FROM builder AS installer
 ARG APP=web
 WORKDIR /app 
+COPY --from=builder /app ./
 COPY --from=builder /app/node_modules ./node_modules
 WORKDIR /app/apps/${APP}
 RUN pnpm run build 
