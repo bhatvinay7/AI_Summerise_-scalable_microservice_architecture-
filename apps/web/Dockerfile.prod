@@ -4,7 +4,6 @@ FROM base AS prunner
 WORKDIR /app
 RUN npm install -g turbo 
 COPY . .
-RUN turbo prune web --docker 
 
 FROM base AS installer
 WORKDIR /app
@@ -14,7 +13,7 @@ COPY apps/${APP}/package.json ./apps/${APP}/
 COPY pnpm-lock.yaml ./
 COPY  pnpm-workspace.yaml ./
 COPY packages/ ./packages/
-RUN pnpm install 
+RUN pnpm install --filter=web...
 
 FROM base AS  builder
 WORKDIR /app
