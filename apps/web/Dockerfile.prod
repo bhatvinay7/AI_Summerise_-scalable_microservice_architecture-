@@ -8,10 +8,10 @@ RUN apk add --no-cache libc6-compat && \
 FROM base AS builder
 RUN apk add --no-cache openssl
 WORKDIR /app
-COPY --from=base /app/pnpm-lock.yaml ./pnpm-lock.yaml
-COPY --from=base /app/pnpm-workspace.yaml ./pnpm-workspace.yaml
-COPY --from=base /app/package.json ./package.json
-COPY --from=base /app/package/ ./package/
+COPY pnpm-lock.yaml ./pnpm-lock.yaml
+COPY pnpm-workspace.yaml ./pnpm-workspace.yaml
+COPY package.json ./package.json
+COPY package/ ./package/
 RUN pnpm install --frozen-lockfile
 COPY . .
  
