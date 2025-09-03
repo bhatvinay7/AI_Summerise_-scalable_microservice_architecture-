@@ -9,18 +9,17 @@ npm  install -g pnpm turbo
 FROM base AS builder
 ARG APP=web
 WORKDIR /app
-COPY . .
 COPY pnpm-lock.yaml ./pnpm-lock.yaml
 COPY pnpm-workspace.yaml ./pnpm-workspace.yaml
 COPY package.json ./package.json
 COPY packages/ ./packages/
 COPY apps/${APP}/package.json ./apps/${APP}/
 RUN pnpm install --frozen-lockfile --force
- 
+
 FROM builder AS installer
 ARG APP=web
 WORKDIR /app 
-COPY --from=builder /app  ./
+COPY . .
 COPY --from=builder /app/node_modules ./node_modules
 WORKDIR /app/apps/${APP}
 RUN pnpm run build
