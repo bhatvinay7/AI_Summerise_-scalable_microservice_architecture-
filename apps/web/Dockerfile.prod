@@ -1,35 +1,26 @@
-FROM node:20-slim as base
+FROM node:latest AS base
 
-RUN npm install -g pnpm turbo ts-node
-FROM base AS installer
-ARG APP=web
+FROM base AS builder
 WORKDIR /app
+RUN npm install -g turbo 
+COPY . .
+RUN turbo prune web --docker 
+
+FROM base AS installer
+WORKDIR /app
+COPY --from=builder /app/out/json/ .
 COPY package.json pnpm.lock* ./
 COPY apps/${APP}/package.json ./apps/${APP}/
 COPY pnpm-lock.yaml ./
 COPY  pnpm-workspace.yaml ./
 COPY packages/ ./packages/
-RUN pnpm install --frozen-lockfile 
-COPY . .
+RUN npm install 
 
-FROM installer AS builder
-ARG APP=web
+FROM base AS runner
 WORKDIR /app
-WORKDIR /app/apps/${APP}
-RUN pnpm run build
+COPY --from=installer /app/out/full/ .
+COPY --from=installer /app/apps/web/.next/standalone ./
+COPY --from=installer /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=installer /app/apps/web/public ./apps/web/public
 
-
-FROM builder AS runner
-ARG APP=web
-WORKDIR /app
-
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/apps/${APP}/node_modules ./apps/${APP}/node_modules
-COPY --from=builder /app/apps/${APP}/.next ./apps/${APP}/.next
-COPY --from=builder /app/apps/${APP}/public ./apps/${APP}/public
-COPY --from=builder /app/apps/${APP}/package.json ./apps/${APP}/package.json
-WORKDIR /app/apps/${APP}
-
-EXPOSE 3000
-ENV HOSTNAME=0.0.0.0
-CMD ["pnpm", "run", "start"]
+CMD node apps/web/server.js
