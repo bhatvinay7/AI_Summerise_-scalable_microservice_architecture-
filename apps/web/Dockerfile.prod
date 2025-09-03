@@ -19,7 +19,7 @@ FROM base AS installer
 ARG APP=web
 WORKDIR /app 
 WORKDIR /app/apps/${APP}
-RUN pnpm add next
+RUN npm install next
 RUN pnpm run build 
  
 FROM base AS runner
