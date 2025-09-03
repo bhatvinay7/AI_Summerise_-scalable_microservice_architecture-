@@ -163,7 +163,7 @@ jobs:
              -p 3001:3001
              --name http-server \
              --env-file env.http \
-             -e
+             -e DATABASE_URL="${{secrets.DATABASE_URL}}"
              --network $NETWORK \
              $IMAGE1
 
@@ -179,6 +179,7 @@ jobs:
             --name worker-server  \
             --env-file env.redis \
             -e GROQ_API_KEY="${{secrets.GROQ_API_KEY}}"
+            -e DATABASE_URL="${{secrets.DATABASE_URL}}"
             --network $NETWORK \
             $IMAGE3
 

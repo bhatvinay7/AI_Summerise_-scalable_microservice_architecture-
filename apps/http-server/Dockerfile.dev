@@ -9,15 +9,18 @@ COPY  pnpm-workspace.yaml ./
 COPY apps/${APP}/package.json ./apps/${APP}/
 COPY packages/ ./packages/
 COPY .npmrc ./
-RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
-pnpm install --frozen-lockfile 
 COPY . .
-RUN cd packages/prisma && pnpm prisma generate
+RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
+pnpm install --frozen-lockfile --force
+
 
 #############################################
-FROM installer AS builder
-ARG APP=http-server
+FROM base AS builder
+ARG APP=http-serve
 WORKDIR /app
+COPY --from=installer /app ./
+WORKDIR /app/apps/${APP}
+
 #############################################
 FROM builder AS runner
 ARG APP=http-server

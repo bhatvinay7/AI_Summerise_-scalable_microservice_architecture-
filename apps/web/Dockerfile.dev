@@ -22,18 +22,18 @@ COPY pnpm-lock.yaml ./
 COPY  pnpm-workspace.yaml ./
 COPY packages/ ./packages/
 COPY .npmrc ./
+COPY . .
 RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
 pnpm install --frozen-lockfile 
-COPY . .
 #############################################
-FROM installer AS builder
+FROM base AS builder
 ARG APP=web
 WORKDIR /app
+COPY --from=installer /app ./
 WORKDIR /app/apps/${APP}
 RUN pnpm run build
-
 #############################################
-FROM builder AS runner
+FROM base AS runner
 ARG APP=web
 WORKDIR /app
 
