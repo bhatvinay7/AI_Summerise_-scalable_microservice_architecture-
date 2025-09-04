@@ -3,8 +3,8 @@
 node_modules
 */node_modules
 # Ignore build outputs
-# .next
-# **/.next
+.next
+**/.next
 **/dist
 **/build
 # **/.next
