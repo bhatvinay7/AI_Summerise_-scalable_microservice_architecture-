@@ -6,13 +6,10 @@ FROM base AS prunner
 ARG APP=web
 WORKDIR /app
 COPY . .
-RUN turbo prune --scope=$APP --docker
 
 FROM base AS installer
 ARG APP=web
 WORKDIR /app
-COPY --from=pruned /app/out/json/ ./
-COPY --from=prunner /app/out/full/ .
 COPY package.json pnpm.lock* ./
 COPY apps/${APP}/package.json ./apps/${APP}/
 COPY pnpm-lock.yaml ./

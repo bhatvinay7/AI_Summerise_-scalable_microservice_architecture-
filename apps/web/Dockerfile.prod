@@ -27,7 +27,7 @@ WORKDIR /app
 COPY --from=installer /app ./
 COPY --from=installer /app/node_modules ./node_modules
 WORKDIR /app/apps/web
-RUN pnpm run build  --filter=web...
+RUN pnpm run build
 FROM base AS runner
 WORKDIR /app
 COPY --from=builder /node_modules ./node_modules

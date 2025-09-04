@@ -2,7 +2,7 @@ FROM node:20.2-alpine3.17 as base
 RUN npm install -g pnpm turbo  ts-node 
 
 FROM base AS installer
-ARG APP=http-serve
+ARG APP=http-server
 WORKDIR /app
 COPY package.json pnpm.lock* ./
 COPY pnpm-lock.yaml ./
