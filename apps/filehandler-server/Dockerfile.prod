@@ -1,10 +1,11 @@
 FROM node:20.2-alpine3.17 as base
 RUN npm install -g pnpm turbo
-FROM BASE AS prunner
+FROM base AS prunner
 ARG APP=filehandler-server
 WORKDIR /app
 COPY . .
 RUN turbo prune --scope=$APP --docker
+
 FROM base AS installer
 ARG APP=filehandler-server
 WORKDIR /app
