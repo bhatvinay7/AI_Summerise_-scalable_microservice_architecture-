@@ -1,9 +1,15 @@
 FROM node:20.2-alpine3.17 as base
 RUN npm install -g pnpm turbo
-
-FROM base AS installer
-ARG APP=ws-server
+FROM BASE AS prunner
+ARG APP=filehandler-server
 WORKDIR /app
+COPY . .
+RUN turbo prune --scope=$APP --docker
+FROM base AS installer
+ARG APP=filehandler-server
+WORKDIR /app
+COPY --from=prunner /app/out/json/ .
+COPY --from=prunner /app/out/full/ .
 COPY package.json pnpm.lock* ./
 COPY pnpm-lock.yaml ./
 COPY  pnpm-workspace.yaml ./
@@ -11,20 +17,20 @@ COPY apps/${APP}/package.json ./apps/${APP}/
 COPY packages/ ./packages/
 COPY .npmrc ./
 RUN pnpm install --frozen-lockfile
-COPY . .
+
+
 FROM base AS builder
-ARG APP=ws-server
+ARG APP=filehandler-server
 WORKDIR /app
 COPY --from=installer /app ./
 RUN pnpm run build
 
 FROM base AS runner
-ARG APP=ws-server
+ARG APP=filehandler-server
 WORKDIR /app
 COPY --from=builder /app ./
-RUN pnpm --filter prisma run generate
 WORKDIR /app/apps/${APP}
 
-EXPOSE 8080
+EXPOSE 3002
 CMD ["pnpm", "run", "start"] 
 

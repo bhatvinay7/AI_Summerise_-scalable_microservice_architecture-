@@ -1,9 +1,19 @@
 FROM node:latest AS base
 ENV PATH=/app/node_modules/.bin:$PATH
 RUN npm install -g pnpm turbo ts-node next
+
+FROM base AS prunner
+ARG APP=web
+WORKDIR /app
+COPY . .
+RUN turbo prune --scope=$APP --docker
+
+
 FROM base AS installer
 ARG APP=web
 WORKDIR /app
+COPY --from=prunner /app/out/json/ .
+COPY --from=prunner /app/out/full/ .
 COPY package.json pnpm.lock* ./
 COPY apps/${APP}/package.json ./apps/${APP}/
 COPY pnpm-lock.yaml ./
@@ -11,7 +21,6 @@ COPY  pnpm-workspace.yaml ./
 COPY .npmrc ./
 COPY packages/ ./packages/
 RUN pnpm install --frozen-lockfile --filter web...
-COPY . .
 
 FROM base AS  builder
 WORKDIR /app
@@ -20,9 +29,8 @@ COPY --from=installer /node_modules ./node_modules
 WORKDIR /app/apps/web
 RUN pnpm run build  --filter=web...
 FROM base AS runner
-
 WORKDIR /app
-COPY --from=installer /node_modules ./node_modules
+COPY --from=builder /node_modules ./node_modules
 COPY --from=builder /app/apps/web/.next/ ./apps/web/.next/
 COPY --from=builder /app/apps/web/.next/static ./apps/web/.next/static
 COPY --from=builder /app/apps/web/public ./apps/web/public

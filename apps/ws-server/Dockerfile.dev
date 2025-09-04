@@ -14,16 +14,11 @@ COPY . .
 RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
 pnpm install --frozen-lockfile
 
-#############################################
-FROM base AS builder
-ARG APP=ws-server
-WORKDIR /app
-COPY --from=installer /app ./
-#############################################
+
 FROM base AS runner
 ARG APP=ws-server
 WORKDIR /app
-COPY --from=builder /app ./
+COPY --from=installer /app ./
 WORKDIR /app/apps/${APP}
 
 EXPOSE 8080

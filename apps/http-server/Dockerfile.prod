@@ -1,10 +1,18 @@
 FROM node:20.2-alpine3.17 as base
 RUN npm install -g pnpm turbo
+FROM base AS prunner
+ARG APP=http-server
+WORKDIR /app
+COPY . .
+RUN turbo prune --scope=$APP --docker
+
 FROM base AS installer
 ARG DATABASE_URL
 ENV DATABASE_URL=${DATABASE_URL}
 ARG APP=http-server
 WORKDIR /app
+COPY --from=prunner /app/out/json/ .
+COPY --from=prunner /app/out/full/ .
 COPY package.json  ./
 COPY pnpm-lock.yaml ./
 COPY  pnpm-workspace.yaml ./
@@ -13,14 +21,12 @@ COPY packages/ ./packages/
 COPY .npmrc ./
 RUN pnpm install --frozen-lockfile 
 RUN pnpm --filter $APP prisma generate
-COPY . .
 
 #############################################
 FROM base AS builder
-ARG APP=ws-server
+ARG APP=http-server
 WORKDIR /app
 COPY --from=installer /app ./
-RUN pnpm --filter prisma run generate
 RUN pnpm run build
 #############################################
 FROM base AS runner

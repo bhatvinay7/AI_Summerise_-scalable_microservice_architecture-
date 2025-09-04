@@ -2,27 +2,23 @@ FROM node:20-slim as base
 
 RUN npm install -g pnpm turbo ts-node
 
+FROM base AS prunner
+ARG APP=web
+WORKDIR /app
+COPY . .
+RUN turbo prune --scope=$APP --docker
 
-# #############################################
-# FROM base AS pruned
-# WORKDIR /app
-# ARG APP=web
-# COPY . .
-# RUN turbo prune --scope=$APP --docker --include-dependencies=all
-
-#############################################
 FROM base AS installer
 ARG APP=web
 WORKDIR /app
-# COPY --from=pruned /app/out/json/ ./
-# COPY --from=pruned /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=pruned /app/out/json/ ./
+COPY --from=prunner /app/out/full/ .
 COPY package.json pnpm.lock* ./
 COPY apps/${APP}/package.json ./apps/${APP}/
 COPY pnpm-lock.yaml ./
 COPY  pnpm-workspace.yaml ./
 COPY packages/ ./packages/
 COPY .npmrc ./
-COPY . .
 RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
 pnpm install --frozen-lockfile 
 #############################################
