@@ -1,6 +1,6 @@
 FROM node:latest AS base
 ENV PATH=/app/node_modules/.bin:$PATH
-RUN npm install -g pnpm turbo ts-node next
+RUN npm install -g pnpm turbo
 
 FROM base AS prunner
 ARG APP=web
@@ -25,7 +25,7 @@ RUN pnpm install --frozen-lockfile --filter web...
 FROM base AS  builder
 WORKDIR /app
 COPY --from=installer /app ./
-COPY --from=installer /node_modules ./node_modules
+COPY --from=installer /app/node_modules ./node_modules
 WORKDIR /app/apps/web
 RUN pnpm run build  --filter=web...
 FROM base AS runner
