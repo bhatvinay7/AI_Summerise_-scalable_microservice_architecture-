@@ -12,7 +12,7 @@ COPY packages/ ./packages/
 COPY .npmrc ./
 COPY . .
 RUN pnpm install --frozen-lockfile
-RUN pnpm --filter $APP prisma generate
+RUN pnpm --filter  prisma run generate
 
 FROM base AS runner
 ARG APP=http-server

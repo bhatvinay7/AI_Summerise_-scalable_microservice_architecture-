@@ -10,6 +10,7 @@ COPY . .
 FROM base AS installer
 ARG APP=web
 WORKDIR /app
+COPY --from=prunner /app ./
 COPY package.json pnpm.lock* ./
 COPY apps/${APP}/package.json ./apps/${APP}/
 COPY pnpm-lock.yaml ./

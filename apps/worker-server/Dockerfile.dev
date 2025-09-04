@@ -13,7 +13,7 @@ COPY .npmrc ./
 COPY . .
 RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
 pnpm install --frozen-lockfile --force
-RUN pnpm --filter $APP prisma generate
+RUN pnpm --filter  prisma run generate
 
 FROM base AS runner
 ARG APP=worker-server
