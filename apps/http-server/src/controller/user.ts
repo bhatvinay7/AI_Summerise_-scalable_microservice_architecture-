@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import  prisma from  'prisma/client'
+const  prisma= require('prisma/client')
 import jwt from 'jsonwebtoken';
 const user=async (req:Request,res:Response)=>{
        try{
