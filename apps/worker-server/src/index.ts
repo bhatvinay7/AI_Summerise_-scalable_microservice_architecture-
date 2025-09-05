@@ -1,5 +1,5 @@
 import { Kafka, KafkaMessage } from "kafkajs";
-import prisma from "prisma/client";
+const prisma =require("prisma/client");
 import express from "express";
 import { natsConnection, sc } from "../src/nats-server/nats";
 import redisClient from "./redis/redisClient";

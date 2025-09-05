@@ -121,7 +121,7 @@ jobs:
             echo "Removing all images..."
 
             sudo docker rmi -f $(sudo docker images -q) || true   
-
+            sudo docker system prune -af
             sudo docker network create note-network || true
 
 
@@ -261,13 +261,36 @@ jobs:
             --network $NETWORK \
             $IMAGE6
 
-          
-
             sudo docker run -d \
             --name nats-server  \
             -p 4222:4222 \
             -p 8222:8222 \
             -p 6222:6222 \
-            -v $(pwd)/nats-server.conf:/etc/nats/nats-server.conf \
             --network $NETWORK \
-            $IMAGE7 -c /etc/nats/nats-server.conf
+            $IMAGE7 \
+            sh -c "cat <<'EOF' > /etc/nats/nats-server.conf
+            server_name: nats-server
+
+            authorization {
+            user: natsuser
+            password: natspassword
+            timeout: 2
+                           }
+
+            debug: true
+            trace: false
+            logtime: true
+
+            max_connections: 1000
+            max_payload: 64MB
+            write_deadline: 2s
+
+            http: 0.0.0.0:8222
+
+            jetstream {
+            store_dir: /data/jetstream
+            max_mem: 512MB
+            max_file: 2GB
+                          }
+            EOF
+            nats-server -c /etc/nats/nats-server.conf"
