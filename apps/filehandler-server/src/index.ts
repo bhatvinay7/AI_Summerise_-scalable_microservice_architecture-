@@ -1,6 +1,6 @@
 import express from "express";
 import { Kafka, KafkaMessage } from "kafkajs";
-import { sc, natsCOnnection } from "../src/nats-server/nats";
+import { sc, natsCOnnection } from "./nats-server/nats";
 import getFileBufferData from "./utils/getFileBufferData";
 import redis from "./redis/redisClient";
 import dotenv from "dotenv";
