@@ -217,7 +217,7 @@ jobs:
             -p 2181:2181 \
             --name notezookeeper  \
             -e "ALLOW_ANONYMOUS_LOGIN=no" \
-            -e "ZOO_ENABLE_AUTH=yes"
+            -e "ZOO_ENABLE_AUTH=yes" \
             -e  ZOO_SERVER_USERS="${{secrets.KAFKA_USERNAME}}" \
             -e  ZOO_SERVER_PASSWORDS="${{secrets.KAFKA_PASSWORD}}" \
             -v ~/zookeeper_data:/bitnami/zookeeper \
