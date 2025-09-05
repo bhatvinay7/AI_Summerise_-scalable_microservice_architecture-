@@ -4,19 +4,19 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "generate":"prisma generate"
+    "generate": "prisma generate"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*",
-    "prisma": "^6.14.0"
+    "@repo/typescript-config": "workspace:*"
   },
   "exports": {
     "./client": "./src/index.ts"
   },
   "dependencies": {
-    "@prisma/client": "^6.14.0"
+    "@prisma/client": "^6.14.0",
+    "prisma": "^6.15.0"
   }
 }
