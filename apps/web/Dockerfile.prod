@@ -10,6 +10,8 @@ RUN turbo prune --scope=$APP --docker
 
 
 FROM base AS installer
+ARG DATABASE_URL
+ENV DATABASE_URL=${DATABASE_URL}
 ARG APP=web
 WORKDIR /app
 COPY --from=prunner /app/out/json/ .
