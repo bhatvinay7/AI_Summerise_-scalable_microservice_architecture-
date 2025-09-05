@@ -1,6 +1,6 @@
 import express from "express";
 import { Kafka, KafkaMessage } from "kafkajs";
-import { sc, natsCOnnection } from "./nats-server/nats";
+import { sc, natsConnection } from "./nats-server/nats";
 import getFileBufferData from "./utils/getFileBufferData";
 import redis from "./redis/redisClient";
 import dotenv from "dotenv";
@@ -46,7 +46,7 @@ try {
           try{
 
         
-          natsCOnnection.publish(
+          natsConnection.publish(
             "file-state-manager",
             sc.encode(
               JSON.stringify({
@@ -69,7 +69,7 @@ try {
               JSON.stringify(`${cash}/n ${ParsedData}`)
             );
           }
-          natsCOnnection.publish(
+          natsConnection.publish(
             "file-state-manager",
             sc.encode(
               JSON.stringify({

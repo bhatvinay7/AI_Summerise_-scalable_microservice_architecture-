@@ -1,10 +1,14 @@
 import { connect, StringCodec,NatsConnection } from "nats";
-let natsCOnnection:NatsConnection;
+let natsConnection:NatsConnection;
 (async function run(){
-    natsCOnnection= await connect({ servers:"nats://natsuser:natspassword@nats-server:4222" });
-
+    natsConnection = await connect({
+    servers: ['nats://nats-server:4222'],
+    user: 'natsuser',
+    pass: 'natspassword'
+  })
+    
 })()
 
 const sc = StringCodec();
 
-export {sc,natsCOnnection}
+export {sc,natsConnection}

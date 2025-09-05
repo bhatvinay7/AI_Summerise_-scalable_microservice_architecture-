@@ -1,7 +1,7 @@
 import { Kafka, KafkaMessage } from "kafkajs";
 import prisma from "prisma/client";
 import express from "express";
-import { natsCOnnection, sc } from "../src/nats-server/nats";
+import { natsConnection, sc } from "../src/nats-server/nats";
 import redisClient from "./redis/redisClient";
 const app = express();
 
@@ -59,7 +59,7 @@ const run = async () => {
           const sessionData = await redisClient.get(
             `${parsedMessage.sessionId}`
           );
-          natsCOnnection?.publish(
+          natsConnection?.publish(
             "file-state-manager",
             sc.encode(
               JSON.stringify({

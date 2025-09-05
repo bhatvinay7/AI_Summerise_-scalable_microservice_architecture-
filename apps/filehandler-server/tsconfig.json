@@ -1,11 +1,15 @@
-{   "extends":"@repo/typescript-config/base.json",
-    "compilerOptions": {
-        "outDir": "./dist",
-        "rootDir": "./src",
-        "baseUrl": ".",
-         "strict": true,
+{
+  "extends": "@repo/typescript-config/base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "baseUrl": ".",
+    "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ES2022",
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "declaration": true,
@@ -15,20 +19,12 @@
     "paths": {
       "@/*": ["./src/*"]
     }
-        // "paths": {
-        //   "@repo/typescript-config": ["../../packages/typescript-config/*"]
-        // },
-    },  
+    // "paths": {
+    //   "@repo/typescript-config": ["../../packages/typescript-config/*"]
+    // },
+  },
 
-   "include": [
-  "src/**/*.ts",
-  "src/**/*.tsx",
-  "next-env.d.ts"
-],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "next-env.d.ts"],
 
-    "exclude": [
-        "node_modules"
-    ]   
-
-
+  "exclude": ["node_modules"]
 }

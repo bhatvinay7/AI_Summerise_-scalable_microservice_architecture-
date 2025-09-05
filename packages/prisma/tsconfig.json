@@ -4,6 +4,9 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "forceConsistentCasingInFileNames":true,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ES2022",
     "baseUrl": "."
   },
   "include": [
