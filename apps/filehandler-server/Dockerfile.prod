@@ -17,14 +17,15 @@ COPY  pnpm-workspace.yaml ./
 COPY apps/${APP}/package.json ./apps/${APP}/
 COPY packages/ ./packages/
 COPY .npmrc ./
-RUN pnpm install --prod
+RUN pnpm install 
 
 
 FROM base AS builder
 ARG APP=filehandler-server
 WORKDIR /app
 COPY --from=installer /app ./
-RUN pnpm run build
+WORKDIR /app/apps/${APP}
+RUN pnpm run build  
 
 FROM base AS runner
 ARG APP=filehandler-server
