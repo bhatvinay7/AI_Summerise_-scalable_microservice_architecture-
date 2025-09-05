@@ -18,7 +18,7 @@ COPY pnpm-lock.yaml ./
 COPY  pnpm-workspace.yaml ./
 COPY apps/${APP}/package.json ./apps/${APP}/
 COPY packages/ ./packages/
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --prod
 COPY .npmrc ./
 
 FROM base AS builder

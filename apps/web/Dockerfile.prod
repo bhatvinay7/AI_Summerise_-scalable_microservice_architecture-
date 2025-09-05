@@ -20,7 +20,7 @@ COPY pnpm-lock.yaml ./
 COPY  pnpm-workspace.yaml ./
 COPY .npmrc ./
 COPY packages/ ./packages/
-RUN pnpm install --frozen-lockfile --filter web...
+RUN pnpm install  --filter web... --prod
 
 FROM base AS  builder
 WORKDIR /app
