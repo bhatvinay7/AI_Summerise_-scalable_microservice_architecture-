@@ -149,6 +149,6 @@ try {
   console.error("Error connecting to Kafka:");
 }
 
-app.listen(3003, () => {
+app.listen(3003,"0.0.0.0", () => {
   console.log("WebSocket server is running on port 3003");
 });

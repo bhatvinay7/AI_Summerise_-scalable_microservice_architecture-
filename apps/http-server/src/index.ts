@@ -25,6 +25,6 @@ app.use(express.json());
 app.use("/api/user", userRouter);
 app.use("/api/uploadFile", fileuploadRouter);
 app.use("/api/getUserSessions", getSessionRouter);
-app.listen(port, () => {
+app.listen(port,"0.0.0.0", () => {
   console.log(`Server running at `);
 });
