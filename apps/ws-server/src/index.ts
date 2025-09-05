@@ -22,7 +22,7 @@ interface Message {
 
 const userMap = new Map<number, WebSocket>();
 const socketMap = new Map<WebSocket, number>();
-const wss = new WebSocketServer({ port: 8080 });
+const wss = new WebSocketServer({ port: 8080, host: "0.0.0.0" });
 
 try {
   const run = async () => {

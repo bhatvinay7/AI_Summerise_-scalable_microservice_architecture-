@@ -110,6 +110,6 @@ try {
   console.error("Error connecting to Kafka:", error);
 }
 
-app.listen(port, () => {
+app.listen(port,"0.0.0.0", () => {
   console.log(`Server running at ${port}`);
 });
