@@ -19,14 +19,15 @@ COPY packages/ ./packages/
 COPY .npmrc ./
 RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
 pnpm install --frozen-lockfile 
-#############################################
+RUN pnpm --filter  prisma run generate
+
 FROM base AS builder
 ARG APP=web
 WORKDIR /app
 COPY --from=installer /app ./
 WORKDIR /app/apps/${APP}
 RUN pnpm run build
-#############################################
+
 FROM base AS runner
 ARG APP=web
 WORKDIR /app

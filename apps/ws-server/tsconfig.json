@@ -5,6 +5,8 @@
     "rootDir": "./src",
     "baseUrl": ".",
     "esModuleInterop": true,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
