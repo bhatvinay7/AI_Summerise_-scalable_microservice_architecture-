@@ -28,7 +28,7 @@
     "jsonwebtoken": "^9.0.2",
     "kafkajs": "^2.2.4",
     "multer": "^2.0.2",
-    "prisma": "^6.15.0",
+    "prisma": "workspace:*",
     "uuid": "^11.1.0"
   },
   "keywords": [],
