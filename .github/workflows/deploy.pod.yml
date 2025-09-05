@@ -101,6 +101,8 @@ jobs:
             fi
 
             sudo apt-get update && sudo apt-get install -y docker.io
+            sudo groupadd docker
+            sudo usermod -aG docker $USER
 
             sudo apt-get update -y
             sudo apt-get install -y nginx
@@ -108,16 +110,16 @@ jobs:
 
             echo "Stopping all containers..."
 
-            docker stop $(docker ps -q) || true
+            sudo docker stop $(docker ps -q) || true
 
             echo "Removing all containers..."
-            docker rm $(docker ps -aq) || true
+            sudo docker rm $(docker ps -aq) || true
 
             echo "Removing all images..."
 
-            docker rmi -f $(docker images -q) || true   
+            sudo docker rmi -f $(docker images -q) || true   
 
-            docker network create note-network || true
+            sudo docker network create note-network || true
 
 
             echo "username=${{ secrets.username }}" >> env.redis
@@ -154,17 +156,17 @@ jobs:
             echo "Pulling the  images from  docker hub"
 
 
-            docker pull $IMAGE1
-            docker pull $IMAGE2
-            docker pull $IMAGE3
-            docker pull $IMAGE4
-            docker pull $IMAGE5
-            docker pull $IMAGE6
-            docker pull $IMAGE7
-            docker pull $IMAGE8
+            sudo docker pull $IMAGE1
+            sudo docker pull $IMAGE2
+            sudo docker pull $IMAGE3
+            sudo docker pull $IMAGE4
+            sudo docker pull $IMAGE5
+            sudo docker pull $IMAGE6
+            sudo docker pull $IMAGE7
+            sudo docker pull $IMAGE8
 
             NETWORK="note-network" 
-            docker run -d \
+            sudo docker run -d \
              -p 3001:3001
              --name http-server \
              --env-file env.http \
@@ -172,14 +174,14 @@ jobs:
              --network $NETWORK \
              $IMAGE1
 
-            docker run -d \
+            sudo docker run -d \
             -p 3002:3002
             --name filehandler-server  \
             --env-file env.redis \
             --network $NETWORK \
             $IMAGE2
 
-            docker run -d \
+            sudo docker run -d \
             -p 3003:3003
             --name worker-server  \
             --env-file env.redis \
@@ -188,7 +190,7 @@ jobs:
             --network $NETWORK \
             $IMAGE3
 
-            docker run -d \
+            sudo docker run -d \
             -p 8080:8080
             --name ws-server  \
             --env-file env.redis \
@@ -197,7 +199,7 @@ jobs:
             $IMAGE4 
 
 
-            docker run -d \
+            sudo docker run -d \
             -p 3000:3000
             --name web  \
             -e NEXT_PUBLIC_FRONTEND_URL="${{secrets.NEXT_PUBLIC_FRONTEND_URL}}"
@@ -207,7 +209,7 @@ jobs:
             --network $NETWORK \
             $IMAGE5
             
-              docker run -d \
+            sudo  docker run -d \
             -p 2181:2181
             --name notezookeeper  \
             -e "ALLOW_ANONYMOUS_LOGIN=yes"
@@ -216,7 +218,7 @@ jobs:
             $IMAGE8
 
 
-            docker run -d \
+            sudo docker run -d \
             -p 9092:9092
             --name notekafka1  \
             --env-file env.kafka \
@@ -228,7 +230,7 @@ jobs:
             --network $NETWORK \
             $IMAGE6
 
-            docker run -d \
+            sudo docker run -d \
             -p 9093:9093
             --name notekafka2  \
             --env-file env.kafka \
@@ -240,7 +242,7 @@ jobs:
             --network $NETWORK \
             $IMAGE6
 
-            docker run -d \
+            sudo docker run -d \
             -p 9094:9094
             --name notekafka3  \
             --env-file env.kafka \
@@ -248,14 +250,13 @@ jobs:
             -e "KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181"
             -e "KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9094"
             -e "KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://notekafka3:9094"
-
             -v ~/kafka3_data:/bitnami/kafka \
             --network $NETWORK \
             $IMAGE6
 
           
 
-            docker run -d \
+            sudo docker run -d \
             --name nats-server  \
             -p 4222:4222 \
             -p 8222:8222 \
