@@ -126,6 +126,11 @@ jobs:
             
             mkdir -p $(pwd)/zookeeper-data
             sudo chown -R 1001:1001 $(pwd)/zookeeper-data
+            mkdir -p ~/kafka_data/kafka1
+            mkdir -p ~/kafka_data/kafka2
+            mkdir -p ~/kafka_data/kafka3
+            sudo chown -R 1001:1001 ~/kafka_data
+
 
             echo "username=${{ secrets.username }}" >> env.redis
             echo "password=${{ secrets.password }}" >> env.redis
@@ -235,7 +240,7 @@ jobs:
             -e "KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181" \
             -e "KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9092" \
             -e "KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://notekafka1:9092" \
-            -v ~/kafka1_data:/bitnami/kafka \
+            -v $(pwd)/kafka1_data:/bitnami/kafka \
             --network $NETWORK \
             $IMAGE6
 
@@ -247,7 +252,7 @@ jobs:
             -e "KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181" \
             -e "KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9093" \
             -e "KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://notekafka2:9093" \
-            -v ~/kafka2_data:/bitnami/kafka \
+            -v $(pwd)/kafka2_data:/bitnami/kafka \
             --network $NETWORK \
             $IMAGE6
 
@@ -259,7 +264,7 @@ jobs:
             -e "KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181" \
             -e "KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9094" \
             -e "KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://notekafka3:9094" \
-            -v ~/kafka3_data:/bitnami/kafka \
+            -v $(pwd)/kafka3_data:/bitnami/kafka \
             --network $NETWORK \
             $IMAGE6
 
