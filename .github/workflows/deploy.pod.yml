@@ -276,7 +276,7 @@ jobs:
             password: natspassword
             timeout: 2
                            }
-
+            listen:0.0.0.0:4222
             debug: true
             trace: false
             logtime: true
