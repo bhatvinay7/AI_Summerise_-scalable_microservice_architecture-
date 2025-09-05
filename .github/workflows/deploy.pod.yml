@@ -123,7 +123,9 @@ jobs:
             sudo docker rmi -f $(sudo docker images -q) || true   
             sudo docker system prune -af
             sudo docker network create note-network || true
-
+            
+            mkdir -p $(pwd)/zookeeper-data
+            sudo chown -R 1001:1001 $(pwd)/zookeeper-data
 
             echo "username=${{ secrets.username }}" >> env.redis
             echo "password=${{ secrets.password }}" >> env.redis
@@ -220,7 +222,7 @@ jobs:
             -e "ZOO_ENABLE_AUTH=yes" \
             -e  ZOO_SERVER_USERS="${{secrets.KAFKA_USERNAME}}" \
             -e  ZOO_SERVER_PASSWORDS="${{secrets.KAFKA_PASSWORD}}" \
-            -v ~/zookeeper_data:/bitnami/zookeeper \
+            -v $(pwd)/zookeeper-data:/bitnami/zookeeper \
             --network $NETWORK \
             $IMAGE8
 
