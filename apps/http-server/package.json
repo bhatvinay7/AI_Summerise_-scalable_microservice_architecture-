@@ -1,6 +1,6 @@
 {
   "name": "http-server",
-  "type": "module",
+  "module": "CommonJS",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",

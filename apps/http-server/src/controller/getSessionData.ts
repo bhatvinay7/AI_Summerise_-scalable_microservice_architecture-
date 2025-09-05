@@ -1,5 +1,6 @@
+import { PrismaClient } from "@prisma/client/extension";
 import {Request,Response} from "express";
-import prisma from 'prisma/client'
+const prisma:PrismaClient= require('prisma/client')
 const getSessionData=async(req:Request,res:Response)=>{
       try{
           const sessionId=req.params.sessionId

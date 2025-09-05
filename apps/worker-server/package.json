@@ -1,7 +1,7 @@
 {
   "name": "worker-server",
   "version": "1.0.0",
-  "type": "module",
+  "module": "CommonJS",
   "description": "",
   "main": "index.js",
   "scripts": {
