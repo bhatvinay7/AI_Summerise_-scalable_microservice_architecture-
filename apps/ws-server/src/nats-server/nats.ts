@@ -2,7 +2,7 @@ import { connect, StringCodec,NatsConnection,Subscription } from "nats";
 let natsConnection :NatsConnection;
 let subcriber:Subscription;
 (async function run(){
-    natsConnection = await connect({ servers: "nats://natsServer:4222" });
+    natsConnection = await connect({ servers: "nats://natsserver:4222" });
     subcriber = natsConnection?.subscribe("file-state-manager");
 
 })()

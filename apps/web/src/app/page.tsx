@@ -9,7 +9,7 @@ export default function Page() {
   //   };
 
   return (
-    <div className=" h-screen w-full bg-[#2f2f2d] text-white ">
+    <div className=" max-h-screen w-full overflow-hidden bg-[#2f2f2d] text-white ">
       <Home/>
     </div>
   );

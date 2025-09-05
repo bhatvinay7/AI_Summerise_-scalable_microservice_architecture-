@@ -1,4 +1,4 @@
-FROM node:20.2-alpine3.17 as base
+FROM node:20.13.1-bookworm-slim as base
 RUN npm install -g pnpm turbo
 
 FROM base AS prunner
@@ -13,7 +13,7 @@ WORKDIR /app
 
 COPY --from=prunner /app/out/json/ .
 COPY --from=prunner /app/out/full/ .
-COPY package.json pnpm.lock* ./
+COPY package.json ./
 COPY pnpm-lock.yaml ./
 COPY  pnpm-workspace.yaml ./
 COPY apps/${APP}/package.json ./apps/${APP}/

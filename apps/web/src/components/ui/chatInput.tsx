@@ -31,6 +31,7 @@ export default function ChatInput({
 
   const handleSend = () => {
     props.sendMessage();
+    setText("")
   };
 
   const handleInput = () => {
@@ -104,7 +105,7 @@ export default function ChatInput({
   }, [text, currentFile]);
 
   return (
-    <div className=" w-3/4 md:w-4/5 lg:w-1/2 h-auto border-white/20 flex flex-col px-4 py-5 space-y-3 gap-y-6 bg-[#2f2f2d] border placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-white/20 rounded-3xl  ">
+    <div className=" w-3/4 md:w-4/5 lg:w-1/2 h-auto relative border-white/20 min-h-32 flex flex-col px-4 py-5 space-y-3 gap-y-6 bg-[#2f2f2d] border placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-white/20 rounded-3xl  ">
       <div className={`${fileArray ? "flex" : "hidden"} gap-x-1`}>
         {fileArray?.map((each, index: number) => {
           return (

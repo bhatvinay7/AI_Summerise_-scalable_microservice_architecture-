@@ -16,36 +16,39 @@ export default function Home() {
 
    <motion.div
    
-   className="grid h-full grid-cols-[1fr] md:grid-cols-[310px_1fr] "
+   className="grid max-h-screen grid-cols-[1fr] md:grid-cols-[310px_1fr] items-start "
    animate={{
        gridTemplateColumns: state ? "300px 1fr" : "1fr",
     }}
     transition={{ duration:0.8, ease: "easeInOut" }}>
         {/* Sidebar */}
 
-        <aside className={`${state ?"block" :"hidden"} absolute w-3/4 md:w-[310px] z-[39]  md:relative   transition-[w] delay-700 h-screen  bg-[#2a2b2a] flex flex-col gap-1.5  p-2 border-r border-white/15`}>
+        <aside className={`${state ?"block" :"hidden"} sticky top-0 w-3/4 md:w-[310px]    transition-[w] delay-700 h-screen  bg-[#2a2b2a] flex flex-col gap-1.5  p-2 border-r border-white/15`}>
           <SessionSearch />
+          <div className='w-full h-screen sticky top-24' >
           <Session />
+
+          </div>  
         </aside>
 
         {/* Chat Area */}
-        <main className="h-full flex flex-col relative items-center">
-         {!state && <div className='w-fit absolute inset-0 top-1 left-2 '>
+        <main className=" max-h-screen flex   relative justify-baseline items-center  ">
+         {!state && <div className='w-fit absolute z-[38] inset-0 top-1 left-2 '>
           <SidebatToggle/>
           </div>
          }
           {/* Header */}
-          <div className="sticky top-0 z-10 bg-[#0f1115]/80 backdrop-blur border-b border-white/10 px-4 py-3">
+          {/* <div className="sticky top-0 z-10 bg-[#0f1115]/80 h-[calc(100vh-100px) relative bottom-30 backdrop-blur border-b border-white/10 px-4 py-3">
             {/* <div className="text-sm text-white/70">Conversation</div>
             <div className="text-lg font-semibold">{sampleConversations.find(x => x.id === activeChat)?.name}</div> */}
-          </div>
+          {/* </div> */} 
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto px-4 py-4">
+          {/* <div className="flex-1  h-[calc(100vh-200px) relative bottom-30 overflow-y-auto px-4 py-4">
             {/* <AnimatePresence>
              < MessageBuble/>
              </AnimatePresence> */}
-          </div>
+          {/* </div> */} 
 
           <ChatWindow />
         </main>

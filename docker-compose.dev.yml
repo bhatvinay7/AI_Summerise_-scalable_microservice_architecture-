@@ -133,7 +133,7 @@ services:
     volumes:
       - kafka3_data:/bitnami/kafka
 
-  natsServer:
+  natsserver:
     image: nats:latest
     container_name: nats-server
     ports:

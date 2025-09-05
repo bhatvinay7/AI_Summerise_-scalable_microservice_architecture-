@@ -42,6 +42,10 @@ try {
 
         try {
           const value = JSON.parse(message?.value?.toString()!);
+          console.log(value)
+          try{
+
+        
           natsCOnnection.publish(
             "file-state-manager",
             sc.encode(
@@ -75,6 +79,11 @@ try {
               })
             )
           );
+          }
+          catch(error:any){
+           console.log(error)
+
+          }  
           await consumer.commitOffsets([
             {
               topic,

@@ -14,7 +14,7 @@ function changeWindow(){
     dispatch(toggleSidebar(!state))
   }
   return (
-    <div className='w-fit h-fit  '>
+    <div className='w-fit h-fit z-40 '>
          {state?  <FiSidebar  onClick={()=>{changeWindow()}} className="w-6 h-6 text-white/30 " /> :<FiSidebar  onClick={()=>{changeWindow()}} className="w-6 h-6 text-white/30 " /> }
       
     </div>

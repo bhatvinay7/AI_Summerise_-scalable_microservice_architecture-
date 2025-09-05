@@ -47,10 +47,11 @@ try {
 
 try {
   wss.on("connection", async (ws: WebSocket) => {
+    console.log("connected")
     ws.on("message", async (data: ArrayBuffer) => {
       try {
         const message: Message = JSON.parse(data.toString());
-
+        console.log(message)
         if (!userMap.has(message.userId)) {
           try {
             verifyAuth(message?.token!);

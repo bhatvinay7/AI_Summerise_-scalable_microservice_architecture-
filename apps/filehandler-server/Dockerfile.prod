@@ -11,7 +11,7 @@ ARG APP=filehandler-server
 WORKDIR /app
 COPY --from=prunner /app/out/json/ .
 COPY --from=prunner /app/out/full/ .
-COPY package.json pnpm.lock* ./
+COPY package.json  ./
 COPY pnpm-lock.yaml ./
 COPY  pnpm-workspace.yaml ./
 COPY apps/${APP}/package.json ./apps/${APP}/

@@ -1,5 +1,5 @@
-FROM node:20.2-alpine3.17 as base
-RUN npm install -g  pnpm turbo ts-node
+FROM node:20.13.1-bookworm-slim AS base
+RUN npm install -g  pnpm
 FROM base AS installer
 ARG APP=filehandler-server
 WORKDIR /app

@@ -64,8 +64,9 @@ const run = async () => {
             sc.encode(
               JSON.stringify({
                 userId: parsedMessage.userId,
-                message: "generating the response",
+                response: "generating the response",
                 type:"notification",
+                sessionId:parsedMessage.sessionId
               })
             )
           );
@@ -127,6 +128,7 @@ const run = async () => {
                 userId: parsedMessage.userId,
                 response: response,
                 sessionId: sessionId as string,
+                type:"reponse"
               }),
             },
           ],

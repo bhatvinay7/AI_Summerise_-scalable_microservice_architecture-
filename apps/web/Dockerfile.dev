@@ -1,8 +1,8 @@
-FROM node:20-slim as base
-
-RUN npm install -g pnpm turbo ts-node
+FROM node:20-slim AS base
+RUN npm install -g pnpm
 
 FROM base AS prunner
+
 ARG APP=web
 WORKDIR /app
 COPY . .
@@ -11,7 +11,7 @@ FROM base AS installer
 ARG APP=web
 WORKDIR /app
 COPY --from=prunner /app ./
-COPY package.json pnpm.lock* ./
+COPY package.json  ./
 COPY apps/${APP}/package.json ./apps/${APP}/
 COPY pnpm-lock.yaml ./
 COPY  pnpm-workspace.yaml ./
@@ -30,11 +30,9 @@ RUN pnpm run build
 FROM base AS runner
 ARG APP=web
 WORKDIR /app
-
-COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app ./
 COPY --from=builder /app/apps/${APP}/node_modules ./apps/${APP}/node_modules
 COPY --from=builder /app/apps/${APP}/.next ./apps/${APP}/.next
-COPY --from=builder /app/apps/${APP}/public ./apps/${APP}/public
 COPY --from=builder /app/apps/${APP}/package.json ./apps/${APP}/package.json
 WORKDIR /app/apps/${APP}
 

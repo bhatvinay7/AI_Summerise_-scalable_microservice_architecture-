@@ -20,7 +20,7 @@ export default function Sessions() {
     fetch();
   }, []);
   return (
-    <div className=" h-[calc(100%-64px)] overflow-y-scroll  flex flex-col items-center gap-1.5 p-6 m-2 space-y-2">
+    <div className=" h-[calc(100%-100px)] overflow-y-scroll z-39 sticky top-24 flex flex-col items-center gap-1.5 p-6 m-2 space-y-2">
 
      {sampleConversations?.map((c: any, index: number) => (
         <div

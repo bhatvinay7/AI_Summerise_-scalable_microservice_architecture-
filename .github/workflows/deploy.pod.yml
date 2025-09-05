@@ -94,7 +94,7 @@ jobs:
             fi
 
             if ! command -v node &> /dev/null; then
-              curl -fsSL https://deb.nodesource.com/setup_20.2.0 | sudo -E bash -
+              curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
               sudo apt-get install -y nodejs
             else
               echo "Node.js already installed: $(node -v)"
@@ -124,20 +124,19 @@ jobs:
             echo "host=${{ secrets.host }}" >> env.redis
             echo "port=${{ secrets.port }}" >> env.redis
 
-            echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> env.http
-            echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> env.http
-            echo "bucketName=${{ secrets.bucketName }}" >> env.http
-            echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> env.http
+            echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}">> env.http
+            echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY}}">> env.http
+            echo "bucketName=${{ secrets.bucketName }}">> env.http
+            echo "AWS_REGION=${{ secrets.AWS_REGION }}">> env.http
             echo "ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }}" >> env.http
-            echo "ServerSideEncryption=${{ secrets.ServerSideEncryption }}" >> env.http
-            echo "REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET }}" >> env.http
-            echo "ServerSideEncryption=${{ secrets.ServerSideEncryption }}" >> env.http
-            echo "NEXT_PUBLIC_FRONTEND_URL=${{ secrets.NEXT_PUBLIC_FRONTEND_URL }}" >> env.http
+            echo "ServerSideEncryption=${{ secrets.ServerSideEncryption }}">> env.http
+            echo "REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET }}">> env.http
+            echo "NEXT_PUBLIC_FRONTEND_URL=${{ secrets.NEXT_PUBLIC_FRONTEND_URL }}">> env.http
 
-            echo "KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181" >> env.kafka
-            echo "ALLOW_PLAINTEXT_LISTENER=yes" >> env.kafka
-            echo "KAFKA_CFG_DELETE_TOPIC_ENABLE=true" >> env.kafka
-            echo "KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=false" >> env.kafka
+            echo "KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181">> env.kafka
+            echo "ALLOW_PLAINTEXT_LISTENER=yes">> env.kafka
+            echo "KAFKA_CFG_DELETE_TOPIC_ENABLE=true">> env.kafka
+            echo "KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=false">> env.kafka
             echo "KAFKA_CFG_LOG_RETENTION_MS=180000" >> env.kafka
 
 
@@ -206,6 +205,15 @@ jobs:
             -e REFRESH_TOKEN_SECRET="${{secrets.REFRESH_TOKEN_SECRET}}"
             --network $NETWORK \
             $IMAGE5
+            
+              docker run -d \
+            -p 2181:2181
+            --name notezookeeper  \
+            -e "ALLOW_ANONYMOUS_LOGIN=yes"
+            -v ~/zookeeper_data:/bitnami/zookeeper \
+            --network $NETWORK \
+            $IMAGE8
+
 
             docker run -d \
             -p 9092:9092
@@ -213,7 +221,7 @@ jobs:
             --env-file env.kafka \
             -e "KAFKA_BROKER_ID=1"
             -e "KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181"
-            -e "KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9093"
+            -e "KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9092"
             -e "KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://notekafka1:9092"
             -v ~/kafka1_data:/bitnami/kafka \
             --network $NETWORK \
@@ -244,13 +252,7 @@ jobs:
             --network $NETWORK \
             $IMAGE6
 
-            docker run -d \
-            -p 2181:2181
-            --name notezookeeper  \
-            -e "ALLOW_ANONYMOUS_LOGIN=yes"
-            -v ~/zookeeper_data:/bitnami/zookeeper \
-            --network $NETWORK \
-            $IMAGE7
+          
 
             docker run -d \
             --name nats-server  \
@@ -259,4 +261,4 @@ jobs:
             -p 6222:6222 \
             -v $(pwd)/nats-server.conf:/etc/nats/nats-server.conf \
             --network $NETWORK \
-            $IMAGE8 -c /etc/nats/nats-server.conf
+            $IMAGE7 -c /etc/nats/nats-server.conf

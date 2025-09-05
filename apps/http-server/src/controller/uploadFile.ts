@@ -53,7 +53,7 @@ const uploadFile = async (req: Request, res: Response) => {
     await producer.send({
       topic: "upload-file",
       messages: [
-        { value: JSON.stringify({ sessionId: sessionId, fileLink: link }) },
+        { value: JSON.stringify({ sessionId: sessionId, fileLink: link,userId:user.userId }) },
       ],
     });
 

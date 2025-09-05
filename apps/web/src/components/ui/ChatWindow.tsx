@@ -26,8 +26,16 @@ export default function ChatWindow() {
     query: null,
   });
   console.log(userDetails)
-  const wsIntsance = useRef<WebSocket | null>(null);
+  interface response{
+    sessionId:string,
+    type:string,
+    userId:number,
+    response:string
+  }
 
+  const wsIntsance = useRef<WebSocket | null>(null);
+  const [updates,setUpdates]=useState<{notification:string|null}>({notification:""})
+  const [response,setResponse]=useState<response|null>(null)
   const [unqId, setSessionId] = useState<string | null>(params.sessionId as string ? params.sessionId as string :null);
   
 
@@ -41,12 +49,17 @@ export default function ChatWindow() {
   
 
   function SendMessage() {
+    console.log("nflkdlhgl")
     if (wsIntsance.current?.readyState == wsIntsance.current?.OPEN) {
+      console.log("nflkdlhgl")
+   
+      setUserQuery({query:""})
       wsIntsance?.current?.send(
         JSON.stringify({
           messageId: !unqId ? generateUUID() : unqId,
           query: userQuery,
           userId: userDetails.userId,
+          token:userDetails.token
         })
       );
     }
@@ -64,6 +77,16 @@ export default function ChatWindow() {
 
         wsIntsance.current.onmessage = (event) => {
           console.log("Message:", event.data);
+          const response=JSON.parse(event.data as string) as response
+          setUpdates({notification:null})
+          setResponse(null)
+          if(response.type=="notification"){
+            setUpdates({notification:response.response as string})
+          }
+          if(response.type=="response"){
+            setResponse(response as response)
+          }
+          setResponse(JSON.parse(event.data as string)as response)
         };
 
         wsIntsance.current.onerror = (event) => {
@@ -79,7 +102,22 @@ export default function ChatWindow() {
   }, []);
 
   return (
-    <div className="w-full absolute bottom-20 flex justify-center">
+    <div className=" w-full  relative  top-0 flex flex-col items-center  h-screen z-37   ">
+
+     <div className=" w-full h-[calc(100vh-160px)]  overflow-y-auto  relative   top-14 flex flex-col  items-center ">
+     {response?.response && <div className=" w-3/5 h-auto flex flex-col p-4 min-h-12 items-center rounded-md  bg-[#252222]  text-gray-300    relative ">
+
+           <p className=" p-4 w-9/10 relative top-2 h-auto bg-white ">
+            {response && response.response}  
+           </p>
+
+
+      </div>
+}
+
+     </div>
+     <div className=" w-full flex justify-center  h-fit absolute z-39 bottom-10">
+
       <ChatInput
         props={{
           onChange: setUserQuery,
@@ -87,9 +125,10 @@ export default function ChatWindow() {
           sessionId:unqId,
           setSessionId:setSessionId,
           token:userDetails.token
-
+          
         }}
-      />
+        />
+        </div>
     </div>
   );
 }
