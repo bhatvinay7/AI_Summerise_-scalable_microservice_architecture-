@@ -110,14 +110,14 @@ jobs:
 
             echo "Stopping all containers..."
 
-            sudo docker stop $(docker ps -q) || true
+            sudo docker stop $(sudo docker ps -q) || true
 
             echo "Removing all containers..."
-            sudo docker rm $(docker ps -aq) || true
+            sudo docker rm -f $(sudo docker ps -aq) || true
 
             echo "Removing all images..."
 
-            sudo docker rmi -f $(docker images -q) || true   
+            sudo docker rmi -f $(sudo docker images -q) || true   
 
             sudo docker network create note-network || true
 
