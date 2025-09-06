@@ -126,10 +126,12 @@ jobs:
             
             mkdir -p $(pwd)/zookeeper-data
             sudo chown -R 1001:1001 $(pwd)/zookeeper-data
-            mkdir -p ~/kafka_data/kafka1
-            mkdir -p ~/kafka_data/kafka2
-            mkdir -p ~/kafka_data/kafka3
-            sudo chown -R 1001:1001 ~/kafka_data
+            mkdir -p ~/kafka_data1
+            mkdir -p ~/kafka_data2
+            mkdir -p ~/kafka_data3
+            sudo chown -R 1001:1001 ~/kafka_data1
+            sudo chown -R 1001:1001 ~/kafka_data2
+            sudo chown -R 1001:1001 ~/kafka_data3
 
 
             echo "username=${{ secrets.username }}" >> env.redis
@@ -153,7 +155,6 @@ jobs:
             echo "KAFKA_CFG_LOG_RETENTION_MS=180000" >> env.kafka
 
 
-
             IMAGE1=${{secrets.DOCKER_USERNAME }}/http-server:${{ github.sha }}
             IMAGE2=${{secrets.DOCKER_USERNAME }}/filehandler-server:${{ github.sha }}
             IMAGE3=${{secrets.DOCKER_USERNAME }}/worker-server:${{ github.sha }}
@@ -165,7 +166,34 @@ jobs:
 
             echo "Pulling the  images from  docker hub"
 
+            
+            cat <<'EOF' > nats-server.conf
+            server_name: nats-server
 
+            authorization {
+            user: natsuser
+            password: natspassword
+            timeout: 2
+                       }
+
+            listen: 0.0.0.0:4222
+            debug: true
+            trace: false
+            logtime: true
+
+            max_connections: 1000
+            max_payload: 64MB
+            write_deadline: 2s
+
+            http: 0.0.0.0:8222
+
+            jetstream {
+            store_dir: /data/jetstream
+            max_mem: 512MB
+            max_file: 2GB
+                          }
+            EOF
+            
             sudo docker pull $IMAGE1
             sudo docker pull $IMAGE2
             sudo docker pull $IMAGE3
@@ -240,7 +268,7 @@ jobs:
             -e "KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181" \
             -e "KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9092" \
             -e "KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://notekafka1:9092" \
-            -v $(pwd)/kafka1_data:/bitnami/kafka \
+            -v $(pwd)/kafka_data1:/bitnami/kafka \
             --network $NETWORK \
             $IMAGE6
 
@@ -252,7 +280,7 @@ jobs:
             -e "KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181" \
             -e "KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9093" \
             -e "KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://notekafka2:9093" \
-            -v $(pwd)/kafka2_data:/bitnami/kafka \
+            -v $(pwd)/kafka_data2:/bitnami/kafka \
             --network $NETWORK \
             $IMAGE6
 
@@ -264,7 +292,7 @@ jobs:
             -e "KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181" \
             -e "KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9094" \
             -e "KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://notekafka3:9094" \
-            -v $(pwd)/kafka3_data:/bitnami/kafka \
+            -v $(pwd)/kafka_data3:/bitnami/kafka \
             --network $NETWORK \
             $IMAGE6
 
@@ -274,30 +302,4 @@ jobs:
             -p 8222:8222 \
             -p 6222:6222 \
             --network $NETWORK \
-            $IMAGE7 \
-            sh -c "cat <<'EOF' > /etc/nats/nats-server.conf
-            server_name: nats-server
-
-            authorization {
-            user: natsuser
-            password: natspassword
-            timeout: 2
-                           }
-            listen:0.0.0.0:4222
-            debug: true
-            trace: false
-            logtime: true
-
-            max_connections: 1000
-            max_payload: 64MB
-            write_deadline: 2s
-
-            http: 0.0.0.0:8222
-
-            jetstream {
-            store_dir: /data/jetstream
-            max_mem: 512MB
-            max_file: 2GB
-                          }
-            EOF
-            nats-server -c /etc/nats/nats-server.conf"
+            $IMAGE7
