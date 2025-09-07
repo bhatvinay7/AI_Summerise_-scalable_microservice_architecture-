@@ -86,7 +86,7 @@ jobs:
       
       - name: Generate Nginx config from template
         run: |
-          mkdir -p build
+          sudo mkdir -p /build
           export API_DOMAIN=${{ secrets.API_DOMAIN }}
           export FRONTEND_DOMAIN=${{secrets.FRONTEND_DOMAIN }}
           export API_BACKEND_PORT=${{ secrets.WS_SERVER_DOMAIN }}
