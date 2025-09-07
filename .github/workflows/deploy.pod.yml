@@ -86,7 +86,9 @@ jobs:
       
       - name: Generate Nginx config from template
         run: |
-          sudo mkdir -p ${{ github.workspace }}/build
+          rm -rf build
+          mkdir -p build
+          chmod 777 build
           export API_DOMAIN=${{ secrets.API_DOMAIN }}
           export FRONTEND_DOMAIN=${{secrets.FRONTEND_DOMAIN }}
           export API_BACKEND_PORT=${{ secrets.WS_SERVER_DOMAIN }}
@@ -94,7 +96,7 @@ jobs:
           export FRONTEND_DOMAIN_PORT=${{ secrets.FRONTEND_DOMAIN_PORT }}
           export WS_SERVER_DOMAIN_PORT=${{ secrets.WS_SERVER_DOMAIN_PORT }}
           export DOMAIN=${{ secrets.DOMAIN }}
-          envsubst < nginx/nginx.conf.template > ${{ github.workspace }}/build/nginx.conf
+          envsubst < nginx/nginx.conf.template > ./build/nginx.conf
 
 
       - name: Copy config to server
@@ -104,7 +106,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           source: "build/*"
-          target: "/etc/nginx"
+          target: "~/nginx-temp"
 
       - name: Deploy to VM via SSH
         uses: appleboy/ssh-action@v1.0.3
@@ -113,6 +115,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
+            
             if ! command -v curl &> /dev/null; then
                 sudo apt-get update
                 sudo apt-get install -y curl
@@ -132,6 +135,7 @@ jobs:
             sudo apt-get update -y
             sudo apt-get install -y nginx
             sudo systemctl start nginx
+            sudo mv ~/nginx-temp/nginx.conf /etc/nginx/nginx.conf
             sudo apt install certbot python3-certbot-nginx -y
 
             sudo certbot --nginx -d ${{secrets.API_DOMAIN}} -d ${{secrets.FRONTEND_DOMAIN}} -d ${{secrets.WS_SERVER_DOMAIN}}
