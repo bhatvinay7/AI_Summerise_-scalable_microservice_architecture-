@@ -2,20 +2,20 @@
 server {
     listen 80;
     listen [::]:80;
-    server_name api.chatt.services web.chatt.services ws.chatt.services chatt.services;
+    server_name ${API_DOMAIN} ${FRONTEND_DOMAIN} ${WS_SERVER_DOMAIN} ${DOMAIN};
     return 301 https://$host$request_uri;
 }
 
 # API Server
 server {
     listen 443 ssl http2;
-    server_name api.chatt.services;
+    server_name ${API_DOMAIN};
 
-    ssl_certificate     /etc/letsencrypt/live/chatt.services/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/chatt.services/privkey.pem;
+    ssl_certificate     /etc/letsencrypt/live/${DOMAIN}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${DOMAIN}/privkey.pem;
 
     location / {
-        proxy_pass  http://api.chatt.services:3001; # http-server container
+        proxy_pass  http://${API_DOMAIN}:${API_DOMAIN_PORT}; # http-server container
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -26,13 +26,13 @@ server {
 # Web App (Frontend)
 server {
     listen 443 ssl http2;
-    server_name web.chatt.services;
+    server_name ${FRONTEND_DOMAIN};
 
-    ssl_certificate     /etc/letsencrypt/live/chatt.services/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/chatt.services/privkey.pem;
+    ssl_certificate     /etc/letsencrypt/live/${DOMAIN}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${DOMAIN}/privkey.pem;
 
     location / {
-        proxy_pass http://web.chatt.services:3000;   # web container
+        proxy_pass http://${FRONTEND_DOMAIN}:${FRONTEND_DOMAIN_PORT};   # web container
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "keep-alive";
@@ -47,13 +47,13 @@ server {
 # WebSocket Server
 server {
     listen 443 ssl http2;
-    server_name ws.chatt.services;
+    server_name ${WS_SERVER_DOMAIN};
 
-    ssl_certificate     /etc/letsencrypt/live/chatt.services/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/chatt.services/privkey.pem;
+    ssl_certificate     /etc/letsencrypt/live/${DOMAIN}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${DOMAIN}/privkey.pem;
 
     location / {
-        proxy_pass http://ws.chatt.services:8080;   # ws-server container
+        proxy_pass http://${WS_SERVER_DOMAIN}:${WS_SERVER_DOMAIN_PORT};   # ws-server container
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "Upgrade";
