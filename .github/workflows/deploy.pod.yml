@@ -90,8 +90,8 @@ jobs:
           mkdir -p build
           chmod 777 build
           export API_DOMAIN=${{ secrets.API_DOMAIN }}
-          export FRONTEND_DOMAIN=${{secrets.FRONTEND_DOMAIN }}
-          export API_BACKEND_PORT=${{ secrets.WS_SERVER_DOMAIN }}
+          export FRONTEND_DOMAIN_PORT=${{secrets.FRONTEND_DOMAIN_PORT }}
+          export WS_SERVER_DOMAIN=${{ secrets.WS_SERVER_DOMAIN }}
           export API_DOMAIN_PORT=${{ secrets.API_DOMAIN_PORT }}
           export FRONTEND_DOMAIN_PORT=${{ secrets.FRONTEND_DOMAIN_PORT }}
           export WS_SERVER_DOMAIN_PORT=${{ secrets.WS_SERVER_DOMAIN_PORT }}
@@ -178,7 +178,7 @@ jobs:
             echo "ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }}" >> env.http
             echo "ServerSideEncryption=${{ secrets.ServerSideEncryption }}">> env.http
             echo "REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET }}">> env.http
-            echo "NEXT_PUBLIC_FRONTEND_URL=${{ secrets.NEXT_PUBLIC_BACKEND_URL }}">> env.http
+            echo "NEXT_PUBLIC_FRONTEND_URL=${{ secrets.NEXT_PUBLIC_FRONTEND_URL }}">> env.http
 
             echo "KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181">> env.kafka
             echo "ALLOW_PLAINTEXT_LISTENER=yes">> env.kafka
