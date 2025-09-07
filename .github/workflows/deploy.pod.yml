@@ -90,7 +90,7 @@ jobs:
           mkdir -p build
           chmod 777 build
           export API_DOMAIN=${{ secrets.API_DOMAIN }}
-          export FRONTEND_DOMAIN_PORT=${{secrets.FRONTEND_DOMAIN_PORT }}
+          export FRONTEND_DOMAIN=${{secrets.FRONTEND_DOMAIN}}
           export WS_SERVER_DOMAIN=${{ secrets.WS_SERVER_DOMAIN }}
           export API_DOMAIN_PORT=${{ secrets.API_DOMAIN_PORT }}
           export FRONTEND_DOMAIN_PORT=${{ secrets.FRONTEND_DOMAIN_PORT }}
@@ -136,10 +136,10 @@ jobs:
             sudo apt-get install -y nginx
             sudo systemctl start nginx
             mkdir -p ~/etc/nginx
-            sudo mv ~/nginx-temp/nginx.conf /etc/nginx/nginx.conf
+            sudo mv ~/nginx-temp/build/nginx.conf /etc/nginx/nginx.conf
             sudo apt install certbot python3-certbot-nginx -y
 
-            sudo certbot --nginx run -d ${{secrets.API_DOMAIN}} -d ${{secrets.FRONTEND_DOMAIN}} -d ${{secrets.WS_SERVER_DOMAIN}}
+            sudo certbot --nginx run -d ${{secrets.DOMAIN}}
             sudo certbot renew --deploy-hook "systemctl reload nginx"
             sudo nginx -t
             sudo systemctl reload nginx
