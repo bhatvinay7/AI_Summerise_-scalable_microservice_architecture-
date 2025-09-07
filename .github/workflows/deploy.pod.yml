@@ -86,7 +86,7 @@ jobs:
       
       - name: Generate Nginx config from template
         run: |
-          sudo mkdir -p /build
+          sudo mkdir -p ${{ github.workspace }}/build
           export API_DOMAIN=${{ secrets.API_DOMAIN }}
           export FRONTEND_DOMAIN=${{secrets.FRONTEND_DOMAIN }}
           export API_BACKEND_PORT=${{ secrets.WS_SERVER_DOMAIN }}
@@ -94,7 +94,7 @@ jobs:
           export FRONTEND_DOMAIN_PORT=${{ secrets.FRONTEND_DOMAIN_PORT }}
           export WS_SERVER_DOMAIN_PORT=${{ secrets.WS_SERVER_DOMAIN_PORT }}
           export DOMAIN=${{ secrets.DOMAIN }}
-          envsubst < nginx/nginx.conf.template > /build/nginx.conf
+          envsubst < nginx/nginx.conf.template > ${{ github.workspace }}/build/nginx.conf
 
 
       - name: Copy config to server
