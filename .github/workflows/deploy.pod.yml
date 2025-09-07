@@ -166,7 +166,8 @@ jobs:
             sudo chown -R 1001:1001 ~/kafka_data2
             sudo chown -R 1001:1001 ~/kafka_data3
 
-
+            sudo rm env.http || true
+            sudo rm env.rdis || true
             echo "username=${{ secrets.username }}" >> env.redis
             echo "password=${{ secrets.password }}" >> env.redis
             echo "host=${{ secrets.host }}" >> env.redis
