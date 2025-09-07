@@ -135,11 +135,11 @@ jobs:
             sudo apt-get update -y
             sudo apt-get install -y nginx
             sudo systemctl start nginx
-            sudo mkdir -p /etc/nginx
+            mkdir -p ~/etc/nginx
             sudo mv ~/nginx-temp/nginx.conf /etc/nginx/nginx.conf
             sudo apt install certbot python3-certbot-nginx -y
 
-            sudo certbot --nginx -d ${{secrets.API_DOMAIN}} -d ${{secrets.FRONTEND_DOMAIN}} -d ${{secrets.WS_SERVER_DOMAIN}}
+            sudo certbot --nginx run -d ${{secrets.API_DOMAIN}} -d ${{secrets.FRONTEND_DOMAIN}} -d ${{secrets.WS_SERVER_DOMAIN}}
             sudo certbot renew --deploy-hook "systemctl reload nginx"
             sudo nginx -t
             sudo systemctl reload nginx
