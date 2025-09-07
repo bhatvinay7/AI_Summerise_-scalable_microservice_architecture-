@@ -68,7 +68,7 @@ export default function ChatWindow() {
   useEffect(() => {
     try {
       if (!wsIntsance.current) {
-        const ws = new WebSocket(process.env.NEXT_PUBLIC_WEBSOCKET_SERVER!);
+        const ws = new WebSocket(`${process.env.NEXT_PUBLIC_WEBSOCKET_SERVER!}:${8080}`);
         wsIntsance.current = ws;
 
         wsIntsance.current.onopen = () => {
