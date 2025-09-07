@@ -94,7 +94,7 @@ jobs:
           export FRONTEND_DOMAIN_PORT=${{ secrets.FRONTEND_DOMAIN_PORT }}
           export WS_SERVER_DOMAIN_PORT=${{ secrets.WS_SERVER_DOMAIN_PORT }}
           export DOMAIN=${{ secrets.DOMAIN }}
-          envsubst < nginx/nginx.conf.template > build/nginx.conf
+          envsubst < nginx/nginx.conf.template > /build/nginx.conf
 
 
       - name: Copy config to server
