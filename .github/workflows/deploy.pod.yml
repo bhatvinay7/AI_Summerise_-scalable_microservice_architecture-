@@ -116,6 +116,10 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
+          env: |
+           API_DOMAIN=${{ secrets.API_DOMAIN }}
+           FRONTEND_DOMAIN=${{ secrets.FRONTEND_DOMAIN }}
+           WS_SERVER_DOMAIN=${{ secrets.WS_SERVER_DOMAIN }}
           script: |
             
             if ! command -v curl &> /dev/null; then
@@ -139,7 +143,8 @@ jobs:
             sudo cp -f /home/ubuntu/nginx-temp/build/nginx.conf /etc/nginx/conf.d/app.conf  
             sudo apt install certbot python3-certbot-nginx -y
             sudo systemctl start nginx
-            sudo certbot --nginx  -d ${secrets.API_DOMAIN} -d ${secrets.FRONTEND_DOMAIN} -d ${secrets.WS_SERVER_DOMAIN}
+            sudo certbot --nginx -d "$API_DOMAIN" -d "$FRONTEND_DOMAIN" -d "$WS_SERVER_DOMAIN"
+
 
             sudo certbot renew --deploy-hook "systemctl reload nginx"
             sudo nginx -t
