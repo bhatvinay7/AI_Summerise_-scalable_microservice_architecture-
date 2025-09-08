@@ -11,8 +11,7 @@ server {
     listen 443 ssl;
     listen [::]:443 ssl;
     server_name ${API_DOMAIN};
-    ssl_certificate /etc/letsencrypt/live/${FRONTEND_DOMAIN}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${FRONTEND_DOMAIN}/privkey.pem;
+
 
    
     
@@ -31,9 +30,7 @@ server {
     listen 443 ssl;
     listen [::]:443 ssl;
     server_name ${FRONTEND_DOMAIN};
-    ssl_certificate /etc/letsencrypt/live/${FRONTEND_DOMAIN}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${FRONTEND_DOMAIN}/privkey.pem;
-
+   
     location / {
         proxy_pass http://${FRONTEND_DOMAIN}:${FRONTEND_DOMAIN_PORT};   # web container
         proxy_http_version 1.1;
@@ -52,8 +49,6 @@ server {
     listen 443 ssl;
     listen [::]:443 ssl;
     server_name ${WS_SERVER_DOMAIN};
-    ssl_certificate /etc/letsencrypt/live/${FRONTEND_DOMAIN}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${FRONTEND_DOMAIN}/privkey.pem;
 
     location / {
         proxy_pass http://${WS_SERVER_DOMAIN}:${WS_SERVER_DOMAIN_PORT};   # ws-server container
