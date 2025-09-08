@@ -13,6 +13,7 @@ export interface userSignIn {
   password: string;
   email: string;
 }
+console.log(axiosPublic)
  async function SignUp(formdata: userSignup): Promise<message> {
   const response = await axiosPublic.post("/user/signup", formdata);
   return (response as { data: message }).data;
