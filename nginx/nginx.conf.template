@@ -1,36 +1,24 @@
-# Redirect all HTTP to HTTPS
+# Redirect all HTTP to HTTPS (for future SSL)
+
 server {
     listen 80;
     listen [::]:80;
     server_name ${FRONTEND_DOMAIN} ${API_DOMAIN} ${WS_SERVER_DOMAIN};
-    return 301 https://$host$request_uri;
+    
+    # Optional: you can comment out redirect until SSL is ready
+    # return 301 https://$host$request_uri;
 }
 
-# API Server
+
+# Frontend HTTP
+
 server {
-   
-    server_name ${API_DOMAIN};
-
-
-   
-    
-    
-    location / {
-        proxy_pass  http://${API_DOMAIN}:${API_DOMAIN_PORT}; # http-server container
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
-
-# Web App (Frontend)
-server {
-
+    listen 80;
+    listen [::]:80;
     server_name ${FRONTEND_DOMAIN};
-   
+
     location / {
-        proxy_pass http://${FRONTEND_DOMAIN}:${FRONTEND_DOMAIN_PORT};   # web container
+        proxy_pass http://${FRONTEND_DOMAIN}:${FRONTEND_DOMAIN_PORT};
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "keep-alive";
@@ -42,13 +30,32 @@ server {
     }
 }
 
-# WebSocket Server
+
+# API HTTP
 server {
-  
+    listen 80;
+    listen [::]:80;
+    server_name ${API_DOMAIN};
+
+    location / {
+        proxy_pass http://${API_DOMAIN}:${API_DOMAIN_PORT};
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+
+# WebSocket HTTP
+
+server {
+    listen 80;
+    listen [::]:80;
     server_name ${WS_SERVER_DOMAIN};
 
     location / {
-        proxy_pass http://${WS_SERVER_DOMAIN}:${WS_SERVER_DOMAIN_PORT};   # ws-server container
+        proxy_pass http://${WS_SERVER_DOMAIN}:${WS_SERVER_DOMAIN_PORT};
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "Upgrade";
@@ -57,4 +64,12 @@ server {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
     }
+}
+
+
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    server_name _;
+    return 404;
 }

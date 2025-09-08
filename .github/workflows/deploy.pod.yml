@@ -144,7 +144,7 @@ jobs:
             sudo rm -f /etc/nginx/sites-enabled/default
             sudo rm -f /etc/nginx/sites-available/default
             sudo apt install certbot python3-certbot-nginx -y
-            sudo certbot --nginx -d ${{secrets.FRONTEND_DOMAIN}} -m ${{ secrets.SSL_EMAIL }} --agree-tos --non-interactive
+            sudo certbot --nginx -d ${{secrets.FRONTEND_DOMAIN}} -d ${{secrets.API_DOMAIN}} -d ${{secrets.WS_SERVER_DOMAIN}} -m ${{ secrets.SSL_EMAIL }} --agree-tos --non-interactive
             sudo certbot renew --deploy-hook "systemctl reload nginx"
             sudo nginx -t
             sudo systemctl reload nginx
