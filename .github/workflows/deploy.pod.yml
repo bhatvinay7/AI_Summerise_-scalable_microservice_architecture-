@@ -141,11 +141,8 @@ jobs:
             sudo systemctl start nginx
             sudo certbot --nginx run -d ${{secrets.DOMAIN}}
             sudo certbot renew --deploy-hook "systemctl reload nginx"
-            sudo cp -f /home/ubuntu/nginx-temp/build/nginx.conf /etc/nginx/conf.d/app.conf
             sudo systemctl reload nginx
             sudo nginx -t
-         
-
             echo "Stopping all containers..."
 
             sudo docker stop $(sudo docker ps -q) || true
@@ -340,3 +337,6 @@ jobs:
             -p 6222:6222 \
             --network $NETWORK \
             $IMAGE7
+
+            sudo cp -f /home/ubuntu/nginx-temp/build/nginx.conf /etc/nginx/conf.d/app.conf  
+            sudo systemctl reload nginx
