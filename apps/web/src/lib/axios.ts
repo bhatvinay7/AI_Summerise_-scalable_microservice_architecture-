@@ -9,15 +9,15 @@ export default axios.create({
 });
 
 export const axiosPrivate = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_BACKEND_URL!,
+  baseURL: "https://api.chatt.services",
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
 });
-
+console.log(process.env.NEXT_PUBLIC_BACKEND_URL)
 export const axiosPublic= axios.create({
-  baseURL: process.env.NEXT_PUBLIC_BACKEND_URL!,
+  baseURL:"https://api.chatt.services",
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
