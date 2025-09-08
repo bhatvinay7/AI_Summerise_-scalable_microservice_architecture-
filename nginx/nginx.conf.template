@@ -8,13 +8,9 @@ server {
 
 # API Server
 server {
-    listen 443 ssl;
-    listen [::]:443 ssl;
+   
     server_name ${API_DOMAIN};
-    ssl_certificate /etc/letsencrypt/live/${FRONTEND_DOMAIN}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${FRONTEND_DOMAIN}/privkey.pem;
-    include /etc/letsencrypt/options-ssl-nginx.conf;
-    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+   
     
 
     location / {
@@ -28,14 +24,8 @@ server {
 
 # Web App (Frontend)
 server {
-    listen 443 ssl;
-    listen [::]:443 ssl;
+   
     server_name ${FRONTEND_DOMAIN};
-    ssl_certificate /etc/letsencrypt/live/${FRONTEND_DOMAIN}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${FRONTEND_DOMAIN}/privkey.pem;
-    include /etc/letsencrypt/options-ssl-nginx.conf;
-    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
-    
 
     location / {
         proxy_pass http://${FRONTEND_DOMAIN}:${FRONTEND_DOMAIN_PORT};   # web container
@@ -52,15 +42,8 @@ server {
 
 # WebSocket Server
 server {
-    listen 443 ssl;
-    listen [::]:443 ssl;
+  
     server_name ${WS_SERVER_DOMAIN};
-    ssl_certificate /etc/letsencrypt/live/${FRONTEND_DOMAIN}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${FRONTEND_DOMAIN}/privkey.pem;
-    include /etc/letsencrypt/options-ssl-nginx.conf;
-    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;  
-    
-
     location / {
         proxy_pass http://${WS_SERVER_DOMAIN}:${WS_SERVER_DOMAIN_PORT};   # ws-server container
         proxy_http_version 1.1;
