@@ -142,6 +142,7 @@ jobs:
             sudo apt-get install -y nginx
             sudo cp -f /home/ubuntu/nginx-temp/build/nginx.conf /etc/nginx/conf.d/app.conf  
             sudo rm -f /etc/nginx/sites-enabled/default
+            sudo rm -f /etc/nginx/sites-available/default
             sudo apt install certbot python3-certbot-nginx -y
             sudo systemctl start nginx
             sudo certbot --nginx -d "$API_DOMAIN" -d "$FRONTEND_DOMAIN" -d "$WS_SERVER_DOMAIN"
