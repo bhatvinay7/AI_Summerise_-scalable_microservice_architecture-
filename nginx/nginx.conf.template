@@ -2,7 +2,7 @@
 server {
     listen 80;
     listen [::]:80;
-    server_name ${API_DOMAIN} ${FRONTEND_DOMAIN} ${WS_SERVER_DOMAIN} ${DOMAIN};
+    server_name ${API_DOMAIN} ${FRONTEND_DOMAIN} ${WS_SERVER_DOMAIN};
     return 301 https://$host$request_uri;
 }
 

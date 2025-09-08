@@ -95,7 +95,6 @@ jobs:
           export API_DOMAIN_PORT=${{ secrets.API_DOMAIN_PORT }}
           export FRONTEND_DOMAIN_PORT=${{ secrets.FRONTEND_DOMAIN_PORT }}
           export WS_SERVER_DOMAIN_PORT=${{ secrets.WS_SERVER_DOMAIN_PORT }}
-          export DOMAIN=${{ secrets.DOMAIN }}
 
           envsubst '${API_DOMAIN} ${FRONTEND_DOMAIN} ${WS_SERVER_DOMAIN} ${API_DOMAIN_PORT} ${FRONTEND_DOMAIN_PORT} ${WS_SERVER_DOMAIN_PORT} ${DOMAIN}' \
           < nginx/nginx.conf.template > ./build/nginx.conf
@@ -140,7 +139,8 @@ jobs:
             sudo cp -f /home/ubuntu/nginx-temp/build/nginx.conf /etc/nginx/conf.d/app.conf  
             sudo systemctl reload nginx
             sudo apt install certbot python3-certbot-nginx -y
-            sudo certbot --nginx run -d ${{secrets.DOMAIN}}
+            sudo certbot --nginx run -d ${API_DOMAIN} -d ${FRONTEND_DOMAIN} -d ${WS_SERVER_DOMAIN}
+
             sudo certbot renew --deploy-hook "systemctl reload nginx"
             sudo systemctl reload nginx
             sudo systemctl start nginx
