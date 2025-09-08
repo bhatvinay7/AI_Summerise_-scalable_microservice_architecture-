@@ -90,13 +90,16 @@ jobs:
           mkdir -p build
           chmod 777 build
           export API_DOMAIN=${{ secrets.API_DOMAIN }}
-          export FRONTEND_DOMAIN=${{secrets.FRONTEND_DOMAIN}}
+          export FRONTEND_DOMAIN=${{ secrets.FRONTEND_DOMAIN }}
           export WS_SERVER_DOMAIN=${{ secrets.WS_SERVER_DOMAIN }}
           export API_DOMAIN_PORT=${{ secrets.API_DOMAIN_PORT }}
           export FRONTEND_DOMAIN_PORT=${{ secrets.FRONTEND_DOMAIN_PORT }}
           export WS_SERVER_DOMAIN_PORT=${{ secrets.WS_SERVER_DOMAIN_PORT }}
           export DOMAIN=${{ secrets.DOMAIN }}
-          envsubst < nginx/nginx.conf.template > ./build/nginx.conf
+
+          envsubst '${API_DOMAIN} ${FRONTEND_DOMAIN} ${WS_SERVER_DOMAIN} ${API_DOMAIN_PORT} ${FRONTEND_DOMAIN_PORT} ${WS_SERVER_DOMAIN_PORT} ${DOMAIN}' \
+          < nginx/nginx.conf.template > ./build/nginx.conf
+
 
 
       - name: Copy config to server
