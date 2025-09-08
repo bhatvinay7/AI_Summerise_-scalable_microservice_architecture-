@@ -8,8 +8,7 @@ server {
 
 # API Server
 server {
-    listen 443 ssl;
-    listen [::]:443 ssl;
+   
     server_name ${API_DOMAIN};
 
 
@@ -27,8 +26,7 @@ server {
 
 # Web App (Frontend)
 server {
-    listen 443 ssl;
-    listen [::]:443 ssl;
+
     server_name ${FRONTEND_DOMAIN};
    
     location / {
@@ -46,8 +44,7 @@ server {
 
 # WebSocket Server
 server {
-    listen 443 ssl;
-    listen [::]:443 ssl;
+  
     server_name ${WS_SERVER_DOMAIN};
 
     location / {
