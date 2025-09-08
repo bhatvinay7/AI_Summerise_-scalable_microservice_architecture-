@@ -2,7 +2,7 @@
 server {
     listen 80;
     listen [::]:80;
-    server_name ${API_DOMAIN} ${FRONTEND_DOMAIN} ${WS_SERVER_DOMAIN};
+    server_name ${FRONTEND_DOMAIN} ${API_DOMAIN} ${WS_SERVER_DOMAIN};
     return 301 https://$host$request_uri;
 }
 
@@ -11,7 +11,10 @@ server {
     listen 443 ssl;
     listen [::]:443 ssl;
     server_name ${API_DOMAIN};
-
+    ssl_certificate /etc/letsencrypt/live/${FRONTEND_DOMAIN}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${FRONTEND_DOMAIN}/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
     
 
     location / {
@@ -28,7 +31,10 @@ server {
     listen 443 ssl;
     listen [::]:443 ssl;
     server_name ${FRONTEND_DOMAIN};
-
+    ssl_certificate /etc/letsencrypt/live/${FRONTEND_DOMAIN}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${FRONTEND_DOMAIN}/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
     
 
     location / {
@@ -49,7 +55,10 @@ server {
     listen 443 ssl;
     listen [::]:443 ssl;
     server_name ${WS_SERVER_DOMAIN};
-
+    ssl_certificate /etc/letsencrypt/live/${FRONTEND_DOMAIN}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${FRONTEND_DOMAIN}/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;  
     
 
     location / {
