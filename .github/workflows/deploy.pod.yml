@@ -118,9 +118,6 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           
           script: |
-            export API_DOMAIN="${{ secrets.API_DOMAIN }}"
-            export FRONTEND_DOMAIN="${{ secrets.FRONTEND_DOMAIN }}"
-            export WS_SERVER_DOMAIN="${{ secrets.WS_SERVER_DOMAIN }}"
             if ! command -v curl &> /dev/null; then
                 sudo apt-get update
                 sudo apt-get install -y curl
@@ -143,10 +140,6 @@ jobs:
             sudo rm -f /etc/nginx/sites-enabled/default
             sudo rm -f /etc/nginx/sites-available/default
             sudo systemctl start nginx
-            sudo certbot --nginx -d "$FRONTEND_DOMAIN" -d "$API_DOMAIN"  -d "$WS_SERVER_DOMAIN"
-
-
-            sudo certbot renew --deploy-hook "systemctl reload nginx"
             sudo nginx -t
             sudo systemctl reload nginx
             echo "Stopping all containers..."
