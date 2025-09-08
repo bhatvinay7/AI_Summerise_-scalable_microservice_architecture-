@@ -14,12 +14,12 @@ export interface userSignIn {
   email: string;
 }
  async function SignUp(formdata: userSignup): Promise<message> {
-  const response = await axiosPublic.post("/api/user/signup", formdata);
+  const response = await axiosPublic.post("/user/signup", formdata);
   return (response as { data: message }).data;
 }
 
 async function SignIn(formdata: userSignIn): Promise<message> {
-  const response = await axiosPublic.post("/api/user/signin", formdata);
+  const response = await axiosPublic.post("/user/signin", formdata);
   return (response as { data: message }).data;
 }
 

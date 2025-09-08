@@ -7,12 +7,12 @@ export  interface Response{
 
 export async function getUserSessions():Promise<Response[]>{
     const axiosPrivate=useAxiosIntercepter()
-    const response=await axiosPrivate.get('/api/getUserSessions/session')
+    const response=await axiosPrivate.get('/getUserSessions/session')
       return (response.data as {data:Response[]}).data
 }
 
 export async function getUserSessionData(sessionId:number):Promise<Response>{
     const axiosPrivate=useAxiosIntercepter()
-    const response=await axiosPrivate.get(`/api/getUserSessions/getSessionData/${sessionId}`)
+    const response=await axiosPrivate.get(`/getUserSessions/getSessionData/${sessionId}`)
       return (response as {data:Response}).data
 }
