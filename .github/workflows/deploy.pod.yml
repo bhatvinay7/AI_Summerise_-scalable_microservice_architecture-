@@ -96,7 +96,7 @@ jobs:
           export FRONTEND_DOMAIN_PORT=${{ secrets.FRONTEND_DOMAIN_PORT }}
           export WS_SERVER_DOMAIN_PORT=${{ secrets.WS_SERVER_DOMAIN_PORT }}
 
-          envsubst '${API_DOMAIN} ${FRONTEND_DOMAIN} ${WS_SERVER_DOMAIN} ${API_DOMAIN_PORT} ${FRONTEND_DOMAIN_PORT} ${WS_SERVER_DOMAIN_PORT} ${DOMAIN}' \
+          envsubst '${API_DOMAIN} ${FRONTEND_DOMAIN} ${WS_SERVER_DOMAIN} ${API_DOMAIN_PORT} ${FRONTEND_DOMAIN_PORT} ${WS_SERVER_DOMAIN_PORT}' \
           < nginx/nginx.conf.template > ./build/nginx.conf
 
 
@@ -116,12 +116,11 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
-          env: |
-           API_DOMAIN=${{ secrets.API_DOMAIN }}
-           FRONTEND_DOMAIN=${{ secrets.FRONTEND_DOMAIN }}
-           WS_SERVER_DOMAIN=${{ secrets.WS_SERVER_DOMAIN }}
+          
           script: |
-            
+            export API_DOMAIN="${{ secrets.API_DOMAIN }}"
+            export FRONTEND_DOMAIN="${{ secrets.FRONTEND_DOMAIN }}"
+            export WS_SERVER_DOMAIN="${{ secrets.WS_SERVER_DOMAIN }}"
             if ! command -v curl &> /dev/null; then
                 sudo apt-get update
                 sudo apt-get install -y curl
