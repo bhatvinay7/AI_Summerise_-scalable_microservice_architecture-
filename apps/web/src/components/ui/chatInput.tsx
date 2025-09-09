@@ -161,7 +161,7 @@ export default function ChatInput({
         ) as HTMLInputElement),
         fileRef.current?.click());
   }}
-  className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl border border-white/10 bg-[#2f2f2d] hover:bg-white/10 transition"
+  className="flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-xl border border-white/10 bg-[#2f2f2d] hover:bg-white/10 transition"
   title="Attach file"
 >
   <Paperclip className="w-5 h-5 text-white/80" />
@@ -191,7 +191,7 @@ export default function ChatInput({
   aria-label="button"
   type="button"
   onClick={handleSend}
-  className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#2f2f2d] hover:bg-white/15 border border-white/10 transition"
+  className="flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#2f2f2d] hover:bg-white/15 border border-white/10 transition"
 >
   <Send className="w-5 h-5  text-white/80" />
 </button>
