@@ -88,9 +88,7 @@ export default function ChatInput({
 }, [fileArray]);
 
   useEffect(() => {
-    console.log("hii");
-    // if (!text && !file) return;
-    console.log("hi here");
+   
     if (text !== "") props.onChange({ query: text });
 
     if (currentFile) {

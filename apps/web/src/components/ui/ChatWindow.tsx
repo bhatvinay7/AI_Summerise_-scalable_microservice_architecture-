@@ -51,12 +51,12 @@ export default function ChatWindow() {
   function SendMessage() {
 
     if (wsIntsance.current?.readyState == wsIntsance.current?.OPEN) {
-  
+      
       setUserQuery({query:""})
       wsIntsance?.current?.send(
         JSON.stringify({
           sessionId:unqId ? generateUUID() : unqId,
-          query: userQuery,
+          message: userQuery,
           userId: userDetails.userId,
           token:userDetails.token,
           join:true
@@ -68,9 +68,10 @@ export default function ChatWindow() {
   useEffect(() => {
     try {
       if (!wsIntsance.current) {
+        console.log(process.env.NEXT_PUBLIC_WEBSOCKET_SERVER)
         const ws = new WebSocket(`${process.env.NEXT_PUBLIC_WEBSOCKET_SERVER!}`);
         wsIntsance.current = ws;
-
+        
         wsIntsance.current.onopen = () => {
           console.log("WebSocket opened");
         };
