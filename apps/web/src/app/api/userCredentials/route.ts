@@ -12,7 +12,7 @@ export async function GET(req:NextRequest){
    try{
         const token= await getTokenInfo()
         if(!token)
-            return NextResponse.json({"message":"user is unauthorized",status:401})
+            return NextResponse.json({message:"user is unauthorized"},{status:401})
         const decoded = jwt.verify(token!,process.env.REFRESH_TOKEN_SECRET!) as CustomJwtPayload
         
         return NextResponse.json({username:decoded.username ,userId:decoded.userId,email:decoded.email,token:token})
