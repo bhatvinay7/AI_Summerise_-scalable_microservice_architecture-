@@ -75,6 +75,11 @@ jobs:
 
           build-args: |
             DATABASE_URL=${{ secrets.DATABASE_URL }}  
+            NEXT_PUBLIC_FRONTEND_URL="${{secrets.NEXT_PUBLIC_FRONTEND_URL}}"
+            NEXT_PUBLIC_BACKEND_URL="${{secrets.NEXT_PUBLIC_BACKEND_URL}}"
+            NEXT_PUBLIC_WEBSOCKET_SERVER="${{secrets.NEXT_PUBLIC_WEBSOCKET_SERVER}}"
+            ACCESS_TOKEN_SECRET="${{secrets.ACCESS_TOKEN_SECRET}}"
+            REFRESH_TOKEN_SECRET="${{secrets.REFRESH_TOKEN_SECRET}}"
 
   deploy:
     runs-on: ubuntu-latest
@@ -250,6 +255,7 @@ jobs:
             sudo docker run -d \
              -p 3001:3001  \
              --name http-server \
+             --restart always \
              --env-file env.http \
              -e DATABASE_URL="${{secrets.DATABASE_URL}}" \
              --network $NETWORK \
@@ -265,6 +271,7 @@ jobs:
             sudo docker run -d \
             -p 3003:3003  \
             --name worker-server  \
+            --restart always \
             --env-file env.redis \
             -e GROQ_API_KEY="${{secrets.GROQ_API_KEY}}" \
             -e DATABASE_URL="${{secrets.DATABASE_URL}}" \
@@ -273,6 +280,7 @@ jobs:
 
             sudo docker run -d \
             -p 8080:8080  \
+            --restart always \
             --name ws-server  \
             --env-file env.redis \
             -e REFRESH_TOKEN_SECRET="${{secrets.REFRESH_TOKEN_SECRET}}" \
@@ -307,6 +315,7 @@ jobs:
             sudo docker run -d \
             -p 9092:9092 \
             --name notekafka1  \
+            --restart always \
             --env-file env.kafka \
             -e "KAFKA_BROKER_ID=1" \
             -e "KAFKA_CFG_ZOOKEEPER_CONNECT=notezookeeper:2181" \
@@ -319,6 +328,7 @@ jobs:
             sudo docker run -d \
             -p 9093:9093 \
             --name notekafka2  \
+            --restart always \
             --env-file env.kafka \
             -e "KAFKA_BROKER_ID=2" \
             -e "KAFKA_CFG_ZOOKEEPER_CONNECT=notezookeeper:2181" \
@@ -331,6 +341,7 @@ jobs:
             sudo docker run -d \
             -p 9094:9094  \
             --name notekafka3  \
+            --restart always \
             --env-file env.kafka \
             -e "KAFKA_BROKER_ID=3" \
             -e "KAFKA_CFG_ZOOKEEPER_CONNECT=notezookeeper:2181" \
@@ -342,6 +353,7 @@ jobs:
 
             sudo docker run -d \
             --name nats-server  \
+            --restart always \
             -p 4222:4222 \
             -p 8222:8222 \
             -p 6222:6222 \
