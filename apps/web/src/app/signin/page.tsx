@@ -20,6 +20,7 @@ export default function SignInPage() {
     try {
       const response = await SignIn(data);
       setResponse(response)
+      setShow(!show)
     } catch (error: any) {}
     finally{
       setTimeout(()=>{

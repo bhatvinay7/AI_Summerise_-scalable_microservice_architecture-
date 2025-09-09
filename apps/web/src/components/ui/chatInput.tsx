@@ -64,7 +64,7 @@ export default function ChatInput({
         }
       });
 
-      xhr.open("POST", `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/uploadFile/upload`);
+      xhr.open("POST", `${process.env.NEXT_PUBLIC_BACKEND_URL}/uploadFile/upload`);
       xhr.setRequestHeader("Authorization", `Bearer ${props.token}`);
       xhr.responseType = "json";
       xhr.send(formdata);

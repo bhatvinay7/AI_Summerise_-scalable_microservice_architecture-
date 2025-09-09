@@ -19,6 +19,7 @@ export default function SignUpPage() {
     try {
       const response = await SignUp(data);
       setResponse(response)
+      setShow(!show)
     } catch (error: any) {}
      finally{
       setTimeout(()=>{
