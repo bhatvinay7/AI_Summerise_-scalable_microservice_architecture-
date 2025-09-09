@@ -2,7 +2,7 @@ import {NextResponse } from "next/server";
 import getTokenInfo from '../../../lib/getUserTokenInfo'
 export async function GET(){
     try{
-        const token:string|undefined=await getTokenInfo()
+        const token:string|null=await getTokenInfo()
         return NextResponse.json(token!,{status:200})
 
     }
