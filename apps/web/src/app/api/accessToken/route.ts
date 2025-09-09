@@ -1,8 +1,8 @@
-import {NextResponse } from "next/server";
+import {NextResponse,NextRequest } from "next/server";
 import getTokenInfo from '../../../lib/getUserTokenInfo'
-export async function GET(){
+export async function GET(req:NextRequest){
     try{
-        const token:string|null=await getTokenInfo()
+        const token:string|null=req.cookies.get("token")?.value ?? null
         return NextResponse.json(token!,{status:200})
 
     }
