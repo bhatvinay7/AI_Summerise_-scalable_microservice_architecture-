@@ -49,17 +49,17 @@ export default function ChatWindow() {
   
 
   function SendMessage() {
-    console.log("nflkdlhgl")
+
     if (wsIntsance.current?.readyState == wsIntsance.current?.OPEN) {
-      console.log("nflkdlhgl")
-   
+  
       setUserQuery({query:""})
       wsIntsance?.current?.send(
         JSON.stringify({
-          messageId: !unqId ? generateUUID() : unqId,
+          sessionId:unqId ? generateUUID() : unqId,
           query: userQuery,
           userId: userDetails.userId,
-          token:userDetails.token
+          token:userDetails.token,
+          join:true
         })
       );
     }
@@ -68,7 +68,7 @@ export default function ChatWindow() {
   useEffect(() => {
     try {
       if (!wsIntsance.current) {
-        const ws = new WebSocket(`${process.env.NEXT_PUBLIC_WEBSOCKET_SERVER!}:${8080}`);
+        const ws = new WebSocket(`${process.env.NEXT_PUBLIC_WEBSOCKET_SERVER!}`);
         wsIntsance.current = ws;
 
         wsIntsance.current.onopen = () => {

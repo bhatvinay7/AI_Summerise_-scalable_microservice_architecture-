@@ -20,7 +20,6 @@ interface Message {
   userId: number;
   message: string;
   join: boolean;
-  ispushed: boolean;
   sessionId?: string | null;
 }
 

@@ -13,11 +13,11 @@ const kafka = new Kafka({
 const producer = kafka.producer();
 const consumer = kafka.consumer({ groupId: "llm-response" });
 interface Message {
-  userId: number;
-  message: string;
-  token: string | null;
-  join: boolean;
-  ispushed: boolean;
+  userId: number,
+  sessionId:string,
+  message: string,
+  token: string | null,
+  join: boolean,
 }
 
 const userMap = new Map<number, WebSocket>();
@@ -60,11 +60,11 @@ try {
             return;
           }
         }
-        if (message && message.join && message.ispushed) {
+        if (message && message.join) {
           const userId = message.userId;
           await producer.send({
             topic: "llm-query",
-            messages: [{ value: "Hello KafkaJS user!" }],
+            messages:[{ value:JSON.stringify({userId:userId,sessionId:message.sessionId,message:message.message}) }],
           });
         }
 
