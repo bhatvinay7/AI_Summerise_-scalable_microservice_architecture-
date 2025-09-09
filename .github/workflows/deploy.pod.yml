@@ -75,11 +75,11 @@ jobs:
 
           build-args: |
             DATABASE_URL=${{ secrets.DATABASE_URL }}  
-            NEXT_PUBLIC_FRONTEND_URL="${{secrets.NEXT_PUBLIC_FRONTEND_URL}}"
-            NEXT_PUBLIC_BACKEND_URL="${{secrets.NEXT_PUBLIC_BACKEND_URL}}"
-            NEXT_PUBLIC_WEBSOCKET_SERVER="${{secrets.NEXT_PUBLIC_WEBSOCKET_SERVER}}"
-            ACCESS_TOKEN_SECRET="${{secrets.ACCESS_TOKEN_SECRET}}"
-            REFRESH_TOKEN_SECRET="${{secrets.REFRESH_TOKEN_SECRET}}"
+            NEXT_PUBLIC_FRONTEND_URL=${{secrets.NEXT_PUBLIC_FRONTEND_URL}}
+            NEXT_PUBLIC_BACKEND_URL=${{secrets.NEXT_PUBLIC_BACKEND_URL}}
+            NEXT_PUBLIC_WEBSOCKET_SERVER=${{secrets.NEXT_PUBLIC_WEBSOCKET_SERVER}}
+            ACCESS_TOKEN_SECRET=${{secrets.ACCESS_TOKEN_SECRET}}
+            REFRESH_TOKEN_SECRET=${{secrets.REFRESH_TOKEN_SECRET}}
 
   deploy:
     runs-on: ubuntu-latest
