@@ -110,11 +110,15 @@ export default function ChatWindow() {
       wsRef.current = null;
       // reconnectTimeoutRef.current = setTimeout(connectWebSocket, 10000); // reconnect after 3s
     };
-  }, [sessionId]);
+  }, [sessionId,userDetails]);
 
   useEffect(() => {
     connectWebSocket();
-
+    setInterval(()=>{
+      if(!wsRef){
+         connectWebSocket();
+      }
+    },2000)
     return () => {
       
       wsRef.current?.close();
