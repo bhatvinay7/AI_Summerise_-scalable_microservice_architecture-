@@ -32,7 +32,7 @@ export default function Home() {
         </aside>
 
         {/* Chat Area */}
-        <main className=" max-h-screen flex   relative justify-baseline items-center  ">
+        <main className=" h-screen flex w-full  relative items-center justify-center  ">
          {!state && <div className='w-fit absolute z-[38] inset-0 top-1 left-2 '>
           <SidebatToggle/>
           </div>

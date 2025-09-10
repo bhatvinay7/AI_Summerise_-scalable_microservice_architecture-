@@ -103,13 +103,13 @@ export default function ChatInput({
   }, [text, currentFile]);
 
   return (
-    <div className=" w-9/10 md:w-4/5 lg:w-1/2 h-auto relative border-white/20 min-h-20 sm:min-h-24 flex flex-col px-4 py-5 space-y-3 gap-y-6 bg-[#2f2f2d] border placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-white/20 rounded-3xl  ">
+    <div className=" w-9/10 md:w-4/5 lg:w-1/2 h-auto relative border-white/20 min-h-12 sm:min-h-24 flex flex-col px-4 py-5 space-y-2 gap-y-4 bg-[#2f2f2d] border placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-white/20 rounded-2xl  ">
       <div className={`${fileArray ? "flex" : "hidden"} gap-x-1`}>
         {fileArray?.map((each, index: number) => {
           return (
             <div
               key={index}
-              className="p-1 w-12 h-12 rounded-2xl border border-white/10 flex justify-center relative items-center inset-2 bg-white/10 hover:bg-white/15"
+              className="p-1 w-10 h-10 rounded-2xl border border-white/10 flex justify-center relative items-center inset-2 bg-white/10 hover:bg-white/15"
             >
               {each.isUploading && (
                 <LoaderCircle className="w-7 h-7 animate-spin delay-700 text-slate-200/60 z-[35] " />
@@ -118,7 +118,7 @@ export default function ChatInput({
                 <Files className="w-6 h-6 absolute text-gray-300"></Files>
               )}
               {each.isWaiting && (
-                <Ellipsis className="rounded-2xl inset-0  w-5 h-5 text-white/30   animate-pulse"></Ellipsis>
+                <Ellipsis className="rounded-2xl inset-0  w-4 h-4 text-white/30   animate-pulse"></Ellipsis>
               )}
             </div>
           );
@@ -146,7 +146,7 @@ export default function ChatInput({
           />
         </div>
       </div>
-      <div className="  w-19/20 self-center flex relative my-3  p-3 bottom-3 ">
+      <div className="  w-19/20 self-center flex relative my-3  p-3 bottom-1.5 ">
         <div className="flex items-center justify-between h-auto w-full mt-5 relative gap-1 p-4">
           <button
   type="button"
@@ -159,7 +159,7 @@ export default function ChatInput({
         ) as HTMLInputElement),
         fileRef.current?.click());
   }}
-  className="flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-xl border border-white/10 bg-[#2f2f2d] hover:bg-white/10 transition"
+  className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl border border-white/10 bg-[#2f2f2d] hover:bg-white/10 transition"
   title="Attach file"
 >
   <Paperclip className="w-5 h-5 text-white/80" />
@@ -189,9 +189,9 @@ export default function ChatInput({
   aria-label="button"
   type="button"
   onClick={handleSend}
-  className="flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#2f2f2d] hover:bg-white/15 border border-white/10 transition"
+  className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#2f2f2d] hover:bg-white/15 border border-white/10 transition"
 >
-  <Send className="w-5 h-5  text-white/80" />
+  <Send className="w-4 h-4  text-white/80" />
 </button>
 
 
