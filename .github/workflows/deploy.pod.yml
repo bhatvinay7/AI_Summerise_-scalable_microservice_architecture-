@@ -252,55 +252,11 @@ jobs:
             sudo docker pull $IMAGE8
 
             NETWORK="note-network"
-            sudo docker run -d \
-             -p 3001:3001  \
-             --name http-server \
-             --restart always \
-             --env-file env.http \
-             -e DATABASE_URL="${{secrets.DATABASE_URL}}" \
-             --network $NETWORK \
-             $IMAGE1
-
-            sudo docker run -d \
-            -p 3002:3002 \
-            --name filehandler-server  \
-            --env-file env.redis \
-            --network $NETWORK \
-            $IMAGE2
-
-            sudo docker run -d \
-            -p 3003:3003  \
-            --name worker-server  \
-            --restart always \
-            --env-file env.redis \
-            -e GROQ_API_KEY="${{secrets.GROQ_API_KEY}}" \
-            -e DATABASE_URL="${{secrets.DATABASE_URL}}" \
-            --network $NETWORK \
-            $IMAGE3
-
-            sudo docker run -d \
-            -p 8080:8080  \
-            --restart always \
-            --name ws-server  \
-            --env-file env.redis \
-            -e REFRESH_TOKEN_SECRET="${{secrets.REFRESH_TOKEN_SECRET}}" \
-            --network $NETWORK \
-            $IMAGE4
 
 
-            sudo docker run -d \
-            -p 3000:3000  \
-            --name web  \
-            -e NEXT_PUBLIC_FRONTEND_URL="${{secrets.NEXT_PUBLIC_FRONTEND_URL}}" \
-            -e NEXT_PUBLIC_BACKEND_URL="${{secrets.NEXT_PUBLIC_BACKEND_URL}}" \
-            -e NEXT_PUBLIC_WEBSOCKET_SERVER="${{secrets.NEXT_PUBLIC_WEBSOCKET_SERVER}}" \
-            -e ACCESS_TOKEN_SECRET="${{secrets.ACCESS_TOKEN_SECRET}}"  \
-            -e REFRESH_TOKEN_SECRET="${{secrets.REFRESH_TOKEN_SECRET}}" \
-            -e DATABASE_URL="${{ secrets.DATABASE_URL }}" \
-            --network $NETWORK \
-            $IMAGE5
-            
-            sudo  docker run -d \
+
+
+              sudo  docker run -d \
             -p 2181:2181 \
             --name notezookeeper  \
             -e "ALLOW_ANONYMOUS_LOGIN=no" \
@@ -350,6 +306,56 @@ jobs:
             -v $(pwd)/kafka_data3:/bitnami/kafka \
             --network $NETWORK \
             $IMAGE6
+
+            sudo docker run -d \
+             -p 3001:3001  \
+             --name http-server \
+             --restart always \
+             --env-file env.http \
+             -e DATABASE_URL="${{secrets.DATABASE_URL}}" \
+             --network $NETWORK \
+             $IMAGE1
+
+            sudo docker run -d \
+            -p 3002:3002 \
+            --name filehandler-server  \
+            --env-file env.redis \
+            --network $NETWORK \
+            $IMAGE2
+
+            sudo docker run -d \
+            -p 3003:3003  \
+            --name worker-server  \
+            --restart always \
+            --env-file env.redis \
+            -e GROQ_API_KEY="${{secrets.GROQ_API_KEY}}" \
+            -e DATABASE_URL="${{secrets.DATABASE_URL}}" \
+            --network $NETWORK \
+            $IMAGE3
+
+            sudo docker run -d \
+            -p 8080:8080  \
+            --restart always \
+            --name ws-server  \
+            --env-file env.redis \
+            -e REFRESH_TOKEN_SECRET="${{secrets.REFRESH_TOKEN_SECRET}}" \
+            --network $NETWORK \
+            $IMAGE4
+
+
+            sudo docker run -d \
+            -p 3000:3000  \
+            --name web  \
+            -e NEXT_PUBLIC_FRONTEND_URL="${{secrets.NEXT_PUBLIC_FRONTEND_URL}}" \
+            -e NEXT_PUBLIC_BACKEND_URL="${{secrets.NEXT_PUBLIC_BACKEND_URL}}" \
+            -e NEXT_PUBLIC_WEBSOCKET_SERVER="${{secrets.NEXT_PUBLIC_WEBSOCKET_SERVER}}" \
+            -e ACCESS_TOKEN_SECRET="${{secrets.ACCESS_TOKEN_SECRET}}"  \
+            -e REFRESH_TOKEN_SECRET="${{secrets.REFRESH_TOKEN_SECRET}}" \
+            -e DATABASE_URL="${{ secrets.DATABASE_URL }}" \
+            --network $NETWORK \
+            $IMAGE5
+            
+         
 
             sudo docker run -d \
             --name nats-server  \

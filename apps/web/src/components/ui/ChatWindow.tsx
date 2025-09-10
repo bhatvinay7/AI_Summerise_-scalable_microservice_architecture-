@@ -70,6 +70,7 @@ export default function ChatWindow() {
       if (!wsIntsance.current) {
         console.log(process.env.NEXT_PUBLIC_WEBSOCKET_SERVER)
         const ws = new WebSocket(`${process.env.NEXT_PUBLIC_WEBSOCKET_SERVER!}`);
+        console.log(ws.OPEN)
         wsIntsance.current = ws;
         
         wsIntsance.current.onopen = () => {
