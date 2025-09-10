@@ -29,7 +29,7 @@ const wss = new WebSocketServer({ port: PORT, host: "0.0.0.0" });
 
 async function setupAndRun() {
   try {
-    // 1. Connect Kafka producer and consumer once at startup
+    
     await producer.connect();
     await consumer.connect();
     await consumer.subscribe({ topic: "llm-response", fromBeginning: false });
@@ -62,8 +62,7 @@ async function setupAndRun() {
           }
         } catch (error) {
           console.error("Error processing Kafka message:", error);
-          // Implement a DLT (Dead Letter Topic) strategy for non-recoverable errors
-          // See BMC Software documentation for best practices on this.
+          
         }
       },
     });
@@ -94,7 +93,7 @@ async function setupAndRun() {
       ws.on("message", async (data: ArrayBuffer) => {
         try {
           const message: Message = JSON.parse(data.toString());
-
+          console.log(message)
           // 5. Authenticate every message
           if (!message?.token) {
             ws.close(1008, "Token not provided");

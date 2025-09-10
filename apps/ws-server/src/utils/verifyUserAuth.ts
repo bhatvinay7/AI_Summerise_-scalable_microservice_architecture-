@@ -8,6 +8,7 @@ export function verifyAuth(token:string){
           throw new Error("user is not authenticated ")
         }
         const decode=jwt.verify(token!,process.env.REFRESH_TOKEN_SECRET!) as JwtPayload
+        console.log(process.env.REFRESH_TOKEN_SECRET)
         return decode
 
     }

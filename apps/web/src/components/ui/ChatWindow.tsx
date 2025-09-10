@@ -1,5 +1,6 @@
 "use client";
 import React, { useRef, useState, useEffect, useCallback } from "react";
+import {Ellipsis} from 'lucide-react'
 import ChatInput from "./chatInput";
 import generateUUID from "../../utils/generateUniqueId";
 import { useDispatch, useSelector } from "react-redux";
@@ -172,15 +173,18 @@ export default function ChatWindow() {
                 key={each?.query?.id}
                 className="w-full h-auto min-h-40 flex flex-col relative  items-center gap-y-3 space-y-5 "
               >
-                <div className=" w-fit  self-end h-auto   rounded-xl min-h-15 place-content-center bg-white/20 text-black/45 ">
-                  <p className="p-2 text-black/70 text-base">{each.query.userquery}</p>
+                <div className=" w-fit  self-end h-auto   rounded-xl  place-content-center bg-white/20  text-black/45 p-2 ">
+                {each.query.userquery}
                 </div>
+                { each.response?.llmResponse ?
                 <div className="w-full h-auto flex flex-col p-4 min-h-12 items-center rounded-md bg-[#4b4747] text-gray-300/75 relative">
                   <p className="p-4 w-9/10 relative top-2 h-auto ">
                     {each.response?.llmResponse}
                   </p>
                 </div>
+          :<Ellipsis className="text-white/20 animate-pulse self-start w-4 h-4"/>}
               </div>
+            
             );
           })}
         </div>
