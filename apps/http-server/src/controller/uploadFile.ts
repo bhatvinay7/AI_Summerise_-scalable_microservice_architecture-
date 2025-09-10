@@ -11,10 +11,10 @@ let fileLPath: string | null = null;
 const uploadFile = async (req: Request, res: Response) => {
     try {
     const producer = await getKafkaProducer();
-    let sessionId: string | null = JSON.parse(req.body.sessionId);
+    let sessionId: string | null = req.body?.sessionId
     const user: user = await getUserDetails(req);
 
-    if (!user.isVerified)
+    if (!user?.isVerified)
       return res.status(403).json({ message: "unauthorized request" });
 
     if (!req.files) {

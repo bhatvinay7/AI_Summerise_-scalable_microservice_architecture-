@@ -54,7 +54,7 @@ export default function ChatWindow() {
   });
   const [response, setResponse] = useState<ResponseMessage | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(
-    params.sessionId ? (params.sessionId as string) : generateUUID()
+    params.sessionId ? (params.sessionId as string) :localStorage.getItem("sessionId")?localStorage.getItem("sessionId"): generateUUID()
   );
 
   const wsRef = useRef<WebSocket | null>(null);
@@ -95,6 +95,9 @@ export default function ChatWindow() {
             );
             if (index !== -1) {
               // If found, update the existing message
+              if(localStorage.getItem("sessionId")){
+                localStorage.setItem("sessionId",data?.sessionId!)
+              }
               const updated = [...prev];
               updated[index] = {
                 ...updated[index],
