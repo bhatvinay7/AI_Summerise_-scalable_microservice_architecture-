@@ -4,7 +4,9 @@ import { sc, natsConnection } from "./nats-server/nats";
 import getFileBufferData from "./utils/getFileBufferData";
 import redis from "./redis/redisClient";
 import dotenv from "dotenv";
+
 dotenv.config();
+
 const kafka = new Kafka({
   clientId: "notes",
   brokers: ["notekafka1:9092", "notekafka2:9092", "notekafka3:9092"],
@@ -18,14 +20,22 @@ const consumer = kafka.consumer({ groupId: "upload-file" });
 const app = express();
 const port = 3002;
 
-try {
-  const run = async () => {
+// Helper to safely publish NATS messages
+const publishNatsMessage = async (channel: string, data: any) => {
+  try {
+    natsConnection.publish(channel, sc.encode(JSON.stringify(data)));
+  } catch (err) {
+    console.error(`Failed to publish to NATS channel ${channel}:`, err);
+  }
+};
+
+const runConsumer = async () => {
+  try {
     await consumer.connect();
     await consumer.subscribe({ topic: "upload-file", fromBeginning: false });
 
     await consumer.run({
       autoCommit: false,
-
       eachMessage: async ({
         topic,
         partition,
@@ -35,81 +45,74 @@ try {
         partition: number;
         message: KafkaMessage;
       }) => {
-        // console.log({
-        //   partition,
-        //   offset: message.offset,
-        // });
+        if (!message.value) return;
 
         try {
-          const value = JSON.parse(message?.value?.toString()!);
-          console.log(value)
-          try{
+          const value = JSON.parse(message.value.toString()) as {
+            userId: string;
+            sessionId: string;
+            fileLink: string;
+          };
 
-        
-          natsConnection.publish(
-            "file-state-manager",
-            sc.encode(
-              JSON.stringify({
-                userId: value.userId,
-                message: "processing the file",
-              })
-            )
-          );
-          const ParsedData = getFileBufferData(value?.fileLink as string);
+          // Notify user that processing started
+          await publishNatsMessage("file-state-manager", {
+            userId: value.userId,
+            message: "processing the file",
+          });
 
-          const cash = await redis.get(`${value?.sessionId}` as string);
-          if (!cash)
-            redis.set(
-              `${value?.sessionId as string}`,
-              JSON.stringify(ParsedData)
-            );
-          else {
-            redis.set(
-              `${value?.sessionId as string}`,
-              JSON.stringify(`${cash}/n ${ParsedData}`)
-            );
+          // Process file
+          const parsedData = await getFileBufferData(value.fileLink);
+
+          // Handle Redis cache
+          const cachedData = await redis.get(value.sessionId);
+          let dataToStore: any;
+          if (cachedData) {
+            const arr=[]
+            arr.push(JSON.parse(cachedData));
+            arr.push(parsedData);
+            dataToStore = arr;
+          } else {
+            dataToStore = [parsedData];
           }
-          natsConnection.publish(
-            "file-state-manager",
-            sc.encode(
-              JSON.stringify({
-                type:"notification",
-                userId: value.userId,
-                message: "processing is completed",
-              })
-            )
-          );
-          }
-          catch(error:any){
-           console.log(error)
+          await redis.set(value.sessionId, JSON.stringify(dataToStore));
 
-          }  
+          // Notify user that processing is completed
+          await publishNatsMessage("file-state-manager", {
+            type: "notification",
+            userId: value.userId,
+            message: "processing is completed",
+          });
+
+          // Commit offset manually
           await consumer.commitOffsets([
             {
               topic,
               partition,
-              offset: (parseInt(message.offset) + 1).toString(), // Commit the next expected offset
+              offset: (parseInt(message.offset) + 1).toString(),
             },
           ]);
-        } catch (error: any) {
-          console.error("Error in consumer:", error);
+        } catch (err) {
+          console.error("Error processing message:", err);
         }
       },
     });
-  };
+  } catch (err) {
+    console.error("Error connecting to Kafka:", err);
+  }
+};
 
-  new Promise((resolve, reject) => {
-    run()
-      .then(resolve)
-      .catch(async (Error) => {
-        // await natsCOnnection.drain();
-        console.error("Error connecting to Kafka:", Error);
-      });
-  });
-} catch (error) {
-  console.error("Error connecting to Kafka:", error);
-}
+runConsumer();
 
-app.listen(port,"0.0.0.0", () => {
-  console.log(`Server running at ${port}`);
+// Optional: Express for health check
+app.get("/health", (_req, res) => {
+  res.status(200).send({ status: "ok" });
+});
+
+app.listen(port, "0.0.0.0", () => {
+  console.log(`Server running at port ${port}`);
+});
+
+// Handle unhandled rejections
+process.on("unhandledRejection", (reason) => {
+  console.error("Unhandled Rejection:", reason);
 });
