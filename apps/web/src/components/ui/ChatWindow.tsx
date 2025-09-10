@@ -21,9 +21,9 @@ enum MessageType {
 }
 interface ResponseMessage {
   sessionId: string |null;
-  type?: MessageType;
+  type?: MessageType|null;
   userId?: number;
-  query:{userquery:string|null,id:number},
+  query:{userquery:string|null,id:number|null},
   response?:{llmResponse:string|null} 
 }
 
@@ -57,20 +57,21 @@ export default function ChatWindow() {
   }, [dispatch]);
 
   const connectWebSocket = useCallback(() => {
+    if(!userDetails.token)return
     const ws = new WebSocket(process.env.NEXT_PUBLIC_WEBSOCKET_SERVER!);
     wsRef.current = ws;
 
     ws.onopen = () => {
       console.log("WebSocket connected");
       // Join session if needed
-      ws.send(
-        JSON.stringify({
-          sessionId,
-          join: true,
-          userId: userDetails.userId,
-          token: userDetails.token,
-        })
-      );
+      // ws.send(
+      //   JSON.stringify({
+      //     sessionId,
+      //     join: true,
+      //     userId: userDetails.userId,
+      //     token: userDetails.token,
+      //   })
+      // );
     };
 
     ws.onmessage = (event) => {
@@ -126,11 +127,21 @@ export default function ChatWindow() {
       wsRef.current.send(
         JSON.stringify({
           sessionId: sessionId || generateUUID(),
-          message: userQuery,
+          message: userQuery.query,
           userId: userDetails.userId,
           token: userDetails.token,
         })
       );
+       setcurrentChatHistoey((prev)=> { 
+        const updated = [...prev,  {
+          sessionId:sessionId,
+          userId:userDetails.userId as number,
+          query:{userquery:userQuery.query,id:null},
+          response:{llmResponse: null} // update message
+        }];
+     
+      return updated
+    });
       setUserQuery({ query: "" });
     }
   };
