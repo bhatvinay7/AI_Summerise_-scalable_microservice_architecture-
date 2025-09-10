@@ -50,7 +50,7 @@ export default function ChatWindow() {
   );
 
   const wsRef = useRef<WebSocket | null>(null);
-  const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  // const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     dispatch(getDetails() as any);
@@ -107,7 +107,7 @@ export default function ChatWindow() {
     ws.onclose = (event) => {
       console.log("WebSocket closed, attempting reconnect...", event.reason);
       wsRef.current = null;
-      reconnectTimeoutRef.current = setTimeout(connectWebSocket, 10000); // reconnect after 3s
+      // reconnectTimeoutRef.current = setTimeout(connectWebSocket, 10000); // reconnect after 3s
     };
   }, [sessionId]);
 
@@ -115,7 +115,7 @@ export default function ChatWindow() {
     connectWebSocket();
 
     return () => {
-      if (reconnectTimeoutRef.current) clearTimeout(reconnectTimeoutRef.current);
+      
       wsRef.current?.close();
     };
   }, [connectWebSocket]);
