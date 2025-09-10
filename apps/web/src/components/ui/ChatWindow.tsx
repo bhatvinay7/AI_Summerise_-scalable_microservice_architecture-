@@ -15,16 +15,31 @@ interface FileUpload {
   id: string;
 }
 
-interface ResponseMessage {
-  sessionId: string;
-  type: "notification" | "response";
-  userId: number;
-  response: string;
+enum MessageType {
+  Notification = "notification",
+  Response = "response",
 }
+interface ResponseMessage {
+  sessionId: string |null;
+  type?: MessageType;
+  userId?: number;
+  query:{userquery:string|null,id:number},
+  response?:{llmResponse:string|null} 
+}
+
+interface ChatMessage {
+  sessionId: string;
+  query:{userquery:string,id:number},
+  response:{llmResponse:string}
+}
+
+
 
 export default function ChatWindow() {
   const params = useParams();
   const userDetails = useSelector(userInfo);
+  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
+  const [currentChatHistory,setcurrentChatHistoey]=useState<ResponseMessage[]>([])
   const dispatch = useDispatch();
 
   const [userQuery, setUserQuery] = useState<{ query: string | null }>({ query: null });
@@ -61,10 +76,26 @@ export default function ChatWindow() {
     ws.onmessage = (event) => {
       try {
         const data: ResponseMessage = JSON.parse(event.data);
-        if (data.type === "notification") {
-          setUpdates({ notification: data.response });
-        } else if (data.type === "response") {
-          setResponse(data);
+        if (data.type === MessageType.Notification) {
+          setUpdates({ notification: data.type });
+        } else if (data.type === MessageType.Response) {
+  
+          setcurrentChatHistoey((prev)=> { 
+      // Find the index of the message with the same sessionId
+      const index = prev.findIndex((msg) => msg.query?.id === data.query.id);
+      if (index !== -1) {
+        // If found, update the existing message
+        const updated = [...prev];
+        updated[index] = {
+          ...updated[index],
+          sessionId:data.sessionId,
+          query:{...updated[index]?.query ,id:data?.query.id as number} as {userquery:string,id:number},
+          response:{llmResponse:data?.response?.llmResponse ?? null} // update message
+        };
+        return updated as ResponseMessage[] 
+      } 
+      return prev
+    });
         }
       } catch (err) {
         console.error("Invalid message from WS:", err);
@@ -91,6 +122,7 @@ export default function ChatWindow() {
 
   const sendMessage = () => {
     if (wsRef.current?.readyState === WebSocket.OPEN && userQuery.query) {
+
       wsRef.current.send(
         JSON.stringify({
           sessionId: sessionId || generateUUID(),
@@ -106,11 +138,25 @@ export default function ChatWindow() {
   return (
     <div className="w-full relative flex flex-col items-center h-screen">
       <div className="w-full h-[calc(100vh-160px)] overflow-y-auto relative flex flex-col items-center top-14">
-        {response?.response && (
-          <div className="w-3/5 h-auto flex flex-col p-4 min-h-12 items-center rounded-md bg-[#252222] text-gray-300 relative">
-            <p className="p-4 w-9/10 relative top-2 h-auto bg-white">{response.response}</p>
+          <div className="w-full h-auto p-2">
+
+           {currentChatHistory?.map((each:ResponseMessage)=>{
+              return(
+                <div key={each?.query?.id} className="w-full h-auto flex-col items-center space-y-2.5">
+
+                <div className="w-3/4 h-auto self-center rounded-xl bg-white/20 text-black/45 p-4 ">
+                  {each.query.userquery}
+                </div>
+                <div  className="w-3/5 h-auto flex flex-col p-4 min-h-12 items-center rounded-md bg-[#252222] text-gray-300 relative">
+                <p  className="p-4 w-9/10 relative top-2 h-auto bg-white">{each.response?.llmResponse}</p>
+                </div>
+      
+                </div>
+              
+
+              )
+        })}
           </div>
-        )}
       </div>
 
       <div className="w-full flex justify-center h-fit absolute z-39 bottom-10">

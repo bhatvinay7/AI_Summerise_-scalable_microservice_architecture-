@@ -1,5 +1,5 @@
 import { Kafka, KafkaMessage } from "kafkajs";
-const prisma =require("prisma/client");
+const prisma = require("prisma/client");
 import express from "express";
 import { natsConnection, sc } from "./nats-server/nats";
 import redisClient from "./redis/redisClient";
@@ -13,6 +13,12 @@ const kafka = new Kafka({
     retries: 10,
   },
 });
+
+enum MessageType {
+  Notification = "notification",
+  Response = "response",
+}
+
 const producer = kafka.producer();
 const consumer = kafka.consumer({ groupId: "query-consumer-group" });
 import { fetchResponse } from "./llm/responsGenerater";
@@ -53,7 +59,8 @@ const run = async () => {
 
       try {
         let response = null;
-        let sessionId:string= parsedMessage?.sessionId as string;
+        let Userquery: any;
+        let sessionId: string = parsedMessage?.sessionId as string;
         if (parsedMessage.sessionId) {
           const sessionData = await redisClient.get(
             `${parsedMessage.sessionId}`
@@ -64,14 +71,15 @@ const run = async () => {
               JSON.stringify({
                 userId: parsedMessage.userId,
                 response: "generating the response",
-                type:"notification",
-                sessionId:parsedMessage.sessionId
+                type: MessageType.Notification,
+                sessionId: parsedMessage.sessionId,
               })
             )
           );
           response = await fetchResponse(
             `${parsedMessage.message}/n ${sessionData}`
           );
+          console.log(response)
         }
         const Session = await prisma.session.findFirst({
           where: {
@@ -89,7 +97,7 @@ const run = async () => {
             },
           });
           sessionId = newSession.id as string;
-          const query = await prisma.query.create({
+          Userquery = await prisma.query.create({
             data: {
               userquery: parsedMessage.message,
               sessionId: newSession.id as string,
@@ -104,7 +112,7 @@ const run = async () => {
             },
           });
         } else {
-          const query = await prisma.query.create({
+          Userquery = await prisma.query.create({
             data: {
               userquery: parsedMessage.message,
               sessionId: Session.id as string,
@@ -125,9 +133,10 @@ const run = async () => {
             {
               value: JSON.stringify({
                 userId: parsedMessage.userId,
+                query: { userquery: null, id: Userquery.id as number },
                 response: response,
                 sessionId: sessionId as string,
-                type:"reponse"
+                type: MessageType.Response,
               }),
             },
           ],
@@ -148,6 +157,6 @@ try {
   console.error("Error connecting to Kafka:");
 }
 
-app.listen(3003,"0.0.0.0", () => {
+app.listen(3003, "0.0.0.0", () => {
   console.log("WebSocket server is running on port 3003");
 });

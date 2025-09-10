@@ -105,7 +105,6 @@ async function setupAndRun() {
             verifyAuth(message.token);
           } catch (error) {
             console.error("Authentication failed:", error);
-            ws.close(1008, "Authentication failed");
             return;
           }
 
