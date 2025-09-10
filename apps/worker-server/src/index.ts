@@ -7,7 +7,7 @@ const app = express();
 
 const kafka = new Kafka({
   clientId: "my-app",
-  brokers: ["notekafka1:9092", "notekafka2:9093", "notekafka3:9094"],
+  brokers: ["notekafka1:9092", "notekafka2:9092", "notekafka3:9092"],
   retry: {
     initialRetryTime: 300,
     retries: 10,

@@ -9,7 +9,7 @@ const PORT = 8080;
 
 const kafka = new Kafka({
   clientId: "notes",
-  brokers: ["notekafka1:9092", "notekafka2:9093", "notekafka3:9094"],
+  brokers: ["notekafka1:9092", "notekafka2:9092", "notekafka3:9092"],
 });
 const producer = kafka.producer();
 const consumer = kafka.consumer({ groupId: "llm-response" });
