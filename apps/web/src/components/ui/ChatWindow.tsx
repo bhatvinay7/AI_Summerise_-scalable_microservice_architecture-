@@ -76,9 +76,9 @@ export default function ChatWindow() {
     ws.onclose = (event) => {
       console.log("WebSocket closed, attempting reconnect...", event.reason);
       wsRef.current = null;
-      reconnectTimeoutRef.current = setTimeout(connectWebSocket, 3000); // reconnect after 3s
+      reconnectTimeoutRef.current = setTimeout(connectWebSocket, 10000); // reconnect after 3s
     };
-  }, [sessionId, userDetails.userId, userDetails.token]);
+  }, [sessionId]);
 
   useEffect(() => {
     connectWebSocket();
