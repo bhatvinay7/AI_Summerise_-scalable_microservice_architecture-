@@ -31,6 +31,7 @@ interface Message {
 
 const run = async () => {
   // Producing
+
   await producer.connect();
   await consumer.connect();
   await consumer.subscribe({ topic: "llm-query", fromBeginning: false });

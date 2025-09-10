@@ -102,13 +102,13 @@ services:
     image: bitnami/kafka:3.4
     container_name: notekafka2
     ports:
-      - "9093:9093"
+      - "9093:9092"
     environment:
       - KAFKA_BROKER_ID=2
       - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
       - ALLOW_PLAINTEXT_LISTENER=yes
-      - KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9093
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://notekafka2:9093
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://notekafka2:9092
       - KAFKA_CFG_DELETE_TOPIC_ENABLE=true
       - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=false
       - KAFKA_CFG_LOG_RETENTION_MS=180000
@@ -120,13 +120,13 @@ services:
     image: bitnami/kafka:3.4
     container_name: notekafka3
     ports:
-      - "9094:9094"
+      - "9094:9092"
     environment:
       - KAFKA_BROKER_ID=3
       - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
       - ALLOW_PLAINTEXT_LISTENER=yes
-      - KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9094
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://notekafka3:9094
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://notekafka3:9092
       - KAFKA_CFG_DELETE_TOPIC_ENABLE=true
       - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=false
       - KAFKA_CFG_LOG_RETENTION_MS=180000

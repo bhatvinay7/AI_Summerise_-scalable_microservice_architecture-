@@ -7,7 +7,7 @@ export async function getKafkaProducer(): Promise<Producer> {
   if (!producer) {
     const kafka = new Kafka({
       clientId: "notes",
-      brokers: ["notekafka1:9092", "notekafka2:9093", "notekafka3:9094"],
+      brokers: ["notekafka1:9092", "notekafka2:9092", "notekafka3:9092"],
       retry: {
         initialRetryTime: 300,
         retries: 10,
