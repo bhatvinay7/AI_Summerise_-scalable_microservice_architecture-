@@ -52,6 +52,8 @@ async function setupAndRun() {
             message?.value?.toString()!
           );
           const userId = parsedMessage.userId;
+          console.log(userId)
+          console.log(parsedMessage)
           const ws = userMap.get(userId);
           if (ws && ws.readyState === WebSocket.OPEN) {
             ws.send(JSON.stringify(parsedMessage));

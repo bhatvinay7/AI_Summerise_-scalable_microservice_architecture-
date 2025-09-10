@@ -51,7 +51,7 @@ const run = async () => {
       //   value: message?.value?.toString(),
       // });
       const parsedMessage: Message = JSON.parse(message?.value?.toString()!);
-
+      console.log(parsedMessage)
       if (!parsedMessage || !parsedMessage.message) {
         console.error("Invalid message format or missing content");
         return;
