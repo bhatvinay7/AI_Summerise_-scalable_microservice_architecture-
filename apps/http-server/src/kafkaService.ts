@@ -21,6 +21,7 @@ export async function getKafkaProducer(): Promise<Producer> {
 
     producer = kafka.producer({
       allowAutoTopicCreation:true,
+      metadataMaxAge:60000
     });
     const admin = kafka.admin();
     await admin.connect();

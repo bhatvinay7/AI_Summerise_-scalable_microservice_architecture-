@@ -4,7 +4,7 @@ import uploadFileToS3 from "../aws-s3/uploader";
 import getUserDetails, { user } from "../auth/getUserDetailAuth";
 import fs from "fs";
 const prisma:PrismaClient =require("prisma/client");
-import { getKafkaProducer } from "../kafkaService";  // new service
+import { getKafkaProducer} from "../kafkaService";  // new service
 
 let fileLPath: string | null = null;
 

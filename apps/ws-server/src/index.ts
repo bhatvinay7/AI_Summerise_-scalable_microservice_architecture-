@@ -16,7 +16,7 @@ const kafka = new Kafka({
     password: process.env.KAFKA_PASSWORD,
   } as SASLOptions,
 });
-const producer = kafka.producer();
+const producer = kafka.producer({metadataMaxAge:60000});
 const consumer = kafka.consumer({
   groupId: "llm-response",
   sessionTimeout: 30000,

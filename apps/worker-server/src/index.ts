@@ -24,7 +24,7 @@ enum MessageType {
   Response = "response",
 }
 
-const producer = kafka.producer();
+const producer = kafka.producer({metadataMaxAge:60000});
 const consumer = kafka.consumer({
   groupId: "query-consumer-group",
   sessionTimeout: 30000,
