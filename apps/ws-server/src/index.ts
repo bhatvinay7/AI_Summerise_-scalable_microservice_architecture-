@@ -1,6 +1,8 @@
 import { Kafka, KafkaMessage, SASLOptions } from "kafkajs";
 import { WebSocketServer, WebSocket } from "ws";
 import { verifyAuth } from "./utils/verifyUserAuth";
+import dotenv from 'dotenv'
+dotenv.config()
 import { sc, subcriber, natsConnection } from "./nats-server/nats";
 import express from "express";
 

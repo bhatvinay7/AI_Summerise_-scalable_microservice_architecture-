@@ -1,6 +1,7 @@
 // kafkaService.ts
 import { Kafka, Producer,SASLOptions } from "kafkajs";
-
+import dotenv from 'dotenv'
+dotenv.config()
 let producer: Producer;
 
 export async function getKafkaProducer(): Promise<Producer> {

@@ -1,5 +1,7 @@
 import { Kafka, KafkaMessage, SASLOptions } from "kafkajs";
 const prisma = require("prisma/client");
+import dotenv from 'dotenv'
+dotenv.config()
 import express from "express";
 import { natsConnection, sc } from "./nats-server/nats";
 import redisClient from "./redis/redisClient";
