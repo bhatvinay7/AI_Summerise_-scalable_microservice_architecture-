@@ -46,7 +46,7 @@ server {
     server_name ${WS_SERVER_DOMAIN};
    
     location / {
-        proxy_pass ws://${WS_SERVER_DOMAIN}:${WS_SERVER_DOMAIN_PORT};
+        proxy_pass http://${WS_SERVER_DOMAIN}:${WS_SERVER_DOMAIN_PORT};
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "Upgrade";
