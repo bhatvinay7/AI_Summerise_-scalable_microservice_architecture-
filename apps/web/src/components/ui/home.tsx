@@ -23,7 +23,7 @@ export default function Home() {
     transition={{ duration:0.8, ease: "easeInOut" }}>
         {/* Sidebar */}
 
-        <aside className={`${state ?"block absolute sm:sticky " :"hidden"}  top-0 w-3/4 md:w-[310px] z-[44]   transition-[w] delay-700 h-screen  bg-[#2a2b2a] flex flex-col gap-1.5  p-2 border-r border-white/15`}>
+        <aside className={`${state ?"block absolute sm:sticky " :"hidden"}  top-0 w-full p-1 md:w-[310px] z-[44]   transition-[w] delay-700 h-screen  bg-[#2a2b2a] flex flex-col gap-1.5   border-r border-white/15`}>
           <SessionSearch />
           <div className='w-full h-[calc(100%-100px)] overflow-y-scroll sticky  top-24' >
           <Session />
@@ -32,7 +32,7 @@ export default function Home() {
         </aside>
 
         {/* Chat Area */}
-        <main className=" h-screen flex w-full  relative items-center justify-center  ">
+        <main className=" h-screen flex w-full overflow-x-hidden relative items-center justify-center  ">
          {!state && <div className='w-fit absolute z-[38] inset-0 top-1 left-2 '>
           <SidebatToggle/>
           </div>

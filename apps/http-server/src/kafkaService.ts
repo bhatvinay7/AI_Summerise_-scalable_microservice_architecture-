@@ -17,7 +17,9 @@ export async function getKafkaProducer(): Promise<Producer> {
     producer = kafka.producer({
       allowAutoTopicCreation: false,
     });
-
+    const admin = kafka.admin();
+    await admin.connect();
+    const metadata = await admin.fetchTopicMetadata({ topics: ["upload-file"] });
     await producer.connect();
 
     // log disconnections

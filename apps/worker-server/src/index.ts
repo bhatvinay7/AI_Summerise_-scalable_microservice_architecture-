@@ -31,7 +31,9 @@ interface Message {
 
 const run = async () => {
   // Producing
-
+  const admin = kafka.admin();
+  await admin.connect();
+  const metadata = await admin.fetchTopicMetadata({ topics: ["llm-query"] });
   await producer.connect();
   await consumer.connect();
   await consumer.subscribe({ topic: "llm-query", fromBeginning: false });

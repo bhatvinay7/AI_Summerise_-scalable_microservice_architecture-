@@ -151,15 +151,15 @@ export default function ChatWindow() {
   }, [connectWebSocket]);
 
   const sendMessage = () => {
-    if (wsRef.current?.readyState === WebSocket.OPEN && userQuery.query) {
-      wsRef.current.send(
-        JSON.stringify({
-          sessionId: sessionId || generateUUID(),
-          message: userQuery.query,
-          userId: userDetails.userId,
-          token: userDetails.token,
-        })
-      );
+    // if (wsRef.current?.readyState === WebSocket.OPEN && userQuery.query) {
+    //   wsRef.current.send(
+    //     JSON.stringify({
+    //       sessionId: sessionId || generateUUID(),
+    //       message: userQuery.query,
+    //       userId: userDetails.userId,
+    //       token: userDetails.token,
+    //     })
+    //   );
       setcurrentChatHistoey((prev) => {
         const updated = [
           ...prev,
@@ -174,32 +174,32 @@ export default function ChatWindow() {
         return updated;
       });
       setUserQuery({ query: "" });
-    }
+    // }
   };
 
   return (
-    <div className=" w-full relative flex flex-col items-center h-screen">
-      <div className=" w-full h-[calc(100vh-140px)] overflow-y-auto  flex flex-col items-center place- top-14">
-        <div className=" relative w-4/5 sm:w-1/2 self-center top-14 flex flex-col items-center  p-2">
+    <div className=" w-full relative flex flex-col items-center   h-screen">
+      <div className=" w-full h-[calc(100vh-140px)]  relative  flex flex-col items-center place- top-14">
+        <div className=" relative max-w-4/5 sm:max-w-1/2 self-center overflow-y-auto  top-14  flex flex-col items-center  p-2">
           {currentChatHistory?.map((each: ResponseMessage) => {
         return (
           <div
             key={each?.query?.id}
-            className="w-full h-auto min-h-20 flex flex-col relative items-center gap-y-4"
+            className="w-full h-auto min-h-20 flex flex-col scrollBar overflow-x-auto  items-center gap-y-4 p-3 "
           >
 
-            <div className="max-w-[75%] self-end rounded-xl bg-[#3e3e3f] text-white px-4 py-2 shadow-md">
+            <div className=" max-w-[75%] min-w-[40px] relative scrollBar overflow-x-auto  self-end right-0 rounded-xl bg-[#3e3e3f] text-white  px-4 py-2 shadow-md">
               {each.query.userquery}
             </div>
 
           
             {each.response?.llmResponse ? (
-              <div className="max-w-[75%] self-start rounded-xl bg-[#4b4747] text-gray-200 px-4 py-3 shadow-md">
+              <div className="max-w-[75%] self-start rounded-sm bg-[#4b4747]  text-gray-200 px-4 py-3 shadow-md">
                 <p className="whitespace-pre-wrap">{each.response?.llmResponse}</p>
               </div>
-            ) : (
-              <Ellipsis className="text-white/40 animate-pulse self-start w-5 h-5" />
-            )}
+            ) :each.query.userquery ? (
+              <Ellipsis className="text-white/40 animate-pulse self-start w-6 h-6" />
+            ):<></>}
           </div>
         );
       })}

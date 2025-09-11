@@ -1,16 +1,15 @@
 @import "tailwindcss";
-@tailwind utilities;
 @layer base {
-      *, *::before, *::after {
-        box-sizing: border-box;
-      }
-      /* Your custom reset styles here */
-      * {
-        margin: 0;
-        padding: 0;
-      }
-      /* Other base styles */
-    }
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+  /* Reset only specific elements */
+  body, h1, h2, h3, p {
+    margin: 0;
+    padding: 0;
+  }
+}
+
 
    
 @media (prefers-color-scheme: dark) {
@@ -31,11 +30,11 @@ body {
   background: var(--background);
 }
 
-* {
+/* * {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
-}
+} */
 
 a {
   color: inherit;
@@ -62,6 +61,31 @@ a {
 .scrollBar::-webkit-scrollbar {
   width:7px;         /* scrollbar thickness */
   height: 2px;        /* for horizontal */
+}
+
+/* Track */
+.scrollBar::-webkit-scrollbar-track {
+  background: transparent; /* keeps it clean */
+}
+
+/* Handle */
+.scrollBar::-webkit-scrollbar-thumb  {
+  background: rgba(255, 255, 255, 0.4); /* grayish white */
+  border-radius: 8px;
+  
+}
+.scrollBar::-webkit-scrollbar-thumb:hover {
+   cursor: pointer;
+}
+/* Handle on hover */
+.scrollBar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+
+.scrollBar::-webkit-scrollbar {
+  width:7px;         /* scrollbar thickness */
+  height: 7px;        /* for horizontal */
 }
 
 /* Track */

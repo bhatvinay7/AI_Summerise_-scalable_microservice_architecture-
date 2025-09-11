@@ -17,6 +17,7 @@ const kafka = new Kafka({
 });
 
 const consumer = kafka.consumer({ groupId: "upload-file" });
+
 const app = express();
 const port = 3002;
 
@@ -31,6 +32,9 @@ const publishNatsMessage = async (channel: string, data: any) => {
 
 const runConsumer = async () => {
   try {
+    const admin = kafka.admin();
+    await admin.connect();
+    const metadata = await admin.fetchTopicMetadata({ topics: ["upload-file"] });
     await consumer.connect();
     await consumer.subscribe({ topic: "upload-file", fromBeginning: false });
 

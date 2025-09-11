@@ -32,14 +32,20 @@ export default function ChatInput({
   const handleSend = () => {
     props.sendMessage();
     setText("")
-  };
+    if(textareaRef?.current){
+      textareaRef.current.style.height ="auto"
 
-  const handleInput = () => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto"; // reset first
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
   };
+
+useEffect(()=>{
+
+  if (textareaRef.current) {
+    textareaRef.current.style.height = "auto"; // reset first
+    textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+  }
+
+},[text])
 
   useEffect(() => {
   fileArray.forEach((file, i) => {
@@ -103,7 +109,7 @@ export default function ChatInput({
   }, [text, currentFile]);
 
   return (
-    <div className=" w-9/10 md:w-4/5 lg:w-1/2 h-auto relative border-white/20 min-h-12 sm:min-h-24 flex flex-col px-4 py-5 space-y-2 gap-y-4 bg-[#2f2f2d] border placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-white/20 rounded-2xl  ">
+    <div className=" w-9/10 md:w-4/5 lg:w-2/5 h-auto relative border-white/20 min-h-8 sm:min-h-10 flex flex-col p-1 space-y-1 gap-y-1 bg-[#2f2f2d] border placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-white/20 rounded-xl  ">
       <div className={`${fileArray ? "flex" : "hidden"} gap-x-1`}>
         {fileArray?.map((each, index: number) => {
           return (
@@ -126,17 +132,17 @@ export default function ChatInput({
       </div>
     
 
-      <div className="sticky bottom-14 flex flex-col left-0 w-full       min-h-10 h-auto  ">
-        <div className="flex  w-full self-center h-auto relative justify-center overflow-auto inset-1.5  p-5 left-0.5 top-3 max-auto  mb-2  ">
+      <div className="sticky bottom-10 flex flex-col left-0 w-full   min-h-4 h-auto  ">
+        <div className="flex  w-full self-center h-auto relative justify-center overflow-auto inset-1.5  p-1.5 left-0.5 top-3 max-auto    ">
           <textarea
             ref={textareaRef}
             value={text}
             onChange={(e) => {
-              (setText(e.target.value), handleInput());
+              (setText(e.target.value));
             }}
             rows={1}
             placeholder="Type a message…"
-            className=" w-19/20   bg-[#2f2f2d] text-white/75  relative m-3 min-h-10  p-6 scrollBar max-h-52 resize-none  outline-none "
+            className=" w-19/20   bg-[#2f2f2d] text-white/75  relative  min-h-2  p-1 scrollBar max-h-52 resize-none  outline-none "
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
@@ -146,8 +152,8 @@ export default function ChatInput({
           />
         </div>
       </div>
-      <div className="  w-19/20 self-center flex relative my-3  p-3 bottom-1.5 ">
-        <div className="flex items-center justify-between h-auto w-full mt-5 relative gap-1 p-4">
+      <div className="  w-19/20 self-center flex relative   p-1 -bottom-1 ">
+        <div className="flex items-center justify-between h-auto w-full  relative gap-1 p-1">
           <button
   type="button"
   disabled={fileArray.length == 3}

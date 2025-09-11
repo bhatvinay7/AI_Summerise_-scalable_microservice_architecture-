@@ -29,7 +29,9 @@ const wss = new WebSocketServer({ port: PORT, host: "0.0.0.0" });
 
 async function setupAndRun() {
   try {
-    
+    const admin = kafka.admin();
+    await admin.connect();
+    const metadata = await admin.fetchTopicMetadata({ topics: ["llm-query"] });
     await producer.connect();
     await consumer.connect();
     await consumer.subscribe({ topic: "llm-response", fromBeginning: false });
