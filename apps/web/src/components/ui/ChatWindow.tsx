@@ -151,15 +151,15 @@ export default function ChatWindow() {
   }, [connectWebSocket]);
 
   const sendMessage = () => {
-    // if (wsRef.current?.readyState === WebSocket.OPEN && userQuery.query) {
-    //   wsRef.current.send(
-    //     JSON.stringify({
-    //       sessionId: sessionId || generateUUID(),
-    //       message: userQuery.query,
-    //       userId: userDetails.userId,
-    //       token: userDetails.token,
-    //     })
-    //   );
+    if (wsRef.current?.readyState === WebSocket.OPEN && userQuery.query) {
+      wsRef.current.send(
+        JSON.stringify({
+          sessionId: sessionId || generateUUID(),
+          message: userQuery.query,
+          userId: userDetails.userId,
+          token: userDetails.token,
+        })
+      );
       setcurrentChatHistoey((prev) => {
         const updated = [
           ...prev,
@@ -174,7 +174,7 @@ export default function ChatWindow() {
         return updated;
       });
       setUserQuery({ query: "" });
-    // }
+    }
   };
 
   return (
