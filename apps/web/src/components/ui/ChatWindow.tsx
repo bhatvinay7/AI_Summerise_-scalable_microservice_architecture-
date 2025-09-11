@@ -190,7 +190,6 @@ export default function ChatWindow() {
 
             <div className="max-w-[75%] self-end rounded-xl bg-[#3e3e3f] text-white px-4 py-2 shadow-md">
               {each.query.userquery}
-              {"lknlbgl bglkb blgnbl blgn nknb"}
             </div>
 
           
@@ -204,26 +203,7 @@ export default function ChatWindow() {
           </div>
         );
       })}
-       <div
-            // key={each?.query?.id}
-            className="w-full h-auto min-h-20 flex flex-col relative items-center gap-y-2"
-          >
-
-            <div className=" max-w-[75%] text-wrap self-end rounded-xl h-auto min-h-12 place-content-center  bg-[#3e3e3f] text-white px-4 py-5 shadow-md">
-              {/* {each.query.userquery} */}
-              {"lknlbgl bglkb blgnbl blgn nknb jkgk bjhgjgjgj jhgh jghj uu uuu uu uu"}
-              {/* <p className="  ">{"lknlbgl bglkb blgnbl blgn nknb jkgk bjhgjgjgj jhghjghj"}</p> */}
-            </div>
-
-          
-           
-              <div className="max-w-[75%] self-start rounded-xl bg-[#4b4747] text-gray-200 px-4 py-3 shadow-md">
-                {/* <p className="whitespace-pre-wrap">{each.response?.llmResponse}</p> */}
-              </div>
-            
-              <Ellipsis className="text-white/40 animate-pulse self-start w-8 h-8 sm:w-10 sm:h-10" />
-          
-          </div>
+       
         </div>
       </div>
 
