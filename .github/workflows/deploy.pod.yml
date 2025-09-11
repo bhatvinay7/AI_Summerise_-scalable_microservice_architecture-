@@ -274,6 +274,8 @@ jobs:
             --restart always \
             --env-file env.kafka \
             -e "KAFKA_BROKER_ID=1" \
+            -e  KAFKA_CFG_ZOOKEEPER_USER="${{secrets.KAFKA_USERNAME}}" \
+            -e  KAFKA_CFG_ZOOKEEPER_PASSWORD="${{secrets.KAFKA_PASSWORD}}"  \
             -e "KAFKA_CFG_ZOOKEEPER_CONNECT=notezookeeper:2181" \
             -e "KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9092" \
             -e "KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://notekafka1:9092" \
@@ -288,6 +290,8 @@ jobs:
             --env-file env.kafka \
             -e "KAFKA_BROKER_ID=2" \
             -e "KAFKA_CFG_ZOOKEEPER_CONNECT=notezookeeper:2181" \
+            -e  KAFKA_CFG_ZOOKEEPER_USER="${{secrets.KAFKA_USERNAME}}" \
+            -e  KAFKA_CFG_ZOOKEEPER_PASSWORD="${{secrets.KAFKA_PASSWORD}}"  \
             -e "KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9092" \
             -e "KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://notekafka2:9092" \
             -v $(pwd)/kafka_data2:/bitnami/kafka \
@@ -302,6 +306,8 @@ jobs:
             -e "KAFKA_BROKER_ID=3" \
             -e "KAFKA_CFG_ZOOKEEPER_CONNECT=notezookeeper:2181" \
             -e "KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9092" \
+            -e  KAFKA_CFG_ZOOKEEPER_USER="${{secrets.KAFKA_USERNAME}}" \
+            -e  KAFKA_CFG_ZOOKEEPER_PASSWORD="${{secrets.KAFKA_PASSWORD}}"  \
             -e "KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://notekafka3:9092" \
             -v $(pwd)/kafka_data3:/bitnami/kafka \
             --network $NETWORK \

@@ -33,7 +33,7 @@ export default function Home() {
 
         {/* Chat Area */}
         <main className=" h-screen flex w-full overflow-x-hidden relative items-center justify-center  ">
-         {!state && <div className='w-fit absolute z-[38] inset-0 top-1 left-2 '>
+         {!state && <div className='w-fit absolute z-[38] inset-0 top-2 left-2 '>
           <SidebatToggle/>
           </div>
          }

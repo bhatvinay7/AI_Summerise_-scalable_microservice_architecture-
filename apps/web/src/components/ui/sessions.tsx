@@ -20,13 +20,13 @@ export default function Sessions() {
     fetch();
   }, []);
   return (
-    <div className=" h-auto  z-[40] sticky top-24 flex flex-col items-center gap-1.5 p-6 m-2 space-y-2">
+    <div className=" h-auto  z-[40] sticky top-24 flex flex-col items-center gap-1.5 p-1.5  space-y-1">
 
      {sampleConversations?.map((c: any, index: number) => (
         <div
           key={c.id}
           onClick={() => setActiveChat(c.id)}
-          className={` w-19/20  px-4 flex flex-col min-h-10 rounded-md  transition shadow-md
+          className={` w-full  px-1.5 flex flex-col min-h-10 rounded-md  transition shadow-md
                   ${
                     activeChat === c.id
                       ? " bg-[#3c3c3f]  border-gray-300/20 "
