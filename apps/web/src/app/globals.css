@@ -1,10 +1,18 @@
 @import "tailwindcss";
+@tailwind utilities;
+@layer base {
+      *, *::before, *::after {
+        box-sizing: border-box;
+      }
+      /* Your custom reset styles here */
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      /* Other base styles */
+    }
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
+   
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;

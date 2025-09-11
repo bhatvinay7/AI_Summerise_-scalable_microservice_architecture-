@@ -54,7 +54,7 @@ export default function ChatWindow() {
   });
   const [response, setResponse] = useState<ResponseMessage | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(
-    params.sessionId ? (params.sessionId as string) :localStorage.getItem("sessionId")?localStorage.getItem("sessionId"): generateUUID()
+    params.sessionId ? (params.sessionId as string) : generateUUID()
   );
 
   const wsRef = useRef<WebSocket | null>(null);
@@ -63,6 +63,17 @@ export default function ChatWindow() {
   useEffect(() => {
     dispatch(getDetails() as any);
   }, [dispatch]);
+
+   useEffect(() => {
+    if (params.sessionId) {
+      setSessionId(params.sessionId as string);
+    } else {
+      const stored = localStorage.getItem("sessionId");
+      if (stored) {
+        setSessionId(stored);
+      }
+    }
+  }, []);
 
   const connectWebSocket = useCallback(() => {
     if (!userDetails.token) return;
@@ -169,27 +180,50 @@ export default function ChatWindow() {
   return (
     <div className=" w-full relative flex flex-col items-center h-screen">
       <div className=" w-full h-[calc(100vh-140px)] overflow-y-auto  flex flex-col items-center place- top-14">
-        <div className=" relative w-4/5 sm:w-3/5 self-center top-14 flex flex-col items-center  p-2">
+        <div className=" relative w-4/5 sm:w-1/2 self-center top-14 flex flex-col items-center  p-2">
           {currentChatHistory?.map((each: ResponseMessage) => {
-            return (
-              <div
-                key={each?.query?.id}
-                className="w-full h-auto min-h-40 flex flex-col relative  items-center gap-y-3 space-y-5 "
-              >
-                <div className=" w-fit  self-end h-auto   rounded-xl  place-content-center bg-white/20  text-black/45 p-2 ">
-                {each.query.userquery}
-                </div>
-                { each.response?.llmResponse ?
-                <div className="w-full h-auto flex flex-col p-4 min-h-12 items-center rounded-md bg-[#4b4747] text-gray-300/75 relative">
-                  <p className="p-4 w-9/10 relative top-2 h-auto ">
-                    {each.response?.llmResponse}
-                  </p>
-                </div>
-          :<Ellipsis className="text-white/20 animate-pulse self-start w-4 h-4"/>}
+        return (
+          <div
+            key={each?.query?.id}
+            className="w-full h-auto min-h-20 flex flex-col relative items-center gap-y-4"
+          >
+
+            <div className="max-w-[75%] self-end rounded-xl bg-[#3e3e3f] text-white px-4 py-2 shadow-md">
+              {each.query.userquery}
+              {"lknlbgl bglkb blgnbl blgn nknb"}
+            </div>
+
+          
+            {each.response?.llmResponse ? (
+              <div className="max-w-[75%] self-start rounded-xl bg-[#4b4747] text-gray-200 px-4 py-3 shadow-md">
+                <p className="whitespace-pre-wrap">{each.response?.llmResponse}</p>
+              </div>
+            ) : (
+              <Ellipsis className="text-white/40 animate-pulse self-start w-5 h-5" />
+            )}
+          </div>
+        );
+      })}
+       <div
+            // key={each?.query?.id}
+            className="w-full h-auto min-h-20 flex flex-col relative items-center gap-y-2"
+          >
+
+            <div className=" max-w-[75%] text-wrap self-end rounded-xl h-auto min-h-12 place-content-center  bg-[#3e3e3f] text-white px-4 py-5 shadow-md">
+              {/* {each.query.userquery} */}
+              {"lknlbgl bglkb blgnbl blgn nknb jkgk bjhgjgjgj jhgh jghj uu uuu uu uu"}
+              {/* <p className="  ">{"lknlbgl bglkb blgnbl blgn nknb jkgk bjhgjgjgj jhghjghj"}</p> */}
+            </div>
+
+          
+           
+              <div className="max-w-[75%] self-start rounded-xl bg-[#4b4747] text-gray-200 px-4 py-3 shadow-md">
+                {/* <p className="whitespace-pre-wrap">{each.response?.llmResponse}</p> */}
               </div>
             
-            );
-          })}
+              <Ellipsis className="text-white/40 animate-pulse self-start w-8 h-8 sm:w-10 sm:h-10" />
+          
+          </div>
         </div>
       </div>
 
