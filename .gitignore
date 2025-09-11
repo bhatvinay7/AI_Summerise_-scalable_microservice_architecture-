@@ -1,5 +1,6 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
+.next
+*/.next
 # dependencies
 */node_modules
 */.pnp
@@ -41,7 +42,7 @@
 *next-env.d.ts
 node_modules
 # Keep environment variables out of version control
-
+.turbo
 
 */src/generated/prisma
 *__pycache__/
