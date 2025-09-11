@@ -1,4 +1,4 @@
-import { Kafka, KafkaMessage } from "kafkajs";
+import { Kafka, KafkaMessage, SASLOptions } from "kafkajs";
 const prisma = require("prisma/client");
 import express from "express";
 import { natsConnection, sc } from "./nats-server/nats";
@@ -12,6 +12,11 @@ const kafka = new Kafka({
     initialRetryTime: 300,
     retries: 10,
   },
+  sasl: {
+    mechanism: "plain",
+    username: process.env.KAFKA_USERNAME,
+    password: process.env.KAFKA_PASSWORD,
+  } as SASLOptions,
 });
 
 enum MessageType {
@@ -20,7 +25,12 @@ enum MessageType {
 }
 
 const producer = kafka.producer();
-const consumer = kafka.consumer({ groupId: "query-consumer-group" });
+const consumer = kafka.consumer({
+  groupId: "query-consumer-group",
+  sessionTimeout: 30000,
+  heartbeatInterval: 3000,
+  maxWaitTimeInMs: 5000,
+});
 import { fetchResponse } from "./llm/responsGenerater";
 interface Message {
   userId: number;
@@ -54,7 +64,7 @@ const run = async () => {
       //   value: message?.value?.toString(),
       // });
       const parsedMessage: Message = JSON.parse(message?.value?.toString()!);
-      console.log(parsedMessage)
+      console.log(parsedMessage);
       if (!parsedMessage || !parsedMessage.message) {
         console.error("Invalid message format or missing content");
         return;
@@ -82,7 +92,7 @@ const run = async () => {
           response = await fetchResponse(
             `${parsedMessage.message}/n ${sessionData}`
           );
-          console.log(response)
+          console.log(response);
         }
         const Session = await prisma.session.findFirst({
           where: {

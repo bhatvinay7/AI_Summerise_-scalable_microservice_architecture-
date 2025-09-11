@@ -186,7 +186,9 @@ jobs:
             echo "password=${{ secrets.password }}" >> env.redis
             echo "host=${{ secrets.host }}" >> env.redis
             echo "port=${{ secrets.port }}" >> env.redis
-
+            echo "KAFKA_USERNAME=${{ secrets.KAFKA_USERNAME }}" >> env.redis
+            echo "KAFKA_USERNAME=${{ secrets.KAFKA_USERNAME}}" >> env.redis
+         
             echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}">> env.http
             echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY}}">> env.http
             echo "bucketName=${{ secrets.bucketName }}">> env.http
@@ -195,14 +197,19 @@ jobs:
             echo "ServerSideEncryption=${{ secrets.ServerSideEncryption }}">> env.http
             echo "REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET }}">> env.http
             echo "NEXT_PUBLIC_FRONTEND_URL=${{ secrets.NEXT_PUBLIC_FRONTEND_URL }}">> env.http
+            echo "KAFKA_USERNAME=${{ secrets.KAFKA_USERNAME }}" >> env.http
+            echo "KAFKA_USERNAME=${{ secrets.KAFKA_USERNAME}}" >> env.http
+
             sudo rm -f env.kafka
             echo "KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181">> env.kafka
             echo "ALLOW_PLAINTEXT_LISTENER=yes">> env.kafka
             echo "KAFKA_CFG_DELETE_TOPIC_ENABLE=false">> env.kafka
             echo "KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true">> env.kafka
             echo "KAFKA_CFG_LOG_RETENTION_MS=180000" >> env.kafka
-
-
+            echo "KAFKA_CFG_SASL_ENABLED_MECHANISMS=PLAIN" >> env.kafka
+            echo " KAFKA_CFG_SASL_MECHANISM_INTER_BROKER_PROTOCOL=PLAIN" >> env.kafka
+            echo " KAFKA_CFG_SECURITY_INTER_BROKER_PROTOCOL=SASL_PLAINTEXT" >> env.kafka
+          
             IMAGE1=${{secrets.DOCKER_USERNAME }}/http-server:${{ github.sha }}
             IMAGE2=${{secrets.DOCKER_USERNAME }}/filehandler-server:${{ github.sha }}
             IMAGE3=${{secrets.DOCKER_USERNAME }}/worker-server:${{ github.sha }}
@@ -256,8 +263,12 @@ jobs:
 
 
 
-              sudo  docker run -d \
+            sudo  docker run -d \
             -p 2181:2181 \
+            --log-driver json-file \
+            --log-opt max-size=1m \
+            --log-opt max-file=2 \
+            --log-opt max-age=2m \
             --name notezookeeper  \
             -e "ALLOW_ANONYMOUS_LOGIN=no" \
             -e "ZOO_ENABLE_AUTH=yes" \
@@ -270,6 +281,10 @@ jobs:
 
             sudo docker run -d \
             -p 9092:9092 \
+            --log-driver json-file \
+            --log-opt max-size=1m \
+            --log-opt max-file=2 \
+            --log-opt max-age=2m \
             --name notekafka1  \
             --restart always \
             --env-file env.kafka \
@@ -285,6 +300,10 @@ jobs:
 
             sudo docker run -d \
             -p 9093:9092 \
+            --log-driver json-file \
+            --log-opt max-size=1m \
+            --log-opt max-file=2 \
+            --log-opt max-age=2m \
             --name notekafka2  \
             --restart always \
             --env-file env.kafka \
@@ -300,6 +319,10 @@ jobs:
 
             sudo docker run -d \
             -p 9094:9092  \
+             --log-driver json-file \
+            --log-opt max-size=1m \
+            --log-opt max-file=2 \
+            --log-opt max-age=2m \
             --name notekafka3  \
             --restart always \
             --env-file env.kafka \

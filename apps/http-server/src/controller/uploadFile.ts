@@ -10,6 +10,7 @@ let fileLPath: string | null = null;
 
 const uploadFile = async (req: Request, res: Response) => {
     try {
+    
     const producer = await getKafkaProducer();
     let sessionId: string | null = req.body?.sessionId
     const user: user = await getUserDetails(req);
@@ -24,8 +25,14 @@ const uploadFile = async (req: Request, res: Response) => {
     const file = req.files as Express.Multer.File[];
     fileLPath = file?.[0]?.path!;
     const link = await uploadFileToS3(file?.[0]?.path!);
-
-    if (!sessionId) {
+    
+    const Session = await prisma.session.findFirst({
+          where: {
+            userId: user.userId!,
+            id:sessionId as string,
+          },
+        });
+    if (!Session?.id) {
       const session = await prisma.session.create({
         data: {
           userId: user.userId as number,
@@ -58,7 +65,7 @@ const uploadFile = async (req: Request, res: Response) => {
       ],
     });
 
-    res.status(200).json({ fileId: req.body.fileId });
+    res.status(200).json({ fileId: req.body.fileId,sessionId:sessionId });
   } catch (error: any) {
     console.error("Error in uploadFile controller:", error);
     res.status(500).json({ message: error.message });

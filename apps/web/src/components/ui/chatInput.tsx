@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { Paperclip, Send, LoaderCircle, Ellipsis } from "lucide-react";
 import { Files } from "lucide-react";
 import generateUUID from "src/utils/generateUniqueId";
+import { Session } from '../../../../../packages/prisma/src/generated/prisma/index';
 interface files {
   file: File | null;
   uploadedPercentage: number;
@@ -77,6 +78,10 @@ useEffect(()=>{
 
       xhr.addEventListener("load", () => {
         const response = xhr.response;
+        if(response.SessionId){
+          if(!localStorage.getItem("sessionId"))
+            localStorage.setItem("sessionId",response.sessionId)
+        }
         setFileChange(prev =>
           prev.map(f =>
             f.id === response?.fileId

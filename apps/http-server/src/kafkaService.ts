@@ -1,5 +1,5 @@
 // kafkaService.ts
-import { Kafka, Producer } from "kafkajs";
+import { Kafka, Producer,SASLOptions } from "kafkajs";
 
 let producer: Producer;
 
@@ -12,10 +12,15 @@ export async function getKafkaProducer(): Promise<Producer> {
         initialRetryTime: 300,
         retries: 10,
       },
+      sasl: {
+    mechanism: 'plain',
+    username: process.env.KAFKA_USERNAME,
+    password: process.env.KAFKA_PASSWORD
+  } as SASLOptions
     });
 
     producer = kafka.producer({
-      allowAutoTopicCreation: false,
+      allowAutoTopicCreation:true,
     });
     const admin = kafka.admin();
     await admin.connect();

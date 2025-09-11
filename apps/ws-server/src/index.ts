@@ -1,4 +1,4 @@
-import { Kafka, KafkaMessage } from "kafkajs";
+import { Kafka, KafkaMessage, SASLOptions } from "kafkajs";
 import { WebSocketServer, WebSocket } from "ws";
 import { verifyAuth } from "./utils/verifyUserAuth";
 import { sc, subcriber, natsConnection } from "./nats-server/nats";
@@ -10,9 +10,19 @@ const PORT = 8080;
 const kafka = new Kafka({
   clientId: "notes",
   brokers: ["notekafka1:9092", "notekafka2:9092", "notekafka3:9092"],
+  sasl: {
+    mechanism: "plain",
+    username: process.env.KAFKA_USERNAME,
+    password: process.env.KAFKA_PASSWORD,
+  } as SASLOptions,
 });
 const producer = kafka.producer();
-const consumer = kafka.consumer({ groupId: "llm-response" });
+const consumer = kafka.consumer({
+  groupId: "llm-response",
+  sessionTimeout: 30000,
+  heartbeatInterval: 3000,
+  maxWaitTimeInMs: 5000,
+});
 interface Message {
   userId: number;
   sessionId: string;
@@ -54,19 +64,16 @@ async function setupAndRun() {
             message?.value?.toString()!
           );
           const userId = parsedMessage.userId;
-          console.log(userId)
-          console.log(parsedMessage)
+          console.log(userId);
+          console.log(parsedMessage);
           const ws = userMap.get(userId);
           if (ws && ws.readyState === WebSocket.OPEN) {
             ws.send(JSON.stringify(parsedMessage));
           } else {
-            console.error(
-              `WebSocket for user ${userId} is not open or found.`
-            );
+            console.error(`WebSocket for user ${userId} is not open or found.`);
           }
         } catch (error) {
           console.error("Error processing Kafka message:", error);
-          
         }
       },
     });
@@ -80,9 +87,7 @@ async function setupAndRun() {
           if (ws && ws.readyState === WebSocket.OPEN) {
             ws.send(sc.decode(m.data));
           } else {
-            console.error(
-              `WebSocket for user ${message.userId} is not open.`
-            );
+            console.error(`WebSocket for user ${message.userId} is not open.`);
           }
         }
       } catch (error) {
@@ -97,7 +102,7 @@ async function setupAndRun() {
       ws.on("message", async (data: ArrayBuffer) => {
         try {
           const message: Message = JSON.parse(data.toString());
-          console.log(message)
+          console.log(message);
           // 5. Authenticate every message
           if (!message?.token) {
             ws.close(1008, "Token not provided");
@@ -120,7 +125,15 @@ async function setupAndRun() {
             const userId = message.userId;
             await producer.send({
               topic: "llm-query",
-              messages: [{ value: JSON.stringify({ userId, sessionId: message.sessionId, message: message.message }) }],
+              messages: [
+                {
+                  value: JSON.stringify({
+                    userId,
+                    sessionId: message.sessionId,
+                    message: message.message,
+                  }),
+                },
+              ],
             });
           }
         } catch (error) {
@@ -141,7 +154,6 @@ async function setupAndRun() {
         console.error("WebSocket error:", error);
       });
     });
-
   } catch (error) {
     console.error("Fatal error during setup:", error);
     process.exit(1); // Exit if initial setup fails
@@ -149,4 +161,3 @@ async function setupAndRun() {
 }
 
 setupAndRun();
-

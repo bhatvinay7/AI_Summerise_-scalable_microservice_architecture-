@@ -1,5 +1,5 @@
 import express from "express";
-import { Kafka, KafkaMessage } from "kafkajs";
+import { Kafka, KafkaMessage, SASLOptions } from "kafkajs";
 import { sc, natsConnection } from "./nats-server/nats";
 import getFileBufferData from "./utils/getFileBufferData";
 import redis from "./redis/redisClient";
@@ -14,9 +14,19 @@ const kafka = new Kafka({
     initialRetryTime: 300,
     retries: 10,
   },
+  sasl: {
+    mechanism: "plain",
+    username: process.env.KAFKA_USERNAME,
+    password: process.env.KAFKA_PASSWORD,
+  } as SASLOptions,
 });
 
-const consumer = kafka.consumer({ groupId: "upload-file" });
+const consumer = kafka.consumer({
+  groupId: "upload-file",
+  sessionTimeout: 30000,
+  heartbeatInterval: 3000,
+  maxWaitTimeInMs: 5000,
+});
 
 const app = express();
 const port = 3002;
@@ -34,7 +44,9 @@ const runConsumer = async () => {
   try {
     const admin = kafka.admin();
     await admin.connect();
-    const metadata = await admin.fetchTopicMetadata({ topics: ["upload-file"] });
+    const metadata = await admin.fetchTopicMetadata({
+      topics: ["upload-file"],
+    });
     await consumer.connect();
     await consumer.subscribe({ topic: "upload-file", fromBeginning: false });
 
@@ -71,14 +83,14 @@ const runConsumer = async () => {
           const cachedData = await redis.get(value.sessionId);
           let dataToStore: any;
           if (cachedData) {
-            const arr=[]
+            const arr = [];
             arr.push(JSON.parse(cachedData));
             arr.push(parsedData);
             dataToStore = arr;
           } else {
             dataToStore = [parsedData];
           }
-          console.log(parsedData)
+          console.log(parsedData);
           await redis.set(value.sessionId, JSON.stringify(dataToStore));
 
           // Notify user that processing is completed
