@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from "react";
 import { Paperclip, Send, LoaderCircle, Ellipsis } from "lucide-react";
 import { Files } from "lucide-react";
 import generateUUID from "src/utils/generateUniqueId";
-import { Session } from '../../../../../packages/prisma/src/generated/prisma/index';
 interface files {
   file: File | null;
   uploadedPercentage: number;
