@@ -215,7 +215,7 @@ jobs:
             echo "KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@notekafka1:9095,2@notekafka2:9095,3@notekafka3:9095" >> env.kafka
             echo "KAFKA_CFG_INTER_BROKER_LISTENER_NAME=INTERNAL" >> env.kafka
             echo "KAFKA_CFG_SASL_MECHANISM_CONTROLLER_PROTOCOL=PLAIN" >> env.kafka
-            echo "KAFKA_CFG_SECURITY_INTER_BROKER_PROTOCOL=SASL_PLAINTEXT" >> env.kafka
+            # echo "KAFKA_CFG_SECURITY_INTER_BROKER_PROTOCOL=SASL_PLAINTEXT" >> env.kafka
     
             echo "KAFKA_CFG_AUTHORIZER_CLASS_NAME=kafka.security.authorizer.AclAuthorizer" >> env.kafka
             echo "KAFKA_CLIENT_USERS=${{secrets.KAFKA_USERNAME}}" >> env.kafka
