@@ -282,6 +282,7 @@ jobs:
             --name notekafka1 \
             --restart always \
             --env-file env.kafka \
+            -e "KAFKA_CFG_CLUSTER_ID=notes" \
             -e "KAFKA_CFG_NODE_ID=1" \
             -e "KAFKA_CFG_ADVERTISED_LISTENERS=INTERNAL://notekafka1:9092,EXTERNAL://localhost:9092" \
             -v $(pwd)/kafka_data1:/bitnami/kafka \
@@ -293,6 +294,7 @@ jobs:
             --name notekafka2 \
             --restart always \
             --env-file env.kafka \
+            -e "KAFKA_CFG_CLUSTER_ID=notes" \
             -e "KAFKA_CFG_NODE_ID=2" \       
             -e "KAFKA_CFG_ADVERTISED_LISTENERS=INTERNAL://notekafka2:9092,EXTERNAL://localhost:9093" \
             -v $(pwd)/kafka_data2:/bitnami/kafka \
@@ -304,6 +306,7 @@ jobs:
             --name notekafka3 \
             --restart always \
             --env-file env.kafka \
+            -e "KAFKA_CFG_CLUSTER_ID=notes" \
             -e "KAFKA_CFG_NODE_ID=3" \
             -e "KAFKA_CFG_ADVERTISED_LISTENERS=INTERNAL://notekafka3:9092,EXTERNAL://localhost:9094" \
             -v $(pwd)/kafka_data3:/bitnami/kafka \
