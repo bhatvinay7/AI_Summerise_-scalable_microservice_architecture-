@@ -223,7 +223,7 @@ jobs:
             echo "KAFKA_CFG_SASL_JAAS_CONFIG=org.apache.kafka.common.security.plain.PlainLoginModule required username=\"${{secrets.KAFKA_USERNAME}}\" password=\"${{secrets.KAFKA_PASSWORD}}\" user_admin=\"${{secrets.KAFKA_PASSWORD}}\" user_app=\"app-secret\";" >> env.kafka
 
             echo "KAFKA_CFG_LOG_RETENTION_CHECK_INTERVAL_MS=120000" >> env.kafka
-            echo "KAFKA_CFG_LOG_RETENTION_MS=1800000" >> env.kafka
+            echo "KAFKA_CFG_LOG_RETENTION_MS=180000" >> env.kafka
             echo "KAFKA_CFG_LOG_SEGMENT_BYTES=1073741824" >> env.kafka
             echo "KAFKA_CFG_LOG_SEGMENT_DELETE_DELAY_MS=120000" >> env.kafka
             echo "KAFKA_CFG_LOG_RETENTION_BYTES=1073741824" >> env.kafka
@@ -295,7 +295,7 @@ jobs:
             --restart always \
             --env-file env.kafka \
             -e "KAFKA_CFG_CLUSTER_ID=notes" \
-            -e "KAFKA_CFG_NODE_ID=2" \       
+            -e "KAFKA_CFG_NODE_ID=2" \
             -e "KAFKA_CFG_ADVERTISED_LISTENERS=INTERNAL://notekafka2:9092,EXTERNAL://localhost:9093" \
             -v $(pwd)/kafka_data2:/bitnami/kafka \
             --network $NETWORK \
