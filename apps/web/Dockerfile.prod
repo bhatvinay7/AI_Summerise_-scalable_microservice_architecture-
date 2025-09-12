@@ -42,7 +42,7 @@ WORKDIR /app
 COPY --from=installer /app ./
 COPY --from=installer /app/node_modules ./node_modules
 WORKDIR /app/apps/web
-RUN pnpm run build
+RUN pnpm run build --prod
 FROM base AS runner
 WORKDIR /app
 COPY --from=builder /app ./

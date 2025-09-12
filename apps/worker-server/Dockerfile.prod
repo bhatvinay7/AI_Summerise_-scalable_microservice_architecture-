@@ -29,7 +29,7 @@ ARG APP=worker-server
 WORKDIR /app
 COPY --from=installer /app ./
 WORKDIR /app/apps/${APP}
-RUN pnpm run build
+RUN pnpm run build --prod
 
 FROM base  AS runner
 ARG APP=worker-server

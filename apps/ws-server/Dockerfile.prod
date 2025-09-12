@@ -26,7 +26,7 @@ ARG APP=ws-server
 WORKDIR /app
 COPY --from=installer /app ./
 WORKDIR /app/apps/${APP}
-RUN pnpm run build
+RUN pnpm run build --prod
 
 
 
