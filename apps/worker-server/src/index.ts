@@ -30,8 +30,6 @@ enum MessageType {
 const producer = kafka.producer({metadataMaxAge:60000});
 const consumer = kafka.consumer({
   groupId: "query-consumer-group",
-  sessionTimeout: 30000,
-  heartbeatInterval: 3000,
   maxWaitTimeInMs: 5000,
 });
 import { fetchResponse } from "./llm/responsGenerater";

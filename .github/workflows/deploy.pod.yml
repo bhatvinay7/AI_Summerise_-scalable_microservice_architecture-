@@ -300,8 +300,8 @@ jobs:
             $IMAGE6
 
             sudo docker run -d \
-            -p 9094:9092  \
-            --name notekafka3  \
+            -p 9094:9092 \
+            --name notekafka3 \
             --restart always \
             --env-file env.kafka \
             -e "KAFKA_CFG_NODE_ID=3" \
