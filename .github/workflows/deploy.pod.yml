@@ -233,7 +233,7 @@ jobs:
             IMAGE3=${{secrets.DOCKER_USERNAME }}/worker-server:${{ github.sha }}
             IMAGE4=${{secrets.DOCKER_USERNAME }}/ws-server:${{ github.sha }}
             IMAGE5=${{secrets.DOCKER_USERNAME }}/web:${{ github.sha }}
-            IMAGE6=bitnami/kafka:4.1.0
+            IMAGE6=bitnami/kafka:3.5.1
             IMAGE7=nats:latest
 
             echo "Pulling the  images from  docker hub"
