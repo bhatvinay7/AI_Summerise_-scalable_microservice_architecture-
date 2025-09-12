@@ -203,21 +203,37 @@ jobs:
            
 
             sudo rm -f env.kafka
-            echo "KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181">> env.kafka
+            echo "KAFKA_CFG_PROCESS_ROLES=broker,controller">> env.kafka
             echo "ALLOW_PLAINTEXT_LISTENER=yes">> env.kafka
             echo "KAFKA_CFG_DELETE_TOPIC_ENABLE=false">> env.kafka
             echo "KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true">> env.kafka
             echo "KAFKA_CFG_LOG_RETENTION_MS=180000" >> env.kafka
             echo "KAFKA_CFG_SASL_ENABLED_MECHANISMS=PLAIN" >> env.kafka
             echo "KAFKA_CFG_SASL_MECHANISM_INTER_BROKER_PROTOCOL=PLAIN" >> env.kafka
-            echo "KAFKA_CFG_LISTENERS=SASL_PLAINTEXT://0.0.0.0:9092" >> env.kafka
+            echo "KAFKA_CFG_LISTENERS=INTERNAL://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093" >> env.kafka
             echo "KAFKA_CFG_ZOOKEEPER_SASL_ENABLED=true" >> env.kafka
-            echo 'KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=SASL_PLAINTEXT:SASL_PLAINTEXT' >> env.kafka
+            echo 'KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=INTERNAL:SASL_PLAINTEXT,EXTERNAL:SASL_PLAINTEXT,CONTROLLER:SASL_PLAINTEXT' >> env.kafka
+            echo 'KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER' >> env.kafka
+            echo 'KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka1:9093,2@kafka2:9093,3@kafka3:9093' >> env.kafka
+            echo 'KAFKA_CFG_INTER_BROKER_LISTENER_NAME=INTERNAL' >> env.kafka
+           
             echo 'KAFKA_CFG_SECURITY_INTER_BROKER_PROTOCOL=SASL_PLAINTEXT' >> env.kafka
             echo 'KAFKA_CFG_SASL_MECHANISM_INTER_BROKER_PROTOCOL=PLAIN' >> env.kafka
+            echo 'KAFKA_CFG_AUTHORIZER_CLASS_NAME=kafka.security.authorizer.AclAuthorizer  >> env.kafka
+            echo 'KAFKA_CLIENT_USERS=${{secrets.KAFKA_PASSWORD}} >> env.kafka
+            echo 'KAFKA_CLIENT_PASSWORDS=${{secrets.KAFKA_PASSWORD}} >> env.kafka
             echo 'KAFKA_CFG_SASL_JAAS_CONFIG=org.apache.kafka.common.security.plain.PlainLoginModule required \
-            username="${{secrets.KAFKA_USERNAME}}" \ 
-            password="${{ secrets.KAFKA_PASSWORD}}" user_admin="${{ secrets.KAFKA_PASSWORD}}";' >> env.kafka
+            username=${{secrets.KAFKA_USERNAME}} \
+            password=${{ secrets.KAFKA_PASSWORD}} \
+            user_admin=${{secrets.KAFKA_USERNAME}} \
+            user_app="app-secret";' >> env.kafka
+            echo "KAFKA_CFG_LOG_RETENTION_CHECK_INTERVAL_MS=120000" >> env.kafka
+            echo "KAFKA_CFG_LOG_RETENTION_HOURS=1800000" >> env.kafka
+            echo "KAFKA_CFG_LOG_SEGMENT_BYTES=1073741824" >> env.kafka
+            echo "KAFKA_CFG_LOG_SEGMENT_DELETE_DELAY_MS=120000" >> env.kafka
+            echo "KAFKA_CFG_LOG_RETENTION_BYTES=1073741824" >> env.kafka
+            echo "KAFKA_CFG_LOG_CLEANUP_POLICY=delete" >> env.kafka
+            
           
             
             IMAGE1=${{secrets.DOCKER_USERNAME }}/http-server:${{ github.sha }}
@@ -270,28 +286,14 @@ jobs:
 
             NETWORK="note-network"
 
-            sudo  docker run -d \
-            -p 2181:2181 \
-            --name notezookeeper \
-            -e "ALLOW_ANONYMOUS_LOGIN=no" \
-            -e "ZOO_ENABLE_AUTH=yes" \
-            -e  ZOO_SERVER_USERS="${{secrets.KAFKA_USERNAME}}" \
-            -e  ZOO_SERVER_PASSWORDS="${{secrets.KAFKA_PASSWORD}}" \
-            -v $(pwd)/zookeeper-data:/bitnami/zookeeper \
-            --network $NETWORK \
-            $IMAGE8
-
-
+      
             sudo docker run -d \
             -p 9092:9092 \
             --name notekafka1 \
             --restart always \
             --env-file env.kafka \
-            -e "KAFKA_BROKER_ID=1" \
-            -e  KAFKA_CFG_ZOOKEEPER_USER="${{secrets.KAFKA_USERNAME}}" \
-            -e  KAFKA_CFG_ZOOKEEPER_PASSWORD="${{secrets.KAFKA_PASSWORD}}" \
-            -e "KAFKA_CFG_ZOOKEEPER_CONNECT=notezookeeper:2181" \
-            -e "KAFKA_CFG_ADVERTISED_LISTENERS=SASL_PLAINTEXT://notekafka1:9092" \
+            -e "KAFKA_CFG_NODE_ID=1" \
+            -e "KAFKA_CFG_ADVERTISED_LISTENERS=INTERNAL://kafka1:9092,EXTERNAL://localhost:9092"
             -v $(pwd)/kafka_data1:/bitnami/kafka \
             --network $NETWORK \
             $IMAGE6
@@ -302,11 +304,8 @@ jobs:
             --name notekafka2 \
             --restart always \
             --env-file env.kafka \
-            -e "KAFKA_BROKER_ID=2" \
-            -e "KAFKA_CFG_ZOOKEEPER_CONNECT=notezookeeper:2181" \
-            -e  KAFKA_CFG_ZOOKEEPER_USER="${{secrets.KAFKA_USERNAME}}" \
-            -e  KAFKA_CFG_ZOOKEEPER_PASSWORD="${{secrets.KAFKA_PASSWORD}}" \        
-            -e "KAFKA_CFG_ADVERTISED_LISTENERS=SASL_PLAINTEXT://notekafka2:9092" \
+            -e "KAFKA_CFG_NODE_ID=2" \       
+            -e "KAFKA_CFG_ADVERTISED_LISTENERS=INTERNAL://kafka2:9092,EXTERNAL://localhost:9093" \
             -v $(pwd)/kafka_data2:/bitnami/kafka \
             --network $NETWORK \
             $IMAGE6
@@ -316,11 +315,8 @@ jobs:
             --name notekafka3  \
             --restart always \
             --env-file env.kafka \
-            -e "KAFKA_BROKER_ID=3" \
-            -e "KAFKA_CFG_ZOOKEEPER_CONNECT=notezookeeper:2181" \
-            -e  KAFKA_CFG_ZOOKEEPER_USER="${{secrets.KAFKA_USERNAME}}" \
-            -e  KAFKA_CFG_ZOOKEEPER_PASSWORD="${{secrets.KAFKA_PASSWORD}}" \
-            -e "KAFKA_CFG_ADVERTISED_LISTENERS=SASL_PLAINTEXT://notekafka3:9092" \
+            -e "KAFKA_CFG_NODE_ID=3" \
+            -e "KAFKA_CFG_ADVERTISED_LISTENERS=INTERNAL://kafka1:9092,EXTERNAL://localhost:9094" \
             -v $(pwd)/kafka_data3:/bitnami/kafka \
             --network $NETWORK \
             $IMAGE6
