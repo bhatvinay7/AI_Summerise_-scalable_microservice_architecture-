@@ -24,7 +24,7 @@ COPY pnpm-lock.yaml ./
 COPY  pnpm-workspace.yaml ./
 COPY .npmrc ./
 COPY packages/ ./packages/
-RUN pnpm install
+RUN pnpm install --filter web
 RUN pnpm --filter  prisma run generate
 
 FROM base AS  builder
