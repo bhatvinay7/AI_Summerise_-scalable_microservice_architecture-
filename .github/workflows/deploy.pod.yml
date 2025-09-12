@@ -276,10 +276,10 @@ jobs:
 
             sudo  docker run -d \
             -p 2181:2181 \
-            --log-driver json-file \
-            --log-opt max-size=1m \
-            --log-opt max-file=2 \
-            --log-opt max-age=2m \
+            # --log-driver json-file \
+            # --log-opt max-size=1m \
+            # --log-opt max-file=2 \
+            # --log-opt max-age=2m \
             --name notezookeeper  \
             -e "ALLOW_ANONYMOUS_LOGIN=no" \
             -e "ZOO_ENABLE_AUTH=yes" \
@@ -292,10 +292,10 @@ jobs:
 
             sudo docker run -d \
             -p 9092:9092 \
-            --log-driver json-file \
-            --log-opt max-size=1m \
-            --log-opt max-file=2 \
-            --log-opt max-age=2m \
+            # --log-driver json-file \
+            # --log-opt max-size=1m \
+            # --log-opt max-file=2 \
+            # --log-opt max-age=2m \
             --name notekafka1  \
             --restart always \
             --env-file env.kafka \
@@ -311,10 +311,10 @@ jobs:
               
             sudo docker run -d \
             -p 9093:9092 \
-            --log-driver json-file \
-            --log-opt max-size=1m \
-            --log-opt max-file=2 \
-            --log-opt max-age=2m \
+            # --log-driver json-file \
+            # --log-opt max-size=1m \
+            # --log-opt max-file=2 \
+            # --log-opt max-age=2m \
             --name notekafka2  \
             --restart always \
             --env-file env.kafka \
@@ -329,10 +329,10 @@ jobs:
 
             sudo docker run -d \
             -p 9094:9092  \
-            --log-driver json-file \
-            --log-opt max-size=1m \
-            --log-opt max-file=2 \
-            --log-opt max-age=2m \
+            # --log-driver json-file \
+            # --log-opt max-size=1m \
+            # --log-opt max-file=2 \
+            # --log-opt max-age=2m \
             --name notekafka3  \
             --restart always \
             --env-file env.kafka \
