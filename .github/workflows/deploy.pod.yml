@@ -171,8 +171,6 @@ jobs:
             sudo docker system prune -af
             sudo docker network create note-network || true
             
-            mkdir -p $(pwd)/zookeeper-data
-            sudo chown -R 1001:1001 $(pwd)/zookeeper-data
             mkdir -p ~/kafka_data1
             mkdir -p ~/kafka_data2
             mkdir -p ~/kafka_data3
@@ -212,21 +210,21 @@ jobs:
             echo "KAFKA_CFG_SASL_MECHANISM_INTER_BROKER_PROTOCOL=PLAIN" >> env.kafka
             echo "KAFKA_CFG_LISTENERS=INTERNAL://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093" >> env.kafka
             echo "KAFKA_CFG_ZOOKEEPER_SASL_ENABLED=true" >> env.kafka
-            echo 'KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=INTERNAL:SASL_PLAINTEXT,EXTERNAL:SASL_PLAINTEXT,CONTROLLER:SASL_PLAINTEXT' >> env.kafka
-            echo 'KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER' >> env.kafka
-            echo 'KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka1:9093,2@kafka2:9093,3@kafka3:9093' >> env.kafka
-            echo 'KAFKA_CFG_INTER_BROKER_LISTENER_NAME=INTERNAL' >> env.kafka
+            echo "KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=INTERNAL:SASL_PLAINTEXT,EXTERNAL:SASL_PLAINTEXT,CONTROLLER:SASL_PLAINTEXT" >> env.kafka
+            echo "KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER" >> env.kafka
+            echo "KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka1:9093,2@kafka2:9093,3@kafka3:9093" >> env.kafka
+            echo "KAFKA_CFG_INTER_BROKER_LISTENER_NAME=INTERNAL" >> env.kafka
            
-            echo 'KAFKA_CFG_SECURITY_INTER_BROKER_PROTOCOL=SASL_PLAINTEXT' >> env.kafka
-            echo 'KAFKA_CFG_SASL_MECHANISM_INTER_BROKER_PROTOCOL=PLAIN' >> env.kafka
-            echo 'KAFKA_CFG_AUTHORIZER_CLASS_NAME=kafka.security.authorizer.AclAuthorizer' >> env.kafka
-            echo 'KAFKA_CLIENT_USERS=${{secrets.KAFKA_PASSWORD}}' >> env.kafka
-            echo 'KAFKA_CLIENT_PASSWORDS=${{secrets.KAFKA_PASSWORD}}'' >> env.kafka
-            echo 'KAFKA_CFG_SASL_JAAS_CONFIG=org.apache.kafka.common.security.plain.PlainLoginModule required \
+            echo "KAFKA_CFG_SECURITY_INTER_BROKER_PROTOCOL=SASL_PLAINTEXT" >> env.kafka
+            echo "KAFKA_CFG_SASL_MECHANISM_INTER_BROKER_PROTOCOL=PLAIN" >> env.kafka
+            echo "KAFKA_CFG_AUTHORIZER_CLASS_NAME=kafka.security.authorizer.AclAuthorizer" >> env.kafka
+            echo "KAFKA_CLIENT_USERS=${{secrets.KAFKA_PASSWORD}}" >> env.kafka
+            echo "KAFKA_CLIENT_PASSWORDS=${{secrets.KAFKA_PASSWORD}}" >> env.kafka
+            echo "KAFKA_CFG_SASL_JAAS_CONFIG=org.apache.kafka.common.security.plain.PlainLoginModule required \
             username=${{secrets.KAFKA_USERNAME}} \
             password=${{ secrets.KAFKA_PASSWORD}} \
             user_admin=${{secrets.KAFKA_USERNAME}} \
-            user_app="app-secret";' >> env.kafka
+            user_app="app-secret";" >> env.kafka
             echo "KAFKA_CFG_LOG_RETENTION_CHECK_INTERVAL_MS=120000" >> env.kafka
             echo "KAFKA_CFG_LOG_RETENTION_MS=1800000" >> env.kafka
             echo "KAFKA_CFG_LOG_SEGMENT_BYTES=1073741824" >> env.kafka
