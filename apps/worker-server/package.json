@@ -12,7 +12,6 @@
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
     "@types/express": "^5.0.3",
-    "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
   },
   "dependencies": {
@@ -22,7 +21,8 @@
     "kafkajs": "^2.2.4",
     "nats": "^2.29.3",
     "prisma": "workspace:*",
-    "redis": "^5.8.1"
+    "redis": "^5.8.1",
+    "ts-node": "^10.9.2"
   },
   "keywords": [],
   "author": "",

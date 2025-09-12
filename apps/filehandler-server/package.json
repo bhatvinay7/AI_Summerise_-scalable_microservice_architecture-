@@ -15,7 +15,6 @@
     "@types/multer": "^2.0.0",
     "@types/pdf-parse": "^1.1.5",
     "@types/ws": "^8.18.1",
-    "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
   },
   "dependencies": {
@@ -28,7 +27,8 @@
     "multer": "^2.0.2",
     "nats": "^2.29.3",
     "pdf-parse": "^1.1.1",
-    "redis": "^5.8.1"
+    "redis": "^5.8.1",
+    "ts-node": "^10.9.2"
   },
   "keywords": [],
   "author": "",
