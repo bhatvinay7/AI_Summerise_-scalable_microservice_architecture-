@@ -18,7 +18,7 @@ COPY pnpm-lock.yaml ./
 COPY  pnpm-workspace.yaml ./
 COPY apps/${APP}/package.json ./apps/${APP}/
 COPY packages/ ./packages/
-RUN pnpm install
+RUN pnpm install --prod
 COPY .npmrc ./
 
 FROM base AS builder
@@ -26,7 +26,7 @@ ARG APP=ws-server
 WORKDIR /app
 COPY --from=installer /app ./
 WORKDIR /app/apps/${APP}
-RUN pnpm run build --prod
+RUN pnpm run build 
 
 
 

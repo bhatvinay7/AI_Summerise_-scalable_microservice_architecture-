@@ -21,7 +21,7 @@ COPY  pnpm-workspace.yaml ./
 COPY apps/${APP}/package.json ./apps/${APP}/
 COPY packages/ ./packages/
 COPY .npmrc ./
-RUN pnpm install
+RUN pnpm install --prod
 RUN pnpm --filter  prisma run generate
 
 FROM base  AS builder
@@ -29,7 +29,7 @@ ARG APP=worker-server
 WORKDIR /app
 COPY --from=installer /app ./
 WORKDIR /app/apps/${APP}
-RUN pnpm run build --prod
+RUN pnpm run build
 
 FROM base  AS runner
 ARG APP=worker-server

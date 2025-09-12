@@ -24,7 +24,7 @@ COPY pnpm-lock.yaml ./
 COPY  pnpm-workspace.yaml ./
 COPY .npmrc ./
 COPY packages/ ./packages/
-RUN pnpm install
+RUN pnpm install --prod
 RUN pnpm --filter  prisma run generate
 
 FROM base AS  builder
@@ -42,7 +42,7 @@ WORKDIR /app
 COPY --from=installer /app ./
 COPY --from=installer /app/node_modules ./node_modules
 WORKDIR /app/apps/web
-RUN pnpm run build --prod
+RUN pnpm run build
 FROM base AS runner
 WORKDIR /app
 COPY --from=builder /app ./
