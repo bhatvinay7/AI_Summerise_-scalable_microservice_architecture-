@@ -245,15 +245,13 @@ jobs:
 
             echo "Pulling the  images from  docker hub"
 
-            
             cat <<'EOF' > nats-server.conf
             server_name: nats-server
-
-            authorization {
+            authorization{
             user: natsuser
             password: natspassword
             timeout: 2
-                       }
+            }
 
             listen: 0.0.0.0:4222
             debug: true
@@ -270,7 +268,7 @@ jobs:
             store_dir: /data/jetstream
             max_mem: 200MB
             max_file: 0.4GB
-                          }
+            }
             EOF
 
             sudo docker pull $IMAGE1
