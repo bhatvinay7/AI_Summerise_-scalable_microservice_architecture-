@@ -219,7 +219,7 @@ jobs:
            
             echo 'KAFKA_CFG_SECURITY_INTER_BROKER_PROTOCOL=SASL_PLAINTEXT' >> env.kafka
             echo 'KAFKA_CFG_SASL_MECHANISM_INTER_BROKER_PROTOCOL=PLAIN' >> env.kafka
-            echo 'KAFKA_CFG_AUTHORIZER_CLASS_NAME=kafka.security.authorizer.AclAuthorizer  >> env.kafka
+            echo 'KAFKA_CFG_AUTHORIZER_CLASS_NAME=kafka.security.authorizer.AclAuthorizer >> env.kafka
             echo 'KAFKA_CLIENT_USERS=${{secrets.KAFKA_PASSWORD}} >> env.kafka
             echo 'KAFKA_CLIENT_PASSWORDS=${{secrets.KAFKA_PASSWORD}} >> env.kafka
             echo 'KAFKA_CFG_SASL_JAAS_CONFIG=org.apache.kafka.common.security.plain.PlainLoginModule required \
@@ -233,8 +233,6 @@ jobs:
             echo "KAFKA_CFG_LOG_SEGMENT_DELETE_DELAY_MS=120000" >> env.kafka
             echo "KAFKA_CFG_LOG_RETENTION_BYTES=1073741824" >> env.kafka
             echo "KAFKA_CFG_LOG_CLEANUP_POLICY=delete" >> env.kafka
-            
-          
             
             IMAGE1=${{secrets.DOCKER_USERNAME }}/http-server:${{ github.sha }}
             IMAGE2=${{secrets.DOCKER_USERNAME }}/filehandler-server:${{ github.sha }}
@@ -293,12 +291,11 @@ jobs:
             --restart always \
             --env-file env.kafka \
             -e "KAFKA_CFG_NODE_ID=1" \
-            -e "KAFKA_CFG_ADVERTISED_LISTENERS=INTERNAL://kafka1:9092,EXTERNAL://localhost:9092"
+            -e "KAFKA_CFG_ADVERTISED_LISTENERS=INTERNAL://kafka1:9092,EXTERNAL://localhost:9092" \
             -v $(pwd)/kafka_data1:/bitnami/kafka \
             --network $NETWORK \
             $IMAGE6
-                            
-              
+                                     
             sudo docker run -d \
             -p 9093:9092 \
             --name notekafka2 \
@@ -338,8 +335,8 @@ jobs:
             $IMAGE2
 
             sudo docker run -d \
-            -p 3003:3003  \
-            --name worker-server  \
+            -p 3003:3003 \
+            --name worker-server \
             --restart always \
             --env-file env.redis \
             -e GROQ_API_KEY="${{secrets.GROQ_API_KEY}}" \
@@ -356,23 +353,20 @@ jobs:
             --network $NETWORK \
             $IMAGE4
 
-
             sudo docker run -d \
-            -p 3000:3000  \
-            --name web  \
+            -p 3000:3000 \
+            --name web \
             -e NEXT_PUBLIC_FRONTEND_URL="${{secrets.NEXT_PUBLIC_FRONTEND_URL}}" \
             -e NEXT_PUBLIC_BACKEND_URL="${{secrets.NEXT_PUBLIC_BACKEND_URL}}" \
             -e NEXT_PUBLIC_WEBSOCKET_SERVER="${{secrets.NEXT_PUBLIC_WEBSOCKET_SERVER}}" \
-            -e ACCESS_TOKEN_SECRET="${{secrets.ACCESS_TOKEN_SECRET}}"  \
+            -e ACCESS_TOKEN_SECRET="${{secrets.ACCESS_TOKEN_SECRET}}" \
             -e REFRESH_TOKEN_SECRET="${{secrets.REFRESH_TOKEN_SECRET}}" \
             -e DATABASE_URL="${{ secrets.DATABASE_URL }}" \
             --network $NETWORK \
             $IMAGE5
             
-         
-
             sudo docker run -d \
-            --name nats-server  \
+            --name nats-server \
             --restart always \
             -p 4222:4222 \
             -p 8222:8222 \
