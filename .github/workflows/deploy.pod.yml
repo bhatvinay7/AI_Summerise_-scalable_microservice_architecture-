@@ -209,20 +209,18 @@ jobs:
             echo "KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true">> env.kafka
             echo "KAFKA_CFG_LOG_RETENTION_MS=180000" >> env.kafka
             echo "KAFKA_CFG_SASL_ENABLED_MECHANISMS=PLAIN" >> env.kafka
-            echo " KAFKA_CFG_SASL_MECHANISM_INTER_BROKER_PROTOCOL=PLAIN" >> env.kafka
-            echo " KAFKA_CFG_SECURITY_INTER_BROKER_PROTOCOL=SASL_PLAINTEXT" >> env.kafka
-            echo "  KAFKA_CFG_LISTENERS=SASL_PLAINTEXT://0.0.0.0:9092" >> env.kafka
-            echo "KAFKA_CFG_SASL_ENABLED_MECHANISMS=PLAIN://0.0.0.0:9092" >> env.kafka
-            echo " KAFKA_CFG_SECURITY_INTER_BROKER_PROTOCOL=SASL_PLAINTEXT" >> env.kafka
-            echo "KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=SASL_PLAINTEXT:SASL_PLAINTEXT" >> env.kafka
+            echo "KAFKA_CFG_SASL_MECHANISM_INTER_BROKER_PROTOCOL=PLAIN" >> env.kafka
+            echo "KAFKA_CFG_LISTENERS=SASL_PLAINTEXT://0.0.0.0:9092" >> env.kafka
             echo "KAFKA_CFG_ZOOKEEPER_SASL_ENABLED=true" >> env.kafka
-            echo "KAFKA_CFG_SASL_JAAS_CONFIG=..." >> env.kafka
-
-            # KAFKA_CFG_SUPER_USERS=User:admin                           # Broker admin users
-            # KAFKA_CFG_ALLOW_EVERYONE_IF_NO_ACL_FOUND=true             # Broker authorization
+            echo 'KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=SASL_PLAINTEXT:SASL_PLAINTEXT' >> env.kafka
+            echo 'KAFKA_CFG_SASL_ENABLED_MECHANISMS=PLAIN' >> env.kafka
+            echo 'KAFKA_CFG_SECURITY_INTER_BROKER_PROTOCOL=SASL_PLAINTEXT' >> env.kafka
+            echo 'KAFKA_CFG_SASL_MECHANISM_INTER_BROKER_PROTOCOL=PLAIN' >> env.kafka
+            echo 'KAFKA_CFG_SASL_JAAS_CONFIG=org.apache.kafka.common.security.plain.PlainLoginModule required \
+            username="${{secrets.KAFKA_USERNAME}}" \ 
+            password="${{ secrets.KAFKA_PASSWORD}}"' >> env.kafka
           
             
-          
             IMAGE1=${{secrets.DOCKER_USERNAME }}/http-server:${{ github.sha }}
             IMAGE2=${{secrets.DOCKER_USERNAME }}/filehandler-server:${{ github.sha }}
             IMAGE3=${{secrets.DOCKER_USERNAME }}/worker-server:${{ github.sha }}
@@ -303,9 +301,9 @@ jobs:
             --env-file env.kafka \
             -e "KAFKA_BROKER_ID=1" \
             -e  KAFKA_CFG_ZOOKEEPER_USER="${{secrets.KAFKA_USERNAME}}" \
-            -e  KAFKA_CFG_ZOOKEEPER_PASSWORD="${{secrets.KAFKA_PASSWORD}}"  \
+            -e  KAFKA_CFG_ZOOKEEPER_PASSWORD="${{secrets.KAFKA_PASSWORD}}" \
             -e "KAFKA_CFG_ZOOKEEPER_CONNECT=notezookeeper:2181" \
-            -e "KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://notekafka1:9092" \
+            -e "KAFKA_CFG_ADVERTISED_LISTENERS=SASL_PLAINTEXT://notekafka1:9092" \
             -v $(pwd)/kafka_data1:/bitnami/kafka \
             --network $NETWORK \
             $IMAGE6
@@ -323,15 +321,15 @@ jobs:
             -e "KAFKA_BROKER_ID=2" \
             -e "KAFKA_CFG_ZOOKEEPER_CONNECT=notezookeeper:2181" \
             -e  KAFKA_CFG_ZOOKEEPER_USER="${{secrets.KAFKA_USERNAME}}" \
-            -e  KAFKA_CFG_ZOOKEEPER_PASSWORD="${{secrets.KAFKA_PASSWORD}}"  \        
-            -e "KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://notekafka2:9092" \
+            -e  KAFKA_CFG_ZOOKEEPER_PASSWORD="${{secrets.KAFKA_PASSWORD}}" \        
+            -e "KAFKA_CFG_ADVERTISED_LISTENERS=SASL_PLAINTEXT://notekafka2:9092" \
             -v $(pwd)/kafka_data2:/bitnami/kafka \
             --network $NETWORK \
             $IMAGE6
 
             sudo docker run -d \
             -p 9094:9092  \
-             --log-driver json-file \
+            --log-driver json-file \
             --log-opt max-size=1m \
             --log-opt max-file=2 \
             --log-opt max-age=2m \
@@ -341,8 +339,8 @@ jobs:
             -e "KAFKA_BROKER_ID=3" \
             -e "KAFKA_CFG_ZOOKEEPER_CONNECT=notezookeeper:2181" \
             -e  KAFKA_CFG_ZOOKEEPER_USER="${{secrets.KAFKA_USERNAME}}" \
-            -e  KAFKA_CFG_ZOOKEEPER_PASSWORD="${{secrets.KAFKA_PASSWORD}}"  \
-            -e "KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://notekafka3:9092" \
+            -e  KAFKA_CFG_ZOOKEEPER_PASSWORD="${{secrets.KAFKA_PASSWORD}}" \
+            -e "KAFKA_CFG_ADVERTISED_LISTENERS=SASL_PLAINTEXT://notekafka3:9092" \
             -v $(pwd)/kafka_data3:/bitnami/kafka \
             --network $NETWORK \
             $IMAGE6

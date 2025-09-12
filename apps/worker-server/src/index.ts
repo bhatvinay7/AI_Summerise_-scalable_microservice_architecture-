@@ -14,6 +14,7 @@ const kafka = new Kafka({
     initialRetryTime: 300,
     retries: 10,
   },
+  ssl: false,
   sasl: {
     mechanism: "plain",
     username: process.env.KAFKA_USERNAME,
