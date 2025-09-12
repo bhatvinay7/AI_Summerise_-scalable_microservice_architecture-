@@ -25,7 +25,7 @@ ARG APP=filehandler-server
 WORKDIR /app
 COPY --from=installer /app ./
 WORKDIR /app/apps/${APP}
-RUN pnpm run build --prod 
+RUN pnpm run build
 
 FROM base AS runner
 ARG APP=filehandler-server
