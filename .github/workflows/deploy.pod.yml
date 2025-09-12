@@ -219,16 +219,16 @@ jobs:
            
             echo 'KAFKA_CFG_SECURITY_INTER_BROKER_PROTOCOL=SASL_PLAINTEXT' >> env.kafka
             echo 'KAFKA_CFG_SASL_MECHANISM_INTER_BROKER_PROTOCOL=PLAIN' >> env.kafka
-            echo 'KAFKA_CFG_AUTHORIZER_CLASS_NAME=kafka.security.authorizer.AclAuthorizer >> env.kafka
-            echo 'KAFKA_CLIENT_USERS=${{secrets.KAFKA_PASSWORD}} >> env.kafka
-            echo 'KAFKA_CLIENT_PASSWORDS=${{secrets.KAFKA_PASSWORD}} >> env.kafka
+            echo 'KAFKA_CFG_AUTHORIZER_CLASS_NAME=kafka.security.authorizer.AclAuthorizer' >> env.kafka
+            echo 'KAFKA_CLIENT_USERS=${{secrets.KAFKA_PASSWORD}}' >> env.kafka
+            echo 'KAFKA_CLIENT_PASSWORDS=${{secrets.KAFKA_PASSWORD}}'' >> env.kafka
             echo 'KAFKA_CFG_SASL_JAAS_CONFIG=org.apache.kafka.common.security.plain.PlainLoginModule required \
             username=${{secrets.KAFKA_USERNAME}} \
             password=${{ secrets.KAFKA_PASSWORD}} \
             user_admin=${{secrets.KAFKA_USERNAME}} \
             user_app="app-secret";' >> env.kafka
             echo "KAFKA_CFG_LOG_RETENTION_CHECK_INTERVAL_MS=120000" >> env.kafka
-            echo "KAFKA_CFG_LOG_RETENTION_HOURS=1800000" >> env.kafka
+            echo "KAFKA_CFG_LOG_RETENTION_MS=1800000" >> env.kafka
             echo "KAFKA_CFG_LOG_SEGMENT_BYTES=1073741824" >> env.kafka
             echo "KAFKA_CFG_LOG_SEGMENT_DELETE_DELAY_MS=120000" >> env.kafka
             echo "KAFKA_CFG_LOG_RETENTION_BYTES=1073741824" >> env.kafka
@@ -289,7 +289,7 @@ jobs:
             --restart always \
             --env-file env.kafka \
             -e "KAFKA_CFG_NODE_ID=1" \
-            -e "KAFKA_CFG_ADVERTISED_LISTENERS=INTERNAL://kafka1:9092,EXTERNAL://localhost:9092" \
+            -e "KAFKA_CFG_ADVERTISED_LISTENERS=INTERNAL://notekafka1:9092,EXTERNAL://localhost:9092" \
             -v $(pwd)/kafka_data1:/bitnami/kafka \
             --network $NETWORK \
             $IMAGE6
@@ -300,7 +300,7 @@ jobs:
             --restart always \
             --env-file env.kafka \
             -e "KAFKA_CFG_NODE_ID=2" \       
-            -e "KAFKA_CFG_ADVERTISED_LISTENERS=INTERNAL://kafka2:9092,EXTERNAL://localhost:9093" \
+            -e "KAFKA_CFG_ADVERTISED_LISTENERS=INTERNAL://notekafka2:9092,EXTERNAL://localhost:9093" \
             -v $(pwd)/kafka_data2:/bitnami/kafka \
             --network $NETWORK \
             $IMAGE6
@@ -311,13 +311,13 @@ jobs:
             --restart always \
             --env-file env.kafka \
             -e "KAFKA_CFG_NODE_ID=3" \
-            -e "KAFKA_CFG_ADVERTISED_LISTENERS=INTERNAL://kafka1:9092,EXTERNAL://localhost:9094" \
+            -e "KAFKA_CFG_ADVERTISED_LISTENERS=INTERNAL://notekafka3:9092,EXTERNAL://localhost:9094" \
             -v $(pwd)/kafka_data3:/bitnami/kafka \
             --network $NETWORK \
             $IMAGE6
 
             sudo docker run -d \
-             -p 3001:3001  \
+             -p 3001:3001 \
              --name http-server \
              --restart always \
              --env-file env.http \
@@ -327,7 +327,7 @@ jobs:
 
             sudo docker run -d \
             -p 3002:3002 \
-            --name filehandler-server  \
+            --name filehandler-server \
             --env-file env.redis \
             --network $NETWORK \
             $IMAGE2
@@ -369,6 +369,7 @@ jobs:
             -p 4222:4222 \
             -p 8222:8222 \
             -p 6222:6222 \
+            -v $(pwd)/nats-server.conf:/etc/nats/nats-server.conf \
             --network $NETWORK \
             $IMAGE7
 
