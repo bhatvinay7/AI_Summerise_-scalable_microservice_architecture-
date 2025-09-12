@@ -202,7 +202,7 @@ jobs:
 
             sudo rm -f env.kafka
             echo "KAFKA_CFG_PROCESS_ROLES=broker,controller">> env.kafka
-            ech0 "-e KAFKA_ENABLE_KRAFT=yes" >> env.kafka
+            echo "KAFKA_ENABLE_KRAFT=yes" >> env.kafka
             echo "ALLOW_PLAINTEXT_LISTENER=yes">> env.kafka
             echo "KAFKA_CFG_DELETE_TOPIC_ENABLE=false">> env.kafka
             echo "KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true">> env.kafka
@@ -214,7 +214,7 @@ jobs:
             echo "KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER" >> env.kafka
             echo "KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@notekafka1:9093,2@notekafka2:9093,3@notekafka3:9093" >> env.kafka
             echo "KAFKA_CFG_INTER_BROKER_LISTENER_NAME=INTERNAL" >> env.kafka
-            ech0 "KAFKA_CFG_SASL_MECHANISM_CONTROLLER_PROTOCOL=PLAIN" >> env.kafka
+            echo "KAFKA_CFG_SASL_MECHANISM_CONTROLLER_PROTOCOL=PLAIN" >> env.kafka
             echo "KAFKA_CFG_SECURITY_INTER_BROKER_PROTOCOL=SASL_PLAINTEXT" >> env.kafka
     
             echo "KAFKA_CFG_AUTHORIZER_CLASS_NAME=kafka.security.authorizer.AclAuthorizer" >> env.kafka
