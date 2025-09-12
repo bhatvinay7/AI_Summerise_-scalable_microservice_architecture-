@@ -21,7 +21,7 @@ COPY  pnpm-workspace.yaml ./
 COPY apps/${APP}/package.json ./apps/${APP}/
 COPY packages/ ./packages/
 COPY .npmrc ./
-RUN pnpm install
+RUN pnpm install  --filter worker-server
 RUN pnpm --filter  prisma run generate
 
 FROM base  AS builder
