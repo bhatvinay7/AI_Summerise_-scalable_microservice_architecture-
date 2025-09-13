@@ -16,6 +16,7 @@ ENV DATABASE_URL=${DATABASE_URL}
 
 ARG APP=web
 WORKDIR /app
+ENV NODE_ENV=production
 COPY --from=prunner /app/out/json/ .
 COPY --from=prunner /app/out/full/ .
 COPY package.json  ./
@@ -39,6 +40,7 @@ ENV NEXT_PUBLIC_WEBSOCKET_SERVER=${NEXT_PUBLIC_WEBSOCKET_SERVER}
 ENV ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
 ENV REFRESH_TOKEN_SECRET=${REFRESH_TOKEN_SECRET}
 WORKDIR /app
+ENV NODE_ENV=production
 COPY --from=installer /app ./
 COPY --from=installer /app/node_modules ./node_modules
 WORKDIR /app/apps/web
