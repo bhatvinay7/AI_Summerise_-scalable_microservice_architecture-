@@ -217,7 +217,8 @@ jobs:
             echo "KAFKA_CFG_SASL_MECHANISM_CONTROLLER_PROTOCOL=PLAIN" >> env.kafka
             # echo "KAFKA_CFG_SECURITY_INTER_BROKER_PROTOCOL=SASL_PLAINTEXT" >> env.kafka
     
-            echo "KAFKA_CFG_AUTHORIZER_CLASS_NAME=org.apache.kafka.metadata.authorizer.StandardAuthorizer" >> env.kafka
+            # echo "KAFKA_CFG_AUTHORIZER_CLASS_NAME=org.apache.kafka.metadata.authorizer.StandardAuthorizer" >> env.kafka
+            echo "KAFKA_CFG_AUTHORIZER_CLASS_NAME=org.apache.kafka.metadata.authorizer.NoOpAuthorizer" >> env.kafka
             echo "KAFKA_CLIENT_USERS=${{secrets.KAFKA_USERNAME}}" >> env.kafka
             echo "KAFKA_CLIENT_PASSWORDS=${{secrets.KAFKA_PASSWORD}}" >> env.kafka
             echo "KAFKA_CFG_SASL_JAAS_CONFIG=org.apache.kafka.common.security.plain.PlainLoginModule required username=\"${{secrets.KAFKA_USERNAME}}\" password=\"${{secrets.KAFKA_PASSWORD}}\" user_admin=\"${{secrets.KAFKA_PASSWORD}}\" user_app=\"app-secret\";" >> env.kafka
