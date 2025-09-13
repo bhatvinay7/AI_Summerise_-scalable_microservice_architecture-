@@ -16,7 +16,6 @@ ENV DATABASE_URL=${DATABASE_URL}
 
 ARG APP=web
 WORKDIR /app
-ENV NODE_ENV=production
 COPY --from=prunner /app/out/json/ .
 COPY --from=prunner /app/out/full/ .
 COPY package.json  ./
@@ -40,7 +39,6 @@ ENV NEXT_PUBLIC_WEBSOCKET_SERVER=${NEXT_PUBLIC_WEBSOCKET_SERVER}
 ENV ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
 ENV REFRESH_TOKEN_SECRET=${REFRESH_TOKEN_SECRET}
 WORKDIR /app
-ENV NODE_ENV=production
 COPY --from=installer /app ./
 COPY --from=installer /app/node_modules ./node_modules
 WORKDIR /app/apps/web
@@ -49,8 +47,10 @@ FROM base AS runner
 WORKDIR /app
 COPY --from=builder /app ./
 COPY --from=builder app/node_modules ./node_modules
-COPY --from=builder /app/apps/web/.next/ ./apps/web/.next/
+COPY --from=builder /app/apps/web/.next/standalone ./
 COPY --from=builder /app/apps/web/.next/static ./apps/web/.next/static
 COPY --from=builder /app/apps/web/public ./apps/web/public
+RUN rm -rf node_modules/.cache \
+apps/web/.next/cache
 WORKDIR /app/apps/web
-CMD ["pnpm","run","start"]
+CMD ["node", "server.js"]
