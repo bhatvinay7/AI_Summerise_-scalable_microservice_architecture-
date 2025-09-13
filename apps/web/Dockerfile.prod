@@ -46,8 +46,6 @@ RUN pnpm run build
 FROM base AS runner
 WORKDIR /app
 COPY --from=builder /app/apps/web/.next/standalone ./
-COPY --from=builder /app/apps/web/.next/static ./apps/web/.next/static
-COPY --from=builder /app/apps/web/public ./apps/web/public
 RUN rm -rf node_modules/.cache \
 apps/web/.next/cache
 WORKDIR /app/apps/web
