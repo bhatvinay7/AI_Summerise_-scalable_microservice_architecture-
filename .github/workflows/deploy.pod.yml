@@ -150,6 +150,7 @@ jobs:
 
             sudo apt-get update && sudo apt-get install -y docker.io
             sudo groupadd docker
+            sudo apt-get install docker-compose-plugin
             sudo usermod -aG docker $USER
 
             sudo apt-get update -y
