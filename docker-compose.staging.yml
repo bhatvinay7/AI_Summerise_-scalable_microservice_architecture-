@@ -104,9 +104,6 @@ services:
       - ./env.compose
     ports:
       - "3003:3003"   
-    environment:
-      -  GROQ_API_KEY=${GROQ_API_KEY}
-      -  DATABASE_URL=${DATABASE_URL}  
     networks:
       - note-network
     depends_on:
@@ -122,8 +119,7 @@ services:
       - ./env.compose
     ports:
       - "8080:8080"   
-    environment:
-      - REFRESH_TOKEN_SECRET=${REFRESH_TOKEN_SECRET}  
+  
     networks:
       - note-network
     depends_on:
@@ -136,15 +132,10 @@ services:
   web:
     image: ${DOCKER_USERNAME}/web:latest
     container_name: web
+    env_file:
+      - ./env.compose
     ports:
       - "3000:3000"   
-    environment:
-      - NEXT_PUBLIC_FRONTEND_URL=${NEXT_PUBLIC_FRONTEND_URL}
-      - NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL}
-      - NEXT_PUBLIC_WEBSOCKET_SERVER=${NEXT_PUBLIC_WEBSOCKET_SERVER}
-      - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
-      - REFRESH_TOKEN_SECRET=${REFRESH_TOKEN_SECRET}
-      - DATABASE_URL=${DATABASE_URL }
     networks:
       - note-network
 
