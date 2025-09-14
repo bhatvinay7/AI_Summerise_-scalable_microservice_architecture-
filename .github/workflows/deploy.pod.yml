@@ -169,14 +169,13 @@ jobs:
             sudo nginx -t
             sudo systemctl reload nginx
             echo "Stopping all containers..."
-            sudo docker compose -f docker-compose.staging.yml down  --remove-orphans || true
             echo "Stopping any running containers..."
             if [ -n "$(sudo docker ps -q)" ]; then
             sudo docker stop $(sudo docker ps -q) || true
             fi
 
             sleep 5
-            
+
             echo "Removing all containers..."
             if [ -n "$(sudo docker ps -aq)" ]; then
             sudo docker rm -f $(sudo docker ps -aq) || true
@@ -242,15 +241,6 @@ jobs:
             echo "KAFKA_CFG_LOG_SEGMENT_DELETE_DELAY_MS=120000" >> env.kafka
             echo "KAFKA_CFG_LOG_RETENTION_BYTES=1073741824" >> env.kafka
             echo "KAFKA_CFG_LOG_CLEANUP_POLICY=delete" >> env.kafka
-
-            
-            IMAGE1=${{secrets.DOCKER_USERNAME }}/http-server:${{ github.sha }}
-            IMAGE2=${{secrets.DOCKER_USERNAME }}/filehandler-server:${{ github.sha }}
-            IMAGE3=${{secrets.DOCKER_USERNAME }}/worker-server:${{ github.sha }}
-            IMAGE4=${{secrets.DOCKER_USERNAME }}/ws-server:${{ github.sha }}
-            IMAGE5=${{secrets.DOCKER_USERNAME }}/web:${{ github.sha }}
-            IMAGE6=bitnami/kafka:3.6.2-debian-12-r5
-            IMAGE7=nats:latest
 
             echo "Pulling the  images from  docker hub"
 
