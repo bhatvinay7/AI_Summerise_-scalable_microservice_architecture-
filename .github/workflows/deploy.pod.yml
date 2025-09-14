@@ -282,7 +282,7 @@ jobs:
             NEXT_PUBLIC_FRONTEND_URL=${{secrets.NEXT_PUBLIC_FRONTEND_URL}}
             NEXT_PUBLIC_WEBSOCKET_SERVER=${{secrets.NEXT_PUBLIC_WEBSOCKET_SERVER}}
             EOL
-            sudo docker-compose -f docker-compose.staging.yml --env-file ./env.compose up -d
+            sudo docker compose  docker-compose.staging.yml --env-file ./env.compose up -d
 
 
       
