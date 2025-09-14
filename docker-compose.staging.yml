@@ -2,7 +2,6 @@ services:
   notekafka1:
     image: bitnami/kafka:3.6.2-debian-12-r5
     container_name: notekafka1
-    restart: always
     ports:
       - "9092:9092"
     env_file:
@@ -20,7 +19,6 @@ services:
   notekafka2:
     image: bitnami/kafka:3.6.2-debian-12-r5
     container_name: notekafka2
-    restart: always
     ports:
       - "9093:9092"
     env_file:
@@ -56,7 +54,6 @@ services:
   nats-server:
     image: nats:latest
     container_name: nats-server
-    restart: always
     ports:
       - "4222:4222"
       - "8222:8222"
