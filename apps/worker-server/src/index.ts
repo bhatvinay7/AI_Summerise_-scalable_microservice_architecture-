@@ -5,22 +5,42 @@ dotenv.config()
 import express from "express";
 import { natsConnection, sc } from "./nats-server/nats";
 import redisClient from "./redis/redisClient";
+import{ generateAuthToken } from 'aws-msk-iam-sasl-signer-js';
 const app = express();
 
+
+
+// const kafka = new Kafka({
+//   clientId: "notes",
+//   brokers: ["notekafka1:9092", "notekafka2:9092", "notekafka3:9092"],
+//   retry: {
+//     initialRetryTime: 300,
+//     retries: 10,
+//   },
+//   ssl: false,
+//   sasl: {
+//     mechanism: "plain",
+//     username: process.env.KAFKA_USERNAME,
+//     password: process.env.KAFKA_PASSWORD,
+//   } as SASLOptions,
+// });
+
+
+async function oauthBearerTokenProvider({ region }:{region:string}) {
+  const auth = await generateAuthToken({ region });
+  return { value: auth.token };
+}
+
 const kafka = new Kafka({
-  clientId: "notes",
-  brokers: ["notekafka1:9092", "notekafka2:9092", "notekafka3:9092"],
-  retry: {
-    initialRetryTime: 300,
-    retries: 10,
-  },
-  ssl: false,
+  clientId: 'my-app',
+  brokers: ['<msk-bootstrap-hostname>:9098'],
+  ssl: true,
   sasl: {
-    mechanism: "plain",
-    username: process.env.KAFKA_USERNAME,
-    password: process.env.KAFKA_PASSWORD,
-  } as SASLOptions,
+    mechanism: 'oauthbearer',
+    oauthBearerProvider: () => oauthBearerTokenProvider({ region: '<aws-region>' }),
+  },
 });
+
 
 enum MessageType {
   Notification = "notification",

@@ -92,6 +92,8 @@ jobs:
       - name: Generate Nginx config from template
         run: |
           rm -rf build
+          rm -rf docker-compose.staging.yml
+          cp -f docker-compose.staging.yml docker-compose.staging.yml
           mkdir -p build
           chmod 777 build
           export API_DOMAIN=${{ secrets.API_DOMAIN }}
@@ -115,13 +117,21 @@ jobs:
           source: "build/*"
           target: "~/nginx-temp"
 
+      - name: Copy docker-compose file to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          source: "docker-compose.staging.yml"
+          target: "~/docker-compose.staging.yml"    
+
       - name: Deploy to VM via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
-          
           script: |
             export API_DOMAIN="${{ secrets.API_DOMAIN }}"
             export FRONTEND_DOMAIN="${{ secrets.FRONTEND_DOMAIN }}"
@@ -159,27 +169,22 @@ jobs:
             sudo nginx -t
             sudo systemctl reload nginx
             echo "Stopping all containers..."
-
+            sudo docker compose -f docker-compose.staging.yml down  --remove-orphans || true
             sudo docker stop $(sudo docker ps -q) || true
 
+            sleep 10
             echo "Removing all containers..."
             sudo docker rm -f $(sudo docker ps -aq) || true
 
             echo "Removing all images..."
 
             sudo docker rmi -f $(sudo docker images -q) || true   
-            sudo docker system prune -af
-            sudo docker network create note-network || true
+            sudo docker system prune -af || true
             
-            mkdir -p ~/kafka_data1
-            mkdir -p ~/kafka_data2
-            mkdir -p ~/kafka_data3
-            sudo chown -R 1001:1001 ~/kafka_data1
-            sudo chown -R 1001:1001 ~/kafka_data2
-            sudo chown -R 1001:1001 ~/kafka_data3
 
             sudo rm env.http || true
             sudo rm env.redis || true
+
             echo "username=${{ secrets.username }}" >> env.redis
             echo "password=${{ secrets.password }}" >> env.redis
             echo "host=${{ secrets.host }}" >> env.redis
@@ -201,47 +206,42 @@ jobs:
            
 
             sudo rm -f env.kafka
-            echo "KAFKA_CFG_PROCESS_ROLES=broker,controller">> env.kafka
+          
             echo "KAFKA_ENABLE_KRAFT=yes" >> env.kafka
-            echo "ALLOW_PLAINTEXT_LISTENER=yes">> env.kafka
-            echo "KAFKA_CFG_DELETE_TOPIC_ENABLE=false">> env.kafka
-            echo "KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true">> env.kafka
-            echo "KAFKA_CFG_LOG_RETENTION_MS=180000" >> env.kafka
-            echo "KAFKA_CFG_SASL_ENABLED_MECHANISMS=PLAIN" >> env.kafka
-            echo "KAFKA_CFG_SASL_MECHANISM_INTER_BROKER_PROTOCOL=PLAIN" >> env.kafka
+            echo "KAFKA_CFG_PROCESS_ROLES=broker,controller" >> env.kafka
+
+            # Listeners & security mapping
             echo "KAFKA_CFG_LISTENERS=INTERNAL://0.0.0.0:9092,CONTROLLER://0.0.0.0:9095" >> env.kafka
-            echo "KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT" >> env.kafka
-            echo "KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER" >> env.kafka
-            echo "KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@notekafka1:9095,2@notekafka2:9095,3@notekafka3:9095" >> env.kafka
+            echo "KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=INTERNAL:SASL_PLAINTEXT,CONTROLLER:SASL_PLAINTEXT" >> env.kafka
             echo "KAFKA_CFG_INTER_BROKER_LISTENER_NAME=INTERNAL" >> env.kafka
             echo "KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER" >> env.kafka
-            # echo 'KAFKA_CFG_SUPER_USERS=User:controller_user,User:admin' >> env.kafka
+            echo "KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@notekafka1:9095,2@notekafka2:9095,3@notekafka3:9095" >> env.kafka
 
+            # SASL/PLAIN authentication
+            echo "KAFKA_CFG_SASL_ENABLED_MECHANISMS=PLAIN" >> env.kafka
+            echo "KAFKA_CFG_SASL_MECHANISM_INTER_BROKER_PROTOCOL=PLAIN" >> env.kafka
             echo "KAFKA_CFG_SASL_MECHANISM_CONTROLLER_PROTOCOL=PLAIN" >> env.kafka
-            # echo "KAFKA_CFG_SECURITY_INTER_BROKER_PROTOCOL=SASL_PLAINTEXT" >> env.kafka
+            echo "KAFKA_CFG_SECURITY_INTER_BROKER_PROTOCOL=SASL_PLAINTEXT" >> env.kafka
+            echo 'KAFKA_CFG_SASL_JAAS_CONFIG=org.apache.kafka.common.security.plain.PlainLoginModule required username="controller_user"        password="controller-secret" user_controller_user="controller-secret" user_admin="admin-secret" user_app="app-secret";' >> env.kafka
+
+            # Super users for ACLs
+            echo "KAFKA_CFG_SUPER_USERS=User:controller_user,User:admin" >> env.kafka
+
+             # Topic configs
             echo "KAFKA_CFG_NUM_PARTITIONS=1" >> env.kafka
             echo "KAFKA_CFG_DEFAULT_REPLICATION_FACTOR=2" >> env.kafka
             echo "KAFKA_CFG_MIN_INSYNC_REPLICAS=1" >> env.kafka
             echo "KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR=2" >> env.kafka
-            # echo "KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=3" >> env.kafka
             echo "KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR=1" >> env.kafka
- 
-            # echo "KAFKA_CFG_AUTHORIZER_CLASS_NAME=org.apache.kafka.metadata.authorizer.StandardAuthorizer" >> env.kafka
-            # echo "KAFKA_CFG_ALLOW_EVERYONE_IF_NO_ACL_FOUND=true" >> env.kafka
 
-            # echo "KAFKA_CLIENT_USERS=${{secrets.KAFKA_USERNAME}}" >> env.kafka
-            # echo "KAFKA_CLIENT_PASSWORDS=${{secrets.KAFKA_PASSWORD}}" >> env.kafka
-            # echo "KAFKA_CFG_SASL_JAAS_CONFIG=org.apache.kafka.common.security.plain.PlainLoginModule required username=\"${{secrets.KAFKA_USERNAME}}\" password=\"${{secrets.KAFKA_PASSWORD}}\" user_admin=\"${{secrets.KAFKA_PASSWORD}}\" user_app=\"app-secret\";" >> env.kafka
-            # echo 'KAFKA_CFG_SASL_JAAS_CONFIG=org.apache.kafka.common.security.plain.PlainLoginModule required \
-            # username="controller_user" password="controller-secret" \
-            # user_controller_user="controller-secret" user_admin="admin-secret" user_app="app-secret";' >> env.kafka
-
+            # Log configs
             echo "KAFKA_CFG_LOG_RETENTION_CHECK_INTERVAL_MS=120000" >> env.kafka
             echo "KAFKA_CFG_LOG_RETENTION_MS=180000" >> env.kafka
             echo "KAFKA_CFG_LOG_SEGMENT_BYTES=1073741824" >> env.kafka
             echo "KAFKA_CFG_LOG_SEGMENT_DELETE_DELAY_MS=120000" >> env.kafka
             echo "KAFKA_CFG_LOG_RETENTION_BYTES=1073741824" >> env.kafka
             echo "KAFKA_CFG_LOG_CLEANUP_POLICY=delete" >> env.kafka
+
             
             IMAGE1=${{secrets.DOCKER_USERNAME }}/http-server:${{ github.sha }}
             IMAGE2=${{secrets.DOCKER_USERNAME }}/filehandler-server:${{ github.sha }}
@@ -278,110 +278,19 @@ jobs:
             max_file: 0.4GB
             }
             EOF
+            
+            cat env.kafka env.http env.redis > env.compose
+            DATABASE_URL=${{secrets.DATABASE_URL}} GROQ_API_KEY=${{secrets.GROQ_API_KEY}} \
+            DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }} \
+            REFRESH_TOKEN_SECRET=${{secrets.REFRESH_TOKEN_SECRET}} \
+            ACCESS_TOKEN_SECRET=${{secrets.ACCESS_TOKEN_SECRET}} \
+            NEXT_PUBLIC_BACKEND_URL=${{secrets.NEXT_PUBLIC_BACKEND_URL}} \
+            NEXT_PUBLIC_FRONTEND_URL=${{secrets.NEXT_PUBLIC_FRONTEND_URL}} \
+            NEXT_PUBLIC_WEBSOCKET_SERVER=${{secrets.NEXT_PUBLIC_WEBSOCKET_SERVER}} \
+            docker compose -f docker-compose.staging.yml --env-file ./env.compose up -d
 
-
-            sudo docker pull $IMAGE1
-            sudo docker pull $IMAGE2
-            sudo docker pull $IMAGE3
-            sudo docker pull $IMAGE4
-            sudo docker pull $IMAGE5
-            sudo docker pull $IMAGE6
-            sudo docker pull $IMAGE7
-
-            NETWORK="note-network"
 
       
-            sudo docker run -d \
-            -p 9092:9092 \
-            --name notekafka1 \
-            --restart always \
-            --env-file env.kafka \
-            -e "KAFKA_CFG_CLUSTER_ID=42VMU-JcQ9-5wO8UzA-bAA" \
-            -e "KAFKA_CFG_NODE_ID=1" \
-            -e "KAFKA_CFG_ADVERTISED_LISTENERS=INTERNAL://notekafka1:9092" \
-            -v $(pwd)/kafka_data1:/bitnami/kafka \
-            --network $NETWORK \
-            $IMAGE6
-                                     
-            sudo docker run -d \
-            -p 9093:9092 \
-            --name notekafka2 \
-            --restart always \
-            --env-file env.kafka \
-            -e "KAFKA_CFG_CLUSTER_ID=42VMU-JcQ9-5wO8UzA-bAA" \
-            -e "KAFKA_CFG_NODE_ID=2" \
-            -e "KAFKA_CFG_ADVERTISED_LISTENERS=INTERNAL://notekafka2:9092" \
-            -v $(pwd)/kafka_data2:/bitnami/kafka \
-            --network $NETWORK \
-            $IMAGE6
-
-            sudo docker run -d \
-            -p 9094:9092 \
-            --name notekafka3 \
-            --restart always \
-            --env-file env.kafka \
-            -e "KAFKA_CFG_CLUSTER_ID=42VMU-JcQ9-5wO8UzA-bAA" \
-            -e "KAFKA_CFG_NODE_ID=3" \
-            -e "KAFKA_CFG_ADVERTISED_LISTENERS=INTERNAL://notekafka3:9092" \
-            -v $(pwd)/kafka_data3:/bitnami/kafka \
-            --network $NETWORK \
-            $IMAGE6
-
-            sudo docker run -d \
-             -p 3001:3001 \
-             --name http-server \
-             --restart always \
-             --env-file env.http \
-             -e DATABASE_URL="${{secrets.DATABASE_URL}}" \
-             --network $NETWORK \
-             $IMAGE1
-
-            sudo docker run -d \
-            -p 3002:3002 \
-            --name filehandler-server \
-            --env-file env.redis \
-            --network $NETWORK \
-            $IMAGE2
-
-            sudo docker run -d \
-            -p 3003:3003 \
-            --name worker-server \
-            --restart always \
-            --env-file env.redis \
-            -e GROQ_API_KEY="${{secrets.GROQ_API_KEY}}" \
-            -e DATABASE_URL="${{secrets.DATABASE_URL}}" \
-            --network $NETWORK \
-            $IMAGE3
-
-            sudo docker run -d \
-            -p 8080:8080  \
-            --restart always \
-            --name ws-server  \
-            --env-file env.redis \
-            -e REFRESH_TOKEN_SECRET="${{secrets.REFRESH_TOKEN_SECRET}}" \
-            --network $NETWORK \
-            $IMAGE4
-
-            sudo docker run -d \
-            -p 3000:3000 \
-            --name web \
-            -e NEXT_PUBLIC_FRONTEND_URL="${{secrets.NEXT_PUBLIC_FRONTEND_URL}}" \
-            -e NEXT_PUBLIC_BACKEND_URL="${{secrets.NEXT_PUBLIC_BACKEND_URL}}" \
-            -e NEXT_PUBLIC_WEBSOCKET_SERVER="${{secrets.NEXT_PUBLIC_WEBSOCKET_SERVER}}" \
-            -e ACCESS_TOKEN_SECRET="${{secrets.ACCESS_TOKEN_SECRET}}" \
-            -e REFRESH_TOKEN_SECRET="${{secrets.REFRESH_TOKEN_SECRET}}" \
-            -e DATABASE_URL="${{ secrets.DATABASE_URL }}" \
-            --network $NETWORK \
-            $IMAGE5
-            
-            sudo docker run -d \
-            --name nats-server \
-            --restart always \
-            -p 4222:4222 \
-            -p 8222:8222 \
-            -p 6222:6222 \
-            -v $(pwd)/nats-server.conf:/etc/nats/nats-server.conf \
-            --network $NETWORK \
-            $IMAGE7
+          
 
             

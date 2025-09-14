@@ -1,6 +1,7 @@
 import { Kafka, KafkaMessage, SASLOptions } from "kafkajs";
 import { WebSocketServer, WebSocket } from "ws";
 import { verifyAuth } from "./utils/verifyUserAuth";
+import { generateAuthToken } from 'aws-msk-iam-sasl-signer-js';
 import dotenv from 'dotenv'
 dotenv.config()
 import { sc, subcriber, natsConnection } from "./nats-server/nats";
@@ -9,16 +10,37 @@ import express from "express";
 const app = express();
 const PORT = 8080;
 
+// const kafka = new Kafka({
+//   clientId: "notes",
+//   brokers: ["notekafka1:9092", "notekafka2:9092", "notekafka3:9092"],
+//   ssl: false,
+//   sasl: {
+//     mechanism: "plain",
+//     username: process.env.KAFKA_USERNAME,
+//     password: process.env.KAFKA_PASSWORD,
+//   } as SASLOptions,
+// });
+
+
+async function oauthBearerTokenProvider({ region }:{region:string}) {
+  const auth = await generateAuthToken({ region });
+  return { value: auth.token };
+}
+
 const kafka = new Kafka({
-  clientId: "notes",
-  brokers: ["notekafka1:9092", "notekafka2:9092", "notekafka3:9092"],
-  ssl: false,
+  clientId: 'my-app',
+  brokers: ['<msk-bootstrap-hostname>:9098'],
+  ssl: true,
   sasl: {
-    mechanism: "plain",
-    username: process.env.KAFKA_USERNAME,
-    password: process.env.KAFKA_PASSWORD,
-  } as SASLOptions,
+    mechanism: 'oauthbearer',
+    oauthBearerProvider: () => oauthBearerTokenProvider({ region: '<aws-region>' }),
+  },
 });
+
+
+
+
+
 const producer = kafka.producer({metadataMaxAge:60000});
 const consumer = kafka.consumer({
   groupId: "llm-response",

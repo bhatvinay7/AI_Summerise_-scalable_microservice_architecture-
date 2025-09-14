@@ -2,6 +2,7 @@ import { S3Client,PutObjectCommand,ObjectCannedACL } from '@aws-sdk/client-s3'
 import fs from 'fs';
 import dotenv from 'dotenv';
 import { v4 as uuidv4 } from 'uuid';
+
 dotenv.config();
 const s3Client = new S3Client({
         region: process.env.AWS_REGION as string, 
