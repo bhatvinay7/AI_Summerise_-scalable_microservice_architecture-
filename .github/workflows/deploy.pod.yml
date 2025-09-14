@@ -93,7 +93,7 @@ jobs:
         run: |
           rm -rf build
           rm -rf docker-compose.yml || true
-          cp -f ./docker-compose.staging.yml ./docker-compose.yml
+          cp -f docker-compose.staging.yml docker-compose.yml
           mkdir -p build
           chmod 777 build
           export API_DOMAIN=${{ secrets.API_DOMAIN }}
