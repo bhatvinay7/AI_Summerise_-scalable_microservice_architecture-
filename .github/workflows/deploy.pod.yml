@@ -170,16 +170,17 @@ jobs:
             sudo systemctl reload nginx
             echo "Stopping all containers..."
             sudo docker compose -f docker-compose.staging.yml down  --remove-orphans || true
+            echo "Stopping any running containers..."
+            if [ -n "$(sudo docker ps -q)" ]; then
             sudo docker stop $(sudo docker ps -q) || true
+            fi
 
-            sleep 10
+            sleep 5
+            
             echo "Removing all containers..."
+            if [ -n "$(sudo docker ps -aq)" ]; then
             sudo docker rm -f $(sudo docker ps -aq) || true
-
-            echo "Removing all images..."
-
-            sudo docker rmi -f $(sudo docker images -q) || true   
-            sudo docker system prune -af || true
+            fi
             
 
             sudo rm env.http || true
