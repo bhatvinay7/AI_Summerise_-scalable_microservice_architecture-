@@ -278,15 +278,19 @@ jobs:
             max_file: 0.4GB
             }
             EOF
-            
+            rm -f env.compose || true
             cat env.kafka env.http env.redis > env.compose
-            DATABASE_URL=${{secrets.DATABASE_URL}} GROQ_API_KEY=${{secrets.GROQ_API_KEY}} \
-            DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }} \
-            REFRESH_TOKEN_SECRET=${{secrets.REFRESH_TOKEN_SECRET}} \
-            ACCESS_TOKEN_SECRET=${{secrets.ACCESS_TOKEN_SECRET}} \
-            NEXT_PUBLIC_BACKEND_URL=${{secrets.NEXT_PUBLIC_BACKEND_URL}} \
-            NEXT_PUBLIC_FRONTEND_URL=${{secrets.NEXT_PUBLIC_FRONTEND_URL}} \
-            NEXT_PUBLIC_WEBSOCKET_SERVER=${{secrets.NEXT_PUBLIC_WEBSOCKET_SERVER}} \
+
+            cat >> env.compose <<EOL
+            DATABASE_URL=${{secrets.DATABASE_URL}}
+            GROQ_API_KEY=${{secrets.GROQ_API_KEY}}
+            DOCKER_USERNAME=${{secrets.DOCKER_USERNAME}}
+            REFRESH_TOKEN_SECRET=${{secrets.REFRESH_TOKEN_SECRET}}
+            ACCESS_TOKEN_SECRET=${{secrets.ACCESS_TOKEN_SECRET}}
+            NEXT_PUBLIC_BACKEND_URL=${{secrets.NEXT_PUBLIC_BACKEND_URL}}
+            NEXT_PUBLIC_FRONTEND_URL=${{secrets.NEXT_PUBLIC_FRONTEND_URL}}
+            NEXT_PUBLIC_WEBSOCKET_SERVER=${{secrets.NEXT_PUBLIC_WEBSOCKET_SERVER}}
+            EOL
             sudo docker compose -f docker-compose.staging.yml --env-file ./env.compose up -d
 
 
