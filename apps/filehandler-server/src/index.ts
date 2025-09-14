@@ -9,36 +9,36 @@ import dotenv from "dotenv";
 dotenv.config();
 
 
-// const kafka = new Kafka({
-//   clientId: "notes",
-//   brokers: ["notekafka1:9092", "notekafka2:9092", "notekafka3:9092"],
-//   retry: {
-//     initialRetryTime: 300,
-//     retries: 10,
-//   },
-//   ssl: false,
-//   sasl: {
-//     mechanism: "plain",
-//     username: process.env.KAFKA_USERNAME,
-//     password: process.env.KAFKA_PASSWORD,
-//   } as SASLOptions,
-// });
-
-
-async function oauthBearerTokenProvider({ region }: { region: string }) {
-  const auth = await generateAuthToken({ region });
-  return { value: auth.token };
-}
-
 const kafka = new Kafka({
-  clientId: 'my-app',
-  brokers: ['<msk-bootstrap-hostname>:9098'],
-  ssl: true,
-  sasl: {
-    mechanism: 'oauthbearer',
-    oauthBearerProvider: () => oauthBearerTokenProvider({ region: '<aws-region>' }),
+  clientId: "notes",
+  brokers: ["notekafka1:9092", "notekafka2:9092", "notekafka3:9092"],
+  retry: {
+    initialRetryTime: 300,
+    retries: 10,
   },
+  ssl: false,
+  sasl: {
+    mechanism: "plain",
+    username: process.env.KAFKA_USERNAME,
+    password: process.env.KAFKA_PASSWORD,
+  } as SASLOptions,
 });
+
+
+// async function oauthBearerTokenProvider({ region }: { region: string }) {
+//   const auth = await generateAuthToken({ region });
+//   return { value: auth.token };
+// }
+
+// const kafka = new Kafka({
+//   clientId: 'my-app',
+//   brokers: ['<msk-bootstrap-hostname>:9098'],
+//   ssl: true,
+//   sasl: {
+//     mechanism: 'oauthbearer',
+//     oauthBearerProvider: () => oauthBearerTokenProvider({ region: '<aws-region>' }),
+//   },
+// });
 
 
 
