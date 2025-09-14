@@ -92,7 +92,7 @@ jobs:
       - name: Generate Nginx config from template
         run: |
           rm -rf build
-          rm -rf docker-compose.staging.yml
+          rm -rf docker-compose.yml || true
           cp -f ./docker-compose.staging.yml ./docker-compose.yml
           mkdir -p build
           chmod 777 build
