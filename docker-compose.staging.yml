@@ -1,5 +1,4 @@
 services:
-  # Kafka broker 1
   notekafka1:
     image: bitnami/kafka:3.6.2-debian-12-r5
     container_name: notekafka1
@@ -18,7 +17,6 @@ services:
       KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://notekafka1:9092
       KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@notekafka1:9095,2@notekafka2:9095,3@notekafka3:9095
 
-  # Kafka broker 2
   notekafka2:
     image: bitnami/kafka:3.6.2-debian-12-r5
     container_name: notekafka2
@@ -37,7 +35,6 @@ services:
       KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://notekafka2:9092
       KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@notekafka1:9095,2@notekafka2:9095,3@notekafka3:9095
 
-  # Kafka broker 3
   notekafka3:
     image: bitnami/kafka:3.6.2-debian-12-r5
     container_name: notekafka3
@@ -56,7 +53,6 @@ services:
       KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://notekafka3:9092
       KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@notekafka1:9095,2@notekafka2:9095,3@notekafka3:9095
 
-  # NATS server
   nats-server:
     image: nats:latest
     container_name: nats-server
@@ -71,7 +67,7 @@ services:
       - ./nats-server.conf:/etc/nats/nats-server.conf
     command: ["-c", "/etc/nats/nats-server.conf"]
 
-  # Other services
+
   http-server:
     image: ${DOCKER_USERNAME}/http-server:latest
     container_name: http-server
