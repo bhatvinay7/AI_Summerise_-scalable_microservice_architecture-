@@ -92,8 +92,6 @@ jobs:
       - name: Generate Nginx config from template
         run: |
           rm -rf build
-          rm -rf docker-compose.yml || true
-          cp -f docker-compose.staging.yml docker-compose.yml
           mkdir -p build
           chmod 777 build
           export API_DOMAIN=${{ secrets.API_DOMAIN }}
@@ -123,8 +121,8 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
-          source: "docker-compose.yml"
-          target: "/home/${{ secrets.SERVER_USER }}/docker-compose.staging.yml"    
+          source: "docker-compose.staging.yml"
+          target: "/home/${{ secrets.SERVER_USER }}"    
 
       - name: Deploy to VM via SSH
         uses: appleboy/ssh-action@v1.0.3
