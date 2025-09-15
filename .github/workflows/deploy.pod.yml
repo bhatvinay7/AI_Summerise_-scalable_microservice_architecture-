@@ -278,6 +278,7 @@ jobs:
             }
             EOF
             rm -f env.compose || true
+            
             cat env.kafka env.http env.redis > env.compose
 
             cat >> env.compose <<EOL
