@@ -262,7 +262,7 @@ jobs:
             authorization {
             user: natsuser
             password: natspassword
-            timeout: 2
+            timeout: 5
             }
 
             listen: 0.0.0.0:4222
@@ -271,16 +271,17 @@ jobs:
             logtime: true
 
             max_connections: 1000
-            max_payload: 64MB
-            write_deadline: 2s
+            max_payload: 67108864
+            write_deadline: 5s
 
             http: 0.0.0.0:8222
             jetstream {
             store_dir: /data/jetstream
-            max_mem: 200MB
-            max_file: 0.4GB
+            max_mem: 209715200
+            max_file: 429496729
             }
             EOF
+
 
             sudo mkdir -p kafka_data1
             sudo mkdir -p kafka_data2
