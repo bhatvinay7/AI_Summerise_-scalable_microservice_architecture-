@@ -263,6 +263,7 @@ jobs:
             echo "Pulling the  images from  docker hub"
 
             cat <<'EOF' > nats-server.conf
+
             server_name: nats-server
             authorization {
             user: natsuser
@@ -281,13 +282,11 @@ jobs:
 
             http: 0.0.0.0:8222
             jetstream {
-            store_dir: /data/jetstream
-            max_mem: 209715200
-            max_file: 429496729
+              store_dir: /data/jetstream
+              max_mem: 209715200
+              max_file: 429496729
             }
             EOF
-
-
 
             sudo mkdir -p kafka_data1
             sudo mkdir -p kafka_data2
