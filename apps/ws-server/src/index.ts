@@ -191,4 +191,7 @@ async function setupAndRun() {
   }
 }
 
-setupAndRun();
+setupAndRun().catch((error) => {
+  console.error("Error in setupAndRun:", error);
+  process.exit(1);
+})
