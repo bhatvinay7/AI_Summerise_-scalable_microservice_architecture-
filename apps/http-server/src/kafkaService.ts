@@ -24,8 +24,8 @@ export async function getKafkaProducer(): Promise<Producer> {
       ssl: false,
       sasl: {
         mechanism: 'plain',
-        username: process.env.KAFKA_CFG_USERNAME,
-        password: process.env.KAFKA_CFG_PASSWORD
+        username: process.env.KAFKA_USERNAME,
+        password: process.env.KAFKA_PASSWORD
       } as SASLOptions
     });
     // const kafka = new Kafka({

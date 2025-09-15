@@ -19,8 +19,8 @@ const kafka = new Kafka({
   ssl: false,
   sasl: {
     mechanism: "plain",
-    username: process.env.KAFKA_CFG_USERNAME,
-    password: process.env.KAFKA_CFG_PASSWORD,
+    username: process.env.KAFKA_USERNAME,
+    password: process.env.KAFKA_PASSWORD,
   } as SASLOptions,
 });
 
