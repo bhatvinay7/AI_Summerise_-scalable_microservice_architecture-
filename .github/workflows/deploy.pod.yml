@@ -156,7 +156,7 @@ jobs:
 
             sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
             sudo groupadd docker
-
+            
             sudo usermod -aG docker $USER          
 
             sudo apt-get update -y
@@ -277,8 +277,15 @@ jobs:
             max_file: 0.4GB
             }
             EOF
+
+            sudo mkdir -p kafka_data1
+            sudo mkdir -p kafka_data2
+            sudo mkdir -p kafka_data3
+            sudo chown -R 1001:1001 kafka_data1
+            sudo chown -R 1001:1001 kafka_data2
+            sudo chown -R 1001:1001 kafka_data3
             rm -f env.compose || true
-            
+
             cat env.kafka env.http env.redis > env.compose
 
             cat >> env.compose <<EOL
