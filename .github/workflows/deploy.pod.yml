@@ -156,7 +156,7 @@ jobs:
 
             sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
             sudo groupadd docker
-            
+
             sudo usermod -aG docker $USER          
 
             sudo apt-get update -y
@@ -299,7 +299,7 @@ jobs:
 
             cat env.kafka env.http env.redis > env.compose
 
-            cat >> env.compose <<EOL
+            cat >> env.compose <<'EOL'
             DATABASE_URL=${{secrets.DATABASE_URL}}
             GROQ_API_KEY=${{secrets.GROQ_API_KEY}}
             DOCKER_USERNAME=${{secrets.DOCKER_USERNAME}}
