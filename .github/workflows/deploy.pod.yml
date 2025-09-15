@@ -174,11 +174,12 @@ jobs:
             sudo nginx -t
             sudo systemctl reload nginx
             sudo apt-get install docker-compose-plugin
-            sudo mkdir -p /usr/lib/docker/cli-plugins
 
+            sudo mkdir -p /usr/lib/docker/cli-plugins
+            
             sudo curl -L "https://github.com/docker/compose/releases/download/v2.33.1/docker-compose-$(uname -s)-$(uname -m)"  -o /usr/local/bin/docker-compose
-            sudo mv /usr/local/bin/docker-compose /usr/bin/docker-compose
-            sudo chmod +x /usr/bin/docker-compose
+            sudo mv /usr/local/bin/docker-compose /usr/lib/docker/cli-plugins
+            sudo chmod +x /usr/lib/docker/cli-plugins
 
             echo "Stopping all containers..."
             if [ -n "$(sudo docker ps -q)" ]; then
