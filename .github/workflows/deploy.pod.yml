@@ -28,7 +28,7 @@ jobs:
             ${{ secrets.DOCKER_USERNAME }}/http-server:latest
             ${{ secrets.DOCKER_USERNAME }}/http-server:${{ github.sha }}
           build-args: |
-            DATABASE_URL=${{ secrets.DATABASE_URL }}  
+            DATABASE_URL=${{ secrets.DATABASE_URL }}
 
       - name: Build and push filehandler-server Docker image
         uses: docker/build-push-action@v5
@@ -51,7 +51,7 @@ jobs:
             ${{ secrets.DOCKER_USERNAME }}/worker-server:${{ github.sha }}
 
           build-args: |
-            DATABASE_URL=${{ secrets.DATABASE_URL }}  
+            DATABASE_URL=${{ secrets.DATABASE_URL }}
 
       - name: Build and push ws-server Docker image
         uses: docker/build-push-action@v5
@@ -88,7 +88,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
+
       - name: Generate Nginx config from template
         run: |
           rm -rf build
@@ -103,8 +103,6 @@ jobs:
 
           envsubst '${API_DOMAIN} ${FRONTEND_DOMAIN} ${WS_SERVER_DOMAIN} ${API_DOMAIN_PORT} ${FRONTEND_DOMAIN_PORT} ${WS_SERVER_DOMAIN_PORT}' \
           < nginx/nginx.conf.template > ./build/nginx.conf
-
-
 
       - name: Copy config to server
         uses: appleboy/scp-action@master
@@ -122,7 +120,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           source: "docker-compose.staging.yml"
-          target: "/home/${{ secrets.SERVER_USER }}"    
+          target: "/home/${{ secrets.SERVER_USER }}"
 
       - name: Deploy to VM via SSH
         uses: appleboy/ssh-action@v1.0.3
@@ -155,10 +153,10 @@ jobs:
             $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
             sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
             sudo apt-get update
-            
+
             sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
             sudo groupadd docker
-            
+
             sudo usermod -aG docker $USER          
 
             sudo apt-get update -y
@@ -178,7 +176,7 @@ jobs:
             sudo nginx -t
             sudo systemctl reload nginx
 
-          
+
             echo "Stopping all containers..."
             if [ -n "$(sudo docker ps -q)" ]; then
             sudo docker stop $(sudo docker ps -q) || true
@@ -190,7 +188,7 @@ jobs:
             if [ -n "$(sudo docker ps -aq)" ]; then
             sudo docker rm -f $(sudo docker ps -aq) || true
             fi
-            
+
 
             sudo rm env.http || true
             sudo rm env.redis || true
@@ -201,7 +199,7 @@ jobs:
             echo "port=${{ secrets.port }}" >> env.redis
             echo "KAFKA_USERNAME=${{ secrets.KAFKA_USERNAME }}" >> env.redis
             echo "KAFKA_PASSWORD=${{ secrets.KAFKA_PASSWORD}}" >> env.redis
-         
+
             echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}">> env.http
             echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY}}">> env.http
             echo "bucketName=${{ secrets.bucketName }}">> env.http
@@ -213,10 +211,10 @@ jobs:
             echo "KAFKA_USERNAME=${{ secrets.KAFKA_USERNAME }}" >> env.http
             echo "KAFKA_PASSWORD=${{ secrets.KAFKA_PASSWORD}}" >> env.http
 
-           
+
 
             sudo rm -f env.kafka
-          
+
             echo "KAFKA_ENABLE_KRAFT=yes" >> env.kafka
             echo "KAFKA_CFG_PROCESS_ROLES=broker,controller" >> env.kafka
 
@@ -281,7 +279,7 @@ jobs:
             EOF
             rm -f env.compose || true
             cat env.kafka env.http env.redis > env.compose
-            
+
             cat >> env.compose <<EOL
             DATABASE_URL=${{secrets.DATABASE_URL}}
             GROQ_API_KEY=${{secrets.GROQ_API_KEY}}
@@ -298,8 +296,3 @@ jobs:
             DATABASE_URL=${{ secrets.DATABASE_URL }} \
             DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }} \
             sudo docker compose -f docker-compose.staging.yml --env-file ./env.compose up
-
-      
-          
-
-            
