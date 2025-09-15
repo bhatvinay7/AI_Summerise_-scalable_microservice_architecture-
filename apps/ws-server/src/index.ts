@@ -13,6 +13,10 @@ const PORT = 8080;
 const kafka = new Kafka({
   clientId: "notes",
   brokers: ["notekafka1:9092", "notekafka2:9092", "notekafka3:9092"],
+  retry: {
+    initialRetryTime: 30000,
+    retries: 10,
+  },
   ssl: false,
   sasl: {
     mechanism: "plain",

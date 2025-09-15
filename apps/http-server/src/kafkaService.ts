@@ -18,7 +18,7 @@ export async function getKafkaProducer(): Promise<Producer> {
       clientId: "notes",
       brokers: ["notekafka1:9092", "notekafka2:9092", "notekafka3:9092"],
       retry: {
-        initialRetryTime: 300,
+        initialRetryTime: 30000,
         retries: 10,
       },
       ssl: false,
