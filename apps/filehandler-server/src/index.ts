@@ -13,8 +13,10 @@ const kafka = new Kafka({
   clientId: "notes",
   brokers: ["notekafka1:9092", "notekafka2:9092", "notekafka3:9092"],
   retry: {
-    initialRetryTime: 30000,
-    retries: 10,
+    retries: parseInt(process.env.KAFKA_CLIENT_RETRY_RETRIES || '10', 10),
+    factor: parseFloat(process.env.KAFKA_CLIENT_RETRY_FACTOR || '0.2'),
+    initialRetryTime: parseInt(process.env.KAFKA_CLIENT_RETRY_BACKOFF_MS || '200', 10),
+    maxRetryTime: parseInt(process.env.KAFKA_CLIENT_RETRY_BACKOFF_MAX_MS || '10000', 10),
   },
   ssl: false,
   sasl: {

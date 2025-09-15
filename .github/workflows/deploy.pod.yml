@@ -188,6 +188,8 @@ jobs:
             if [ -n "$(sudo docker ps -aq)" ]; then
             sudo docker rm -f $(sudo docker ps -aq) || true
             fi
+            sudo docker image prune -f || true
+
 
 
             sudo rm env.http || true
@@ -215,36 +217,34 @@ jobs:
 
             sudo rm -f env.kafka
              
-            # Enable KRaft and roles
+        
             echo "KAFKA_CFG_ENABLE_KRAFT=yes" >> env.kafka
             echo "KAFKA_CFG_PROCESS_ROLES=broker,controller" >> env.kafka
 
-            # User/Password (Bitnami helper envs → no CFG prefix)
+        
             echo "KAFKA_INTER_BROKER_USER=${{ secrets.KAFKA_USERNAME }}" >> env.kafka
             echo "KAFKA_INTER_BROKER_PASSWORD=${{ secrets.KAFKA_PASSWORD }}" >> env.kafka
             echo "KAFKA_CONTROLLER_USER=${{ secrets.KAFKA_USERNAME }}" >> env.kafka
             echo "KAFKA_CONTROLLER_PASSWORD=${{ secrets.KAFKA_PASSWORD }}" >> env.kafka
 
-            # Cluster ID (needs CFG prefix)
-            echo 'KAFKA_CFG_CLUSTER_ID=F85skR1gTWWtTt2nLw7tZA' >> env.kafka
+      
+            echo 'KAFKA_CFG_CLUSTER_ID=F85skR1gTWWtTt2nexitLw7tZA' >> env.kafka
 
-             # Listeners & security mapping (CFG prefix required)
             echo "KAFKA_CFG_LISTENERS=INTERNAL://0.0.0.0:9092,CONTROLLER://0.0.0.0:9095" >> env.kafka
             echo "KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=INTERNAL:SASL_PLAINTEXT,CONTROLLER:SASL_PLAINTEXT" >> env.kafka
             echo "KAFKA_CFG_INTER_BROKER_LISTENER_NAME=INTERNAL" >> env.kafka
             echo "KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER" >> env.kafka
             echo "KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@notekafka1:9095,2@notekafka2:9095,3@notekafka3:9095" >> env.kafka
+            echo 'KAFKA_CFG_CONNECTIONS_MAX_REAUTH_MS=3600000' >> env.kafka
+            echo 'KAFKA_CFG_FAILED_AUTHENTICATION_DELAY_MS=100' >> env.kafka
 
-            # SASL/PLAIN authentication (CFG prefix required)
             echo "KAFKA_CFG_SASL_ENABLED_MECHANISMS=PLAIN" >> env.kafka
             echo "KAFKA_CFG_SASL_MECHANISM_INTER_BROKER_PROTOCOL=PLAIN" >> env.kafka
             echo "KAFKA_CFG_SASL_MECHANISM_CONTROLLER_PROTOCOL=PLAIN" >> env.kafka
 
-            # Export secrets for local use (not needed by container directly, but used below)
             export KAFKA_USERNAME=${{ secrets.KAFKA_USERNAME }}
             export KAFKA_PASSWORD=${{ secrets.KAFKA_PASSWORD }}
 
-            # JAAS Config (CFG prefix required)
             echo "KAFKA_CFG_SASL_JAAS_CONFIG=org.apache.kafka.common.security.plain.PlainLoginModule required username=\"$KAFKA_USERNAME\"            password=\"$KAFKA_PASSWORD\" user_controller_user=\"$KAFKA_PASSWORD\" user_admin=\"$KAFKA_PASSWORD\" user_app=\"$KAFKA_PASSWORD\";" >> env.kafka
 
             # Super users (CFG prefix required)
