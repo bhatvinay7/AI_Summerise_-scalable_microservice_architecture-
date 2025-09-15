@@ -248,7 +248,7 @@ jobs:
             echo "KAFKA_CFG_SASL_JAAS_CONFIG=org.apache.kafka.common.security.plain.PlainLoginModule required username=\"$KAFKA_USERNAME\"            password=\"$KAFKA_PASSWORD\" user_controller_user=\"$KAFKA_PASSWORD\" user_admin=\"$KAFKA_PASSWORD\" user_app=\"$KAFKA_PASSWORD\";" >> env.kafka
 
             # Super users (CFG prefix required)
-            echo "KAFKA_CFG_SUPER_USERS=User:controller_user,User:admin" >> env.kafka
+            echo "KAFKA_CFG_SUPER_USERS=User:${{secrets.KAFKA_USERNAME}},User:${{secrets.KAFKA_USERNAME}}" >> env.kafka
 
             # Topic configs (CFG prefix required)
             echo "KAFKA_CFG_NUM_PARTITIONS=1" >> env.kafka
