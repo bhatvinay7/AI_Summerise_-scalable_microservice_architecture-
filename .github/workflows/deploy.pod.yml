@@ -229,7 +229,12 @@ jobs:
             echo "KAFKA_CFG_SASL_ENABLED_MECHANISMS=PLAIN" >> env.kafka
             echo "KAFKA_CFG_SASL_MECHANISM_INTER_BROKER_PROTOCOL=PLAIN" >> env.kafka
             echo "KAFKA_CFG_SASL_MECHANISM_CONTROLLER_PROTOCOL=PLAIN" >> env.kafka
-            echo 'KAFKA_CFG_SASL_JAAS_CONFIG=org.apache.kafka.common.security.plain.PlainLoginModule required username="controller_user"        password="controller-secret" user_controller_user="controller-secret" user_admin="admin-secret" user_app="app-secret";' >> env.kafka
+
+            export KAFKA_USERNAME=${{secrets.KAFKA_USERNAME}}
+            export KAFKA_PASSWORD=${{secrets.KAFKA_PASSWORD}}
+
+            echo "KAFKA_CFG_SASL_JAAS_CONFIG=org.apache.kafka.common.security.plain.PlainLoginModule required username=\"$KAFKA_USERNAME\" password=\"$KAFKA_PASSWORD\" user_controller_user=\"$KAFKA_PASSWORD\" user_admin=\"$KAFKA_PASSWORD\" user_app=\"$KAFKA_PASSWORD\";" >> env.kafka
+
 
             # Super users for ACLs
             echo "KAFKA_CFG_SUPER_USERS=User:controller_user,User:admin" >> env.kafka
