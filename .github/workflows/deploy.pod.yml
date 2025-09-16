@@ -296,9 +296,11 @@ jobs:
             sudo mkdir -p kafka_data1
             sudo mkdir -p kafka_data2
             sudo mkdir -p kafka_data3
+            sudo mkdir -p kafka_data4
             sudo chown -R 1001:1001 kafka_data1
             sudo chown -R 1001:1001 kafka_data2
             sudo chown -R 1001:1001 kafka_data3
+            sudo chown -R 1001:1001 kafka_data4
             rm -f env.compose || true
 
             cat env.kafka env.http env.redis > env.compose

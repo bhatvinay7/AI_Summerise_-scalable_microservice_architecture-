@@ -9,7 +9,7 @@ services:
     networks:
       - note-network
     volumes:
-      - ./kafka_data1:/bitnami/kafka/data
+      - ./kafka_data1:/bitnami/kafka
     environment:
       KAFKA_CFG_NODE_ID: 1
       KAFKA_KRAFT_CLUSTER_ID: "42VMU-JcQ9-5wO8UzA-bAA"
@@ -26,12 +26,12 @@ services:
     networks:
       - note-network
     volumes:
-      - ./kafka_data2:/bitnami/kafka/data
+      - ./kafka_data2:/bitnami/kafka
     environment:
       KAFKA_CFG_NODE_ID: 2
       KAFKA_CFG_CLUSTER_ID: "42VMU-JcQ9-5wO8UzA-bAA"
       KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://notekafka2:9092
-      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@notekafka1:9095,2@notekafka2:9095,3@notekafka3:9095
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@notekafka1:9095,2@notekafka2:9095,3@notekafka3:9095,4@notekafka3:9095
 
   notekafka3:
     image: bitnami/kafka:3.6.2-debian-12-r5
@@ -44,12 +44,30 @@ services:
     networks:
       - note-network
     volumes:
-      - ./kafka_data3:/bitnami/kafka/data
+      - ./kafka_data4:/bitnami/kafka
     environment:
       KAFKA_CFG_NODE_ID: 3
       KAFKA_CFG_CLUSTER_ID: "42VMU-JcQ9-5wO8UzA-bAA"
       KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://notekafka3:9092
-      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@notekafka1:9095,2@notekafka2:9095,3@notekafka3:9095
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@notekafka1:9095,2@notekafka2:9095,3@notekafka3:9095,4@notekafka3:9095
+  notekafka4:
+    image: bitnami/kafka:3.6.2-debian-12-r5
+    container_name: notekafka4
+    restart: always
+    ports:
+      - "9096:9092"
+    env_file:
+      - ./env.compose
+    networks:
+      - note-network
+    volumes:
+      - ./kafka_data4:/bitnami/kafka
+    environment:
+      KAFKA_CFG_NODE_ID: 4
+      KAFKA_CFG_CLUSTER_ID: "42VMU-JcQ9-5wO8UzA-bAA"
+      KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://notekafka4:9092
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@notekafka1:9095,2@notekafka2:9095,3@notekafka3:9095,4@notekafka3:9095
+    
 
   nats-server:
     image: nats:latest
@@ -80,6 +98,7 @@ services:
       - notekafka1
       - notekafka2
       - notekafka3
+      - notekafka4
       - nats-server  
 
   filehandler-server:
@@ -95,6 +114,7 @@ services:
       - notekafka1
       - notekafka2
       - notekafka3
+      - notekafka4
       - nats-server      
 
   worker-server:
@@ -110,6 +130,7 @@ services:
       - notekafka1
       - notekafka2
       - notekafka3
+      - notekafka4
       - nats-server    
 
   ws-server:
@@ -126,6 +147,7 @@ services:
       - notekafka1
       - notekafka2
       - notekafka3
+      - notekafka4
       - nats-server
       - worker-server    
 
@@ -144,7 +166,8 @@ networks:
     driver: bridge
 
 volumes:
-  kafka1_data:
-  kafka2_data:
-  kafka3_data:    
+  kafka_data1:
+  kafka_data2:
+  kafka_data3:
+  kafka_data4:    
 
