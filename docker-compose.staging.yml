@@ -9,7 +9,7 @@ services:
     networks:
       - note-network
     volumes:
-      - ./kafka_data3:/bitnami/kafka
+      - ./kafka_data1:/bitnami/kafka
     environment:
       KAFKA_CFG_NODE_ID: 1
       KAFKA_KRAFT_CLUSTER_ID: "42VMU-JcQ9-5wO8UzA-bAA"
@@ -26,7 +26,7 @@ services:
     networks:
       - note-network
     volumes:
-      - ./kafka_data3:/bitnami/kafka
+      - ./kafka_data2:/bitnami/kafka
     environment:
       KAFKA_CFG_NODE_ID: 2
       KAFKA_CFG_CLUSTER_ID: "42VMU-JcQ9-5wO8UzA-bAA"
@@ -51,7 +51,7 @@ services:
       KAFKA_CFG_CLUSTER_ID: "42VMU-JcQ9-5wO8UzA-bAA"
       KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://notekafka3:9092
       KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@notekafka1:9095,2@notekafka2:9095,3@notekafka3:9095,4@notekafka4:9095
-    
+     
   notekafka4:
     image: bitnami/kafka:3.6.2-debian-12-r5
     container_name: notekafka4
@@ -63,7 +63,7 @@ services:
     networks:
       - note-network
     volumes:
-      - ./kafka_data3:/bitnami/kafka
+      - ./kafka_data4:/bitnami/kafka
     environment:
       KAFKA_CFG_NODE_ID: 4
       KAFKA_CFG_CLUSTER_ID: "42VMU-JcQ9-5wO8UzA-bAA"
