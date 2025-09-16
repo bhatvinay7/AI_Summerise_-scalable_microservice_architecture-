@@ -19,7 +19,6 @@ services:
       bash -c "    
         
       rm -rf /kafka_data1/data/__cluster_metadata-0
-      exec /opt/bitnami/scripts/kafka/run.sh 
        
       "
     profiles:
@@ -45,7 +44,7 @@ services:
       bash -c "
       
       rm -rf /kafka_data2/data/__cluster_metadata-0
-      exec /opt/bitnami/scripts/kafka/run.sh 
+    
        
       "
     profiles:
@@ -75,8 +74,6 @@ services:
         
         # Remove existing metadata
         rm -rf /kafka_data3/data/__cluster_metadata-0
-        
-        exec /opt/bitnami/scripts/kafka/run.sh
       "
     profiles:
       - setup
@@ -102,7 +99,6 @@ services:
       bash -c "
       
         rm -rf /kafka_data4/data/__cluster_metadata-0
-        exec /opt/bitnami/scripts/kafka/run.sh
       "
     profiles:
       - setup
