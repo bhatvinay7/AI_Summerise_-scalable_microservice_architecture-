@@ -220,7 +220,8 @@ jobs:
         
             echo "KAFKA_CFG_ENABLE_KRAFT=yes" >> env.kafka
             echo "KAFKA_CFG_PROCESS_ROLES=broker,controller" >> env.kafka
-
+            echo "KAFKA_CFG_LOG_DIRS=/bitnami/kafka/data/logs" >> env.kafka
+            echo "KAFKA_CFG_METADATA_LOG_DIR=/bitnami/kafka/data/metadata" >> env.kafka
         
             echo "KAFKA_INTER_BROKER_USER=${{ secrets.KAFKA_USERNAME }}" >> env.kafka
             echo "KAFKA_INTER_BROKER_PASSWORD=${{ secrets.KAFKA_PASSWORD }}" >> env.kafka
