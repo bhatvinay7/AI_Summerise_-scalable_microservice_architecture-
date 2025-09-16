@@ -228,7 +228,7 @@ jobs:
             echo "KAFKA_CONTROLLER_PASSWORD=${{ secrets.KAFKA_PASSWORD }}" >> env.kafka
 
       
-            echo 'KAFKA_KRAFT_CLUSTER_ID=42VMU-JcQ9-5wO8UzA-bAA' >> env.kafka
+            echo 'KAFKA_CFG_CLUSTER_ID=42VMU-JcQ9-5wO8UzA-bAA' >> env.kafka
 
             echo "KAFKA_CFG_LISTENERS=INTERNAL://0.0.0.0:9092,CONTROLLER://0.0.0.0:9095" >> env.kafka
             echo "KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=INTERNAL:SASL_PLAINTEXT,CONTROLLER:SASL_PLAINTEXT" >> env.kafka
@@ -255,7 +255,7 @@ jobs:
             username=\"${KAFKA_USERNAME}\" \
             password=\"${KAFKA_PASSWORD}\" \
             user_${KAFKA_USERNAME}=\"${KAFKA_PASSWORD}\";" >> env.kafka
-            
+
             # Super users (CFG prefix required)
             echo "KAFKA_CFG_SUPER_USERS=User:${{secrets.KAFKA_USERNAME}},User:${{secrets.KAFKA_USERNAME}}" >> env.kafka
 
