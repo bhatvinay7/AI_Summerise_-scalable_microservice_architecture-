@@ -21,8 +21,6 @@ services:
       rm -rf /kafka_data1/data/__cluster_metadata-0
        
       "
-    profiles:
-      - setup  
 
   notekafka2:
     image: bitnami/kafka:3.6.2-debian-12-r5
@@ -44,11 +42,7 @@ services:
       bash -c "
       
       rm -rf /kafka_data2/data/__cluster_metadata-0
-    
-       
       "
-    profiles:
-      - setup  
 
   notekafka3:
     image: bitnami/kafka:3.6.2-debian-12-r5
@@ -71,13 +65,8 @@ services:
       bash -c "
       
         echo 'Source metadata found, proceeding with copy...'
-        
-        # Remove existing metadata
         rm -rf /kafka_data3/data/__cluster_metadata-0
       "
-    profiles:
-      - setup
-  
   notekafka4:
     image: bitnami/kafka:3.6.2-debian-12-r5
     container_name: notekafka4
@@ -100,9 +89,6 @@ services:
       
         rm -rf /kafka_data4/data/__cluster_metadata-0
       "
-    profiles:
-      - setup
-
   nats-server:
     image: nats:latest
     container_name: nats-server
