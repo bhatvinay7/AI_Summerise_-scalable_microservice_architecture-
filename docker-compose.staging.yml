@@ -15,12 +15,6 @@ services:
       KAFKA_KRAFT_CLUSTER_ID: "42VMU-JcQ9-5wO8UzA-bAA"
       KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://notekafka1:9092
       KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@notekafka1:9095,2@notekafka2:9095,3@notekafka3:9095,4@notekafka4:9095
-    command: |
-      bash -c "    
-        
-      rm -rf /kafka_data1/data/__cluster_metadata-0
-       
-      "
 
   notekafka2:
     image: bitnami/kafka:3.6.2-debian-12-r5
@@ -38,11 +32,7 @@ services:
       KAFKA_CFG_CLUSTER_ID: "42VMU-JcQ9-5wO8UzA-bAA"
       KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://notekafka2:9092
       KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@notekafka1:9095,2@notekafka2:9095,3@notekafka3:9095,4@notekafka4:9095
-    command: |
-      bash -c "
-      
-      rm -rf /kafka_data2/data/__cluster_metadata-0
-      "
+    
 
   notekafka3:
     image: bitnami/kafka:3.6.2-debian-12-r5
@@ -61,12 +51,7 @@ services:
       KAFKA_CFG_CLUSTER_ID: "42VMU-JcQ9-5wO8UzA-bAA"
       KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://notekafka3:9092
       KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@notekafka1:9095,2@notekafka2:9095,3@notekafka3:9095,4@notekafka4:9095
-    command: |
-      bash -c "
-      
-        echo 'Source metadata found, proceeding with copy...'
-        rm -rf /kafka_data3/data/__cluster_metadata-0
-      "
+    
   notekafka4:
     image: bitnami/kafka:3.6.2-debian-12-r5
     container_name: notekafka4
@@ -84,11 +69,6 @@ services:
       KAFKA_CFG_CLUSTER_ID: "42VMU-JcQ9-5wO8UzA-bAA"
       KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://notekafka4:9092
       KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@notekafka1:9095,2@notekafka2:9095,3@notekafka3:9095,4@notekafka4:9095
-    command: |
-      bash -c "
-      
-        rm -rf /kafka_data4/data/__cluster_metadata-0
-      "
   nats-server:
     image: nats:latest
     container_name: nats-server
