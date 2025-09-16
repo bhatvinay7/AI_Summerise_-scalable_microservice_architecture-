@@ -310,10 +310,6 @@ jobs:
             sudo chown -R 1001:1001 kafka_data2
             sudo chown -R 1001:1001 kafka_data3
             sudo chown -R 1001:1001 kafka_data4
-            sudo rm -rf  kafka_data1/data/__cluster_metadata-0/quorum || true
-            sudo rm -rf  kafka_data2/data/__cluster_metadata-0/quorum || true
-            sudo rm -rf  kafka_data3/data/__cluster_metadata-0/quorum || true
-            sudo rm -rf  kafka_data4/data/__cluster_metadata-0/quorum || true
             rm -f env.compose || true
 
             cat env.kafka env.http env.redis > env.compose
