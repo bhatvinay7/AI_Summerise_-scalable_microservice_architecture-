@@ -12,7 +12,7 @@ services:
       - ./kafka_data1:/bitnami/kafka/data
     environment:
       KAFKA_CFG_NODE_ID: 1
-      KAFKA_CFG_CLUSTER_ID: "42VMU-JcQ9-5wO8UzA-bAA"
+      KAFKA_KRAFT_CLUSTER_ID: "42VMU-JcQ9-5wO8UzA-bAA"
       KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://notekafka1:9092
       KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@notekafka1:9095,2@notekafka2:9095,3@notekafka3:9095
 
