@@ -9,12 +9,43 @@ services:
     networks:
       - note-network
     volumes:
-      - ./kafka_data1:/bitnami/kafka/logs
+      - ./kafka_data3:/bitnami/kafka/data
     environment:
       KAFKA_CFG_NODE_ID: 1
       KAFKA_KRAFT_CLUSTER_ID: "42VMU-JcQ9-5wO8UzA-bAA"
       KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://notekafka1:9092
       KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@notekafka1:9095,2@notekafka2:9095,3@notekafka3:9095,4@notekafka4:9095
+    command: |
+      bash -c "
+      
+        # Check if source exists
+        if [ ! -d '/opt/bitnami/kafka/config/__cluster_metadata-0' ]; then
+          echo 'ERROR: Source metadata not found in config directory'
+          exit 1
+        fi
+        
+        echo 'Source metadata found, proceeding with copy...'
+        
+        # Remove existing metadata
+        rm -rf /kafka_data1/data/__cluster_metadata-0
+        
+        # Copy from config to data
+        cp -r /opt/bitnami/kafka/config/__cluster_metadata-0 /kafka_data1/data/
+        
+        # Verify copy
+        if [ -d '/kafka_data1/data/__cluster_metadata-0' ]; then
+          echo 'SUCCESS: Metadata copied successfully'
+          echo 'Contents:'
+          ls -la /kafka_data1/data/__cluster_metadata-0
+        else
+          echo 'ERROR: Copy failed'
+          exit 1
+        fi
+        
+        echo '=== Copy completed ==='
+      "
+    profiles:
+      - setup  
 
   notekafka2:
     image: bitnami/kafka:3.6.2-debian-12-r5
@@ -26,12 +57,43 @@ services:
     networks:
       - note-network
     volumes:
-      - ./kafka_data2:/bitnami/kafka/logs
+      - ./kafka_data3:/bitnami/kafka/data
     environment:
       KAFKA_CFG_NODE_ID: 2
       KAFKA_CFG_CLUSTER_ID: "42VMU-JcQ9-5wO8UzA-bAA"
       KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://notekafka2:9092
       KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@notekafka1:9095,2@notekafka2:9095,3@notekafka3:9095,4@notekafka4:9095
+    command: |
+      bash -c "
+      
+        # Check if source exists
+        if [ ! -d '/opt/bitnami/kafka/config/__cluster_metadata-0' ]; then
+          echo 'ERROR: Source metadata not found in config directory'
+          exit 1
+        fi
+        
+        echo 'Source metadata found, proceeding with copy...'
+        
+        # Remove existing metadata
+        rm -rf /kafka_data2/data/__cluster_metadata-0
+        
+        # Copy from config to data
+        cp -r /opt/bitnami/kafka/config/__cluster_metadata-0 /kafka_data2/
+        
+        # Verify copy
+        if [ -d '/kafka_data2/data__cluster_metadata-0' ]; then
+          echo 'SUCCESS: Metadata copied successfully'
+          echo 'Contents:'
+          ls -la /kafka_data2/data/__cluster_metadata-0
+        else
+          echo 'ERROR: Copy failed'
+          exit 1
+        fi
+        
+        echo '=== Copy completed ==='
+      "
+    profiles:
+      - setup  
 
   notekafka3:
     image: bitnami/kafka:3.6.2-debian-12-r5
@@ -44,12 +106,44 @@ services:
     networks:
       - note-network
     volumes:
-      - ./kafka_data3:/bitnami/kafka/logs
+      - ./kafka_data3:/bitnami/kafka/data
     environment:
       KAFKA_CFG_NODE_ID: 3
       KAFKA_CFG_CLUSTER_ID: "42VMU-JcQ9-5wO8UzA-bAA"
       KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://notekafka3:9092
       KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@notekafka1:9095,2@notekafka2:9095,3@notekafka3:9095,4@notekafka4:9095
+    command: |
+      bash -c "
+      
+        # Check if source exists
+        if [ ! -d '/opt/bitnami/kafka/config/__cluster_metadata-0' ]; then
+          echo 'ERROR: Source metadata not found in config directory'
+          exit 1
+        fi
+        
+        echo 'Source metadata found, proceeding with copy...'
+        
+        # Remove existing metadata
+        rm -rf /kafka_data3/data/__cluster_metadata-0
+        
+        # Copy from config to data
+        cp -r /opt/bitnami/kafka/config/__cluster_metadata-0 /kafka_data3/data/
+        
+        # Verify copy
+        if [ -d '/kafka_data3/data/__cluster_metadata-0' ]; then
+          echo 'SUCCESS: Metadata copied successfully'
+          echo 'Contents:'
+          ls -la /kafka_data3/data/__cluster_metadata-0
+        else
+          echo 'ERROR: Copy failed'
+          exit 1
+        fi
+        
+        echo '=== Copy completed ==='
+      "
+    profiles:
+      - setup
+  
   notekafka4:
     image: bitnami/kafka:3.6.2-debian-12-r5
     container_name: notekafka4
@@ -61,13 +155,43 @@ services:
     networks:
       - note-network
     volumes:
-      - ./kafka_data4:/bitnami/kafka/logs
+      - ./kafka_data3:/bitnami/kafka/data
     environment:
       KAFKA_CFG_NODE_ID: 4
       KAFKA_CFG_CLUSTER_ID: "42VMU-JcQ9-5wO8UzA-bAA"
       KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://notekafka4:9092
       KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@notekafka1:9095,2@notekafka2:9095,3@notekafka3:9095,4@notekafka4:9095
-    
+    command: |
+      bash -c "
+      
+        # Check if source exists
+        if [ ! -d '/opt/bitnami/kafka/config/__cluster_metadata-0' ]; then
+          echo 'ERROR: Source metadata not found in config directory'
+          exit 1
+        fi
+        
+        echo 'Source metadata found, proceeding with copy...'
+        
+        # Remove existing metadata
+        rm -rf /kafka_data4/data/__cluster_metadata-0
+        
+        # Copy from config to data
+        cp -r /opt/bitnami/kafka/config/__cluster_metadata-0 /kafka_data4/data/
+        
+        # Verify copy
+        if [ -d '/kafka_data4/data/__cluster_metadata-0' ]; then
+          echo 'SUCCESS: Metadata copied successfully'
+          echo 'Contents:'
+          ls -la /kafka_data4/__cluster_metadata-0
+        else
+          echo 'ERROR: Copy failed'
+          exit 1
+        fi
+        
+        echo '=== Copy completed ==='
+      "
+    profiles:
+      - setup
 
   nats-server:
     image: nats:latest
