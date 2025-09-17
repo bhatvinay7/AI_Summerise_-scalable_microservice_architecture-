@@ -2,11 +2,17 @@ import axios from "axios";
 import pdf from "pdf-parse";
 import mammoth from "mammoth";
 
+const MAX_SIZE = 20 * 1024 * 1024; // 20 MB
+
+
 async function fetchFile(url: string): Promise<string> {
   const extension = (url?.split("?")?.[0] as string).toLowerCase()
-
+  
   // Download file (binary)
   const response = await axios.get(url, { responseType: "arraybuffer" });
+  if (response.data.byteLength > MAX_SIZE) {
+    throw new Error("Response too large (>20 MB)");
+  }
   const buffer = Buffer.from(response.data);
 
   if (extension === "pdf") {
@@ -21,7 +27,7 @@ async function fetchFile(url: string): Promise<string> {
     return buffer.toString("utf-8");
   } 
   else {
-    throw new Error(`Unsupported file type: ${extension}`);
+   return JSON.parse(response.data.toString("utf-8"));
   }
 }
 
