@@ -101,9 +101,17 @@ const runConsumer = async () => {
 
           // Process file
           const parsedData = await getFileBufferData(value.fileLink);
+          console.log("Parsed Data:", parsedData);
 
           // Handle Redis cache
-          const cachedData = await redis.get(value.sessionId);
+          let cachedData
+          try{
+
+            cachedData = await redis.get(value.sessionId);
+          }
+          catch(err){
+            console.error("Error handling Redis cache:", err);
+          }
           let dataToStore: any;
           if (cachedData) {
             const arr = [];
