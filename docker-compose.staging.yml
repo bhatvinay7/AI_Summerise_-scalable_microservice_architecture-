@@ -12,7 +12,6 @@ services:
       - ./kafka_data1:/bitnami/kafka/logs
     environment:
       KAFKA_CFG_NODE_ID: 1
-      KAFKA_KRAFT_CLUSTER_ID: "42VMU-JcQ9-5wO8UzA-bAA"
       KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://notekafka1:9092
       KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@notekafka1:9095,2@notekafka2:9095,3@notekafka3:9095,4@notekafka4:9095
 
@@ -29,7 +28,6 @@ services:
       - ./kafka_data2:/bitnami/kafka/logs
     environment:
       KAFKA_CFG_NODE_ID: 2
-      KAFKA_CFG_CLUSTER_ID: "42VMU-JcQ9-5wO8UzA-bAA"
       KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://notekafka2:9092
       KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@notekafka1:9095,2@notekafka2:9095,3@notekafka3:9095,4@notekafka4:9095
     
@@ -46,9 +44,9 @@ services:
       - note-network
     volumes:
       - ./kafka_data3:/bitnami/kafka/logs
+      
     environment:
       KAFKA_CFG_NODE_ID: 3
-      KAFKA_CFG_CLUSTER_ID: "42VMU-JcQ9-5wO8UzA-bAA"
       KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://notekafka3:9092
       KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@notekafka1:9095,2@notekafka2:9095,3@notekafka3:9095,4@notekafka4:9095
      
@@ -66,7 +64,6 @@ services:
       - ./kafka_data4:/bitnami/kafka/logs
     environment:
       KAFKA_CFG_NODE_ID: 4
-      KAFKA_CFG_CLUSTER_ID: "42VMU-JcQ9-5wO8UzA-bAA"
       KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://notekafka4:9092
       KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@notekafka1:9095,2@notekafka2:9095,3@notekafka3:9095,4@notekafka4:9095
   nats-server:
