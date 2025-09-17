@@ -9,7 +9,7 @@ services:
     networks:
       - note-network
     volumes:
-      - ./kafka_data1:/bitnami/kafka/logs
+      - ./kafka_data1:/bitnami/kafka
     environment:
       KAFKA_CFG_NODE_ID: 1
       KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://notekafka1:9092
@@ -25,7 +25,7 @@ services:
     networks:
       - note-network
     volumes:
-      - ./kafka_data2:/bitnami/kafka/logs
+      - ./kafka_data2:/bitnami/kafka
     environment:
       KAFKA_CFG_NODE_ID: 2
       KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://notekafka2:9092
@@ -43,7 +43,7 @@ services:
     networks:
       - note-network
     volumes:
-      - ./kafka_data3:/bitnami/kafka/logs
+      - ./kafka_data3:/bitnami/kafka
       
     environment:
       KAFKA_CFG_NODE_ID: 3
@@ -61,7 +61,7 @@ services:
     networks:
       - note-network
     volumes:
-      - ./kafka_data4:/bitnami/kafka/logs
+      - ./kafka_data4:/bitnami/kafka
     environment:
       KAFKA_CFG_NODE_ID: 4
       KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://notekafka4:9092
