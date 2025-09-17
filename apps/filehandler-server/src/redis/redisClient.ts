@@ -2,11 +2,11 @@ import { createClient,RedisClientType } from 'redis';
 import dotenv from 'dotenv';
 dotenv.config();
 const client:RedisClientType = createClient({
-    username:process.env.username,
-    password:process.env.password,
+    username:process.env.USERNAME,
+    password:process.env.PASSWORD,
     socket: {
-        host: process.env.host,
-        port:parseInt(process.env.port!)
+        host: process.env.HOST,
+        port:parseInt(process.env.PORT!)
     }
 });
 

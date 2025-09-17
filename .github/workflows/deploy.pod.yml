@@ -197,10 +197,10 @@ jobs:
             sudo rm env.http || true
             sudo rm env.redis || true
 
-            echo "username=${{ secrets.username }}" >> env.redis
-            echo "password=${{ secrets.password }}" >> env.redis
-            echo "host=${{ secrets.host }}" >> env.redis
-            echo "port=${{ secrets.port }}" >> env.redis
+            echo "username=${{ secrets.USERNAME }}" >> env.redis
+            echo "password=${{ secrets.PASSWORD }}" >> env.redis
+            echo "host=${{ secrets.HOST }}" >> env.redis
+            echo "port=${{ secrets.PORT }}" >> env.redis
             echo "KAFKA_CFG_USERNAME=${{ secrets.KAFKA_USERNAME }}" >> env.redis
             echo "KAFKA_CFG_PASSWORD=${{ secrets.KAFKA_PASSWORD}}" >> env.redis
 
