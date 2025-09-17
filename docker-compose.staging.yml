@@ -13,7 +13,7 @@ services:
     environment:
       KAFKA_CFG_NODE_ID: 1
       KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://notekafka1:9092
-      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@notekafka1:9095,2@notekafka2:9095,3@notekafka3:9095,4@notekafka4:9095
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@notekafka1:9095,2@notekafka2:9095,3@notekafka3:9095
 
   notekafka2:
     image: bitnami/kafka:3.6.2-debian-12-r5
@@ -29,7 +29,7 @@ services:
     environment:
       KAFKA_CFG_NODE_ID: 2
       KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://notekafka2:9092
-      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@notekafka1:9095,2@notekafka2:9095,3@notekafka3:9095,4@notekafka4:9095
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@notekafka1:9095,2@notekafka2:9095,3@notekafka3:9095
     
 
   notekafka3:
@@ -48,7 +48,7 @@ services:
     environment:
       KAFKA_CFG_NODE_ID: 3
       KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://notekafka3:9092
-      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@notekafka1:9095,2@notekafka2:9095,3@notekafka3:9095,4@notekafka4:9095
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@notekafka1:9095,2@notekafka2:9095,3@notekafka3:9095
      
   nats-server:
     image: nats:latest
@@ -79,7 +79,6 @@ services:
       - notekafka1
       - notekafka2
       - notekafka3
-      - notekafka4
       - nats-server  
 
   filehandler-server:
@@ -95,7 +94,6 @@ services:
       - notekafka1
       - notekafka2
       - notekafka3
-      - notekafka4
       - nats-server      
 
   worker-server:
@@ -111,7 +109,6 @@ services:
       - notekafka1
       - notekafka2
       - notekafka3
-      - notekafka4
       - nats-server    
 
   ws-server:
@@ -128,7 +125,6 @@ services:
       - notekafka1
       - notekafka2
       - notekafka3
-      - notekafka4
       - nats-server
       - worker-server    
 
@@ -149,6 +145,5 @@ networks:
 volumes:
   kafka_data1:
   kafka_data2:
-  kafka_data3:
-  kafka_data4:    
+  kafka_data3:    
 
