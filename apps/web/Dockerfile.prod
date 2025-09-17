@@ -46,7 +46,5 @@ RUN pnpm run build
 FROM base AS runner
 WORKDIR /app
 COPY --from=builder /app/apps/web/.next/standalone ./
-RUN rm -rf node_modules/.cache \
-apps/web/.next/cache
 WORKDIR /app/apps/web
 CMD ["node", "server.js"]
