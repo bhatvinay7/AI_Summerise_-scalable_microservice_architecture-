@@ -158,6 +158,7 @@ export default function ChatWindow() {
           message: userQuery.query,
           userId: userDetails.userId,
           token: userDetails.token,
+          join:true
         })
       );
       setcurrentChatHistoey((prev) => {

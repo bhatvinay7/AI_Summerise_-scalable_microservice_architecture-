@@ -121,7 +121,6 @@ const runConsumer = async () => {
           } else {
             dataToStore = [parsedData];
           }
-          console.log(parsedData);
           await redis.set(value.sessionId, JSON.stringify(dataToStore));
 
           // Notify user that processing is completed
