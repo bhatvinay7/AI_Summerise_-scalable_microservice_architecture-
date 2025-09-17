@@ -70,6 +70,7 @@ const run = async () => {
   await producer.connect();
   await consumer.connect();
   await consumer.subscribe({ topic: "llm-query", fromBeginning: false });
+  await redisClient.connect()
 
   consumer.run({
     eachMessage: async ({
@@ -96,12 +97,17 @@ const run = async () => {
       try {
         let response = null;
         let Userquery: any;
+        let sessionData :any;
         let sessionId: string = parsedMessage?.sessionId as string;
         if (parsedMessage.sessionId) {
           console.log((redisClient?.isOpen ? "Redis is connected" : "Redis is not connected"));  
-          const sessionData = await redisClient.get(
-            `${parsedMessage.sessionId}`
-          );
+           
+          redisClient?.on("error", (err) => console.log("Redis Client Error", err));
+
+         
+            sessionData = await redisClient.get(
+              `${parsedMessage.sessionId}`
+            );
           natsConnection?.publish(
             "file-state-manager",
             sc.encode(

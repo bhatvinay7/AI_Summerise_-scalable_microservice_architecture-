@@ -72,7 +72,7 @@ const runConsumer = async () => {
     });
     await consumer.connect();
     await consumer.subscribe({ topic: "upload-file", fromBeginning: false });
-
+    await redis.connect()
     await consumer.run({
       autoCommit: false,
       eachMessage: async ({

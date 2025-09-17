@@ -10,6 +10,7 @@ const client:RedisClientType = createClient({
     }
 });
 
+
 client.on('error',( err:any) => console.log('Redis Client Error', err));
 
 
