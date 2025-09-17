@@ -19,7 +19,7 @@ async function fetchFile(url: string): Promise<string> {
     const data = await pdf(buffer);
     return data.text;
   } 
-  else if (extension === "docx") {
+  else if (extension === "officedocument") {
     const result = await mammoth.extractRawText({ buffer });
     return result.value;
   } 
@@ -27,7 +27,7 @@ async function fetchFile(url: string): Promise<string> {
     return buffer.toString("utf-8");
   } 
   else {
-   return JSON.parse(response.data.toString("utf-8"));
+   return response.data.toString("utf-8");
   }
 }
 
