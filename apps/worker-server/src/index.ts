@@ -12,7 +12,7 @@ const app = express();
 
 const kafka = new Kafka({
   clientId: "notes",
-  brokers: ["notekafka1:9092", "notekafka2:9092", "notekafka3:9092","notekafka4:9092"],
+  brokers: ["notekafka1:9092", "notekafka2:9092", "notekafka3:9092"],
   retry: {
     retries: parseInt(process.env.KAFKA_CLIENT_RETRY_RETRIES || '10', 10),
     factor: parseFloat(process.env.KAFKA_CLIENT_RETRY_FACTOR || '0.2'),
