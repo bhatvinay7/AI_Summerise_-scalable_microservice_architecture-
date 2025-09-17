@@ -191,7 +191,9 @@ jobs:
             sudo docker image prune -f || true
             sudo docker prune -af || true
 
-
+            docker compose -f docker-compose.staging.yml down --remove-orphans || true
+            sudo docker image prune -f || true
+            sudo docker prune -af || true
 
             sudo rm env.http || true
             sudo rm env.redis || true
