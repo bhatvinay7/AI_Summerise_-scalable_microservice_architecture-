@@ -98,6 +98,7 @@ const run = async () => {
         let Userquery: any;
         let sessionId: string = parsedMessage?.sessionId as string;
         if (parsedMessage.sessionId) {
+          console.log((redisClient?.isOpen ? "Redis is connected" : "Redis is not connected"));  
           const sessionData = await redisClient.get(
             `${parsedMessage.sessionId}`
           );
@@ -112,9 +113,16 @@ const run = async () => {
               })
             )
           );
-          response = await fetchResponse(
-            `${parsedMessage.message}/n ${sessionData}`
-          );
+
+          if(sessionData){ 
+            response = await fetchResponse(
+              `${parsedMessage.message}/n ${sessionData}`
+            );
+
+          }
+          else{
+            response = await fetchResponse(parsedMessage.message);
+          }
           console.log(response);
         }
         const Session = await prisma.session.findFirst({
