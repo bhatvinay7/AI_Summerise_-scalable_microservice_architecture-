@@ -141,8 +141,8 @@ const run = async () => {
         if (!Session) {
           const newSession = await prisma.session.create({
             data: {
-              userId: parsedMessage.userId,
-              sessionName: "",
+              userId:parsedMessage.userId!,
+              sessionName:response?.sessionName! as string,
               createdAt: new Date().toISOString(),
             },
           });
@@ -150,10 +150,10 @@ const run = async () => {
           Userquery = await prisma.query.create({
             data: {
               userquery: parsedMessage.message,
-              sessionId: newSession.id as string,
+              sessionId: sessionId,
               response: {
                 create: {
-                  llmResponse: response as string,
+                  llmResponse: response?.response! as string,
                 },
               },
             },
@@ -168,7 +168,7 @@ const run = async () => {
               sessionId: Session.id as string,
               response: {
                 create: {
-                  llmResponse: response as string,
+                  llmResponse: response?.response as string,
                 },
               },
             },

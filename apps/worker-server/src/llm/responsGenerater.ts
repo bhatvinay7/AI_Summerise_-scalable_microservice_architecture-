@@ -5,7 +5,7 @@ const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 export async function fetchResponse(content:string) {
   const chatCompletion = await getGroqChatCompletion(content);
-  return chatCompletion.choices[0]?.message?.content || "";
+  return (chatCompletion?.choices?.[0]! as unknown as {message:{content:{response:string,sessionName:string}}}).message?.content
 }
 
 export async function getGroqChatCompletion(content:string) {
