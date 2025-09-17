@@ -119,18 +119,24 @@ const runConsumer = async () => {
           // Notify user that processing is completed
           await publishNatsMessage("file-state-manager", {
             type: "notification",
-            userId: value.userId,
+            userId:parseInt(value.userId),
             message: "processing is completed",
           });
 
           // Commit offset manually
-          await consumer.commitOffsets([
-            {
-              topic,
-              partition,
-              offset: (parseInt(message.offset) + 1).toString(),
-            },
-          ]);
+          try{
+            await consumer.commitOffsets([
+              {
+                topic,
+                partition,
+                offset: (parseInt(message.offset) + 1).toString(),
+              },
+            ]);
+
+          }
+          catch(err){
+            console.error("Error committing offsets:", err);
+          }
         } catch (err) {
           console.error("Error processing message:", err);
         }
