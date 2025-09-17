@@ -6,7 +6,7 @@ const client:RedisClientType = createClient({
     password:process.env.PASSWORD,
     socket: {
         host: process.env.HOST,
-        port:parseInt(process.env.PORT!)
+        port:parseInt(process.env.REDIS_PORT!)
     }
 });
 
