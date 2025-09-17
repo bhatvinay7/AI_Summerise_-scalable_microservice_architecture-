@@ -268,8 +268,8 @@ jobs:
             echo "KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR=2" >> env.kafka
             echo "KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR=1" >> env.kafka
 
-            echo "KAFKA_CFG_LOG_DIRS: /bitnami/kafka/logs" >> env.kafka
-            echo "KAFKA_CFG_METADATA_LOG_DIR: /bitnami/kafka/meta " >> env.kafka
+            # echo "KAFKA_CFG_LOG_DIRS: /bitnami/kafka/logs" >> env.kafka
+            # echo "KAFKA_CFG_METADATA_LOG_DIR: /bitnami/kafka/meta " >> env.kafka
             # Log configs (CFG prefix required)
             echo "KAFKA_CFG_LOG_RETENTION_CHECK_INTERVAL_MS=120000" >> env.kafka
             echo "KAFKA_CFG_LOG_RETENTION_MS=180000" >> env.kafka
