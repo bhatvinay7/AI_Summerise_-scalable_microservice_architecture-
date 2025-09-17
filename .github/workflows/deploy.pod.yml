@@ -188,8 +188,7 @@ jobs:
             if [ -n "$(sudo docker ps -aq)" ]; then
             sudo docker rm -f $(sudo docker ps -aq) || true
             fi
-            sudo docker image prune -f || true
-            sudo docker prune -af || true
+            
 
             docker compose -f docker-compose.staging.yml down --remove-orphans || true
             sudo docker image prune -f || true
@@ -334,3 +333,6 @@ jobs:
             DATABASE_URL=${{ secrets.DATABASE_URL }} \
             DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }} \
             sudo docker compose -f docker-compose.staging.yml --env-file ./env.compose up -d
+            
+            sudo docker image prune -f || true
+            sudo docker prune -af || true
