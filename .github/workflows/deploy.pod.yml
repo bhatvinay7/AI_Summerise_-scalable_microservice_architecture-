@@ -200,7 +200,7 @@ jobs:
             echo "USERNAME=${{ secrets.USERNAME }}" >> env.redis
             echo "PASSWORD=${{ secrets.PASSWORD }}" >> env.redis
             echo "HOST=${{ secrets.HOST }}" >> env.redis
-            echo "PORT=${{ secrets.PORT }}" >> env.redis
+            echo "PORT=${{ secrets.REDIS_PORT }}" >> env.redis
             echo "KAFKA_CFG_USERNAME=${{ secrets.KAFKA_USERNAME }}" >> env.redis
             echo "KAFKA_CFG_PASSWORD=${{ secrets.KAFKA_PASSWORD}}" >> env.redis
 
