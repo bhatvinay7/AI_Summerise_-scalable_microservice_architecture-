@@ -60,6 +60,7 @@ interface Message {
   message: string;
   token: string | null;
   join: boolean;
+  queryId:string
 }
 
 // Maps for managing connections
