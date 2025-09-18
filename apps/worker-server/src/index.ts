@@ -146,7 +146,7 @@ const run = async () => {
               createdAt: new Date().toISOString(),
             },
           });
-          sessionId = newSession.id as string;
+          sessionId = newSession?.id as string;
           Userquery = await prisma.query.create({
             data: {
               userquery: parsedMessage.message,
@@ -155,7 +155,7 @@ const run = async () => {
                 create: {
                   data:{
                     llmResponse: response?.response,
-                    sessionId: Session.id as string,
+                    sessionId: sessionId,
                   }
                 },
               },
@@ -175,7 +175,7 @@ const run = async () => {
                   data:{
 
                     llmResponse: response?.response,
-                    sessionId: Session.id as string,
+                    sessionId: sessionId
                   }
                 },
               },
