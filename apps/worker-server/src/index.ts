@@ -95,7 +95,7 @@ const run = async () => {
       }
 
       try {
-        let response = null;
+        let response: {response:string,sessionName:string}|null = null;
         let Userquery: any;
         let sessionData :any;
         let sessionId: string = parsedMessage?.sessionId as string;
@@ -138,7 +138,7 @@ const run = async () => {
           },
         });
 
-        if (!Session) {
+        if (!Session &&  response) {
           const newSession = await prisma.session.create({
             data: {
               userId:parsedMessage.userId!,
@@ -162,6 +162,7 @@ const run = async () => {
             },
           });
         } else {
+          if(response){
           Userquery = await prisma.query.create({
             data: {
               userquery: parsedMessage.message,
@@ -177,6 +178,7 @@ const run = async () => {
             },
           });
         }
+      }
         await producer.send({
           topic: "llm-response",
           messages: [
@@ -184,7 +186,7 @@ const run = async () => {
               value: JSON.stringify({
                 userId: parsedMessage.userId,
                 query: { userquery: null, id: Userquery.id as number },
-                response: response,
+                response: response?.response,
                 sessionId: sessionId as string,
                 type: MessageType.Response,
               }),
