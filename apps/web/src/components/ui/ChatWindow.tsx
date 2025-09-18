@@ -121,7 +121,7 @@ export default function ChatWindow() {
               }
 
               const updated = [...prev];
-              const chat=updated.find((chat)=>chat.sessionId===data.sessionId) 
+              const chat=updated.find((chat)=>chat.queryId===data.queryId) 
               if(chat){
                const updateChat={...chat,sessionId: data.sessionId,
                 query: {
@@ -131,7 +131,7 @@ export default function ChatWindow() {
                 response: { llmResponse: data?.response?.llmResponse ?? null }, // update message
               }
             
-              const chats=updated.filter((chat)=>chat.sessionId!==data.sessionId)
+              const chats=updated.filter((chat)=>chat.queryId!==data.queryId)
               return [...chats,updateChat] as ResponseMessage[];
             } 
 
