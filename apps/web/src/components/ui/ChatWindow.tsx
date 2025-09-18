@@ -51,9 +51,7 @@ export default function ChatWindow() {
   const [userQuery, setUserQuery] = useState<{ query: string | null }>({
     query: "null",
   });
-  const [updates, setUpdates] = useState<{ notification: string | null }>({
-    notification: "",
-  });
+  const [updates, setUpdates] = useState<{ notification: string | null }>({notification:null});
   const [response, setResponse] = useState<ResponseMessage | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(
     params.sessionId ? (params.sessionId as string) : generateUUID()
@@ -99,7 +97,8 @@ export default function ChatWindow() {
       try {
         const data: ResponseMessage = JSON.parse(event.data);
         if (data.type === MessageType.Notification) {
-          setUpdates({ notification: data.type });
+          setUpdates({ notification: data.response?.llmResponse as string });
+
         } else if (data.type === MessageType.Response) {
           setcurrentChatHistoey((prev) => {
             // Find the index of the message with the same sessionId
