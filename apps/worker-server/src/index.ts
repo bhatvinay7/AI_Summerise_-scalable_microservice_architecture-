@@ -153,7 +153,10 @@ const run = async () => {
               sessionId: sessionId,
               response: {
                 create: {
-                  llmResponse: response?.response! as string,
+                  data:{
+                    llmResponse: response?.response,
+                    sessionId: Session.id as string,
+                  }
                 },
               },
             },
@@ -169,7 +172,11 @@ const run = async () => {
               sessionId: Session.id as string,
               response: {
                 create: {
-                  llmResponse: response?.response as string,
+                  data:{
+
+                    llmResponse: response?.response,
+                    sessionId: Session.id as string,
+                  }
                 },
               },
             },
