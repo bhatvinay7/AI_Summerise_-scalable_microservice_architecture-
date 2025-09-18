@@ -114,7 +114,7 @@ const run = async () => {
             sc.encode(
               JSON.stringify({
                 userId: parsedMessage.userId,
-                response: "generating the response",
+                response: {llmResponse:"generating the response"},
                 type: MessageType.Notification,
                 sessionId: parsedMessage.sessionId,
               })
