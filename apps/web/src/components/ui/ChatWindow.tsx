@@ -29,6 +29,7 @@ interface ResponseMessage {
   userId?: number;
   query: { userquery: string | null; id: number | null };
   response?: { llmResponse: string | null };
+  queryId:string
 }
 
 interface ChatMessage {
@@ -44,6 +45,7 @@ export default function ChatWindow() {
   const [currentChatHistory, setcurrentChatHistoey] = useState<
     ResponseMessage[]
   >([]);
+  const [queryId,setQueryId]=useState<string>()
   const dispatch = useDispatch();
 
   const [userQuery, setUserQuery] = useState<{ query: string | null }>({
@@ -102,24 +104,29 @@ export default function ChatWindow() {
           setcurrentChatHistoey((prev) => {
             // Find the index of the message with the same sessionId
             const index = prev.findIndex(
-              (msg) => msg.query?.id === data.query.id
+              (msg) => msg.queryId === data.queryId
             );
             if (index !== -1) {
               // If found, update the existing message
               if(localStorage.getItem("sessionId")){
                 localStorage.setItem("sessionId",data?.sessionId!)
               }
+
               const updated = [...prev];
-              updated[index] = {
-                ...updated[index],
-                sessionId: data.sessionId,
+              const chat=updated.find((chat)=>chat.sessionId===data.sessionId) 
+              if(chat){
+               const updateChat={...chat,sessionId: data.sessionId,
                 query: {
-                  ...updated[index]?.query,
+                  ...chat.query,
                   id: data?.query.id as number,
                 } as { userquery: string; id: number },
                 response: { llmResponse: data?.response?.llmResponse ?? null }, // update message
-              };
-              return updated as ResponseMessage[];
+              }
+            
+              const chats=updated.filter((chat)=>chat.sessionId!==data.sessionId)
+              return [...chats,updateChat] as ResponseMessage[];
+            } 
+
             }
             return prev;
           });
@@ -151,6 +158,7 @@ export default function ChatWindow() {
   }, [connectWebSocket]);
 
   const sendMessage = () => {
+    setQueryId(generateUUID()) 
     if (wsRef.current?.readyState === WebSocket.OPEN && userQuery.query) {
       wsRef.current.send(
         JSON.stringify({
@@ -158,7 +166,8 @@ export default function ChatWindow() {
           message: userQuery.query,
           userId: userDetails.userId,
           token: userDetails.token,
-          join:true
+          join:true,
+          queryId:queryId
         })
       );
       setcurrentChatHistoey((prev) => {
@@ -169,6 +178,7 @@ export default function ChatWindow() {
             userId: userDetails.userId as number,
             query: { userquery: userQuery.query, id: null },
             response: { llmResponse: null }, // update message
+            queryId:queryId as string
           },
         ];
 

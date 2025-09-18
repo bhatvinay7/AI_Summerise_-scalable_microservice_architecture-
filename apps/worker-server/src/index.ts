@@ -60,6 +60,7 @@ interface Message {
   message: string;
   join: boolean;
   sessionId?: string | null;
+  queryId:string
 }
 
 const run = async () => {
@@ -190,8 +191,9 @@ const run = async () => {
               value: JSON.stringify({
                 userId: parsedMessage.userId,
                 query: { userquery: null, id: Userquery.id as number },
-                response: response?.response,
+                response:{llmResponse: response?.response},
                 sessionId: sessionId as string,
+                queryId:parsedMessage?.queryId,
                 type: MessageType.Response,
               }),
             },
