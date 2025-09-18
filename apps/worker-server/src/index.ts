@@ -95,7 +95,7 @@ const run = async () => {
       }
 
       try {
-        let response: {response:string,sessionName:string}|null = null;
+        let response:{response:string,sessionName:string}|null=null;
         let Userquery: any;
         let sessionData :any;
         let sessionId: string = parsedMessage?.sessionId as string;
@@ -121,13 +121,15 @@ const run = async () => {
           );
 
           if(sessionData){ 
-            response = await fetchResponse(
+            const data = await fetchResponse(
               `${parsedMessage.message}/n ${sessionData}`
             );
+            response=JSON.parse(data!)
 
           }
           else{
-            response = await fetchResponse(parsedMessage.message);
+            const data = await fetchResponse(parsedMessage.message);
+            response=JSON.parse(data!)
           }
           console.log(response);
         }
