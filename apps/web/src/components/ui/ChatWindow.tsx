@@ -105,10 +105,10 @@ export default function ChatWindow() {
       try {
         const data: ResponseMessage = JSON.parse(event.data);
         console.log("Received message:", data);
-        if (data.type === MessageType.Notification) {
+        if (data.type == MessageType.Notification) {
           setUpdates({ notification: data.response?.llmResponse as string });
 
-        } else if (data.type === MessageType.Response) {
+        } else if (data.type == MessageType.Response) {
           setcurrentChatHistory((prev) => {
             // Find the index of the message with the same sessionId
             const index = prev.findIndex(

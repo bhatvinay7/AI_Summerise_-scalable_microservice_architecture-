@@ -120,8 +120,8 @@ const run = async () => {
               })
             )
           );
-
-          if(sessionData){ 
+           try{
+                if(sessionData){ 
             const data = await fetchResponse(
               `${parsedMessage.message}/n ${sessionData}`
             );
@@ -133,7 +133,25 @@ const run = async () => {
             response=JSON.parse(data!)
           }
           console.log(response);
-        }
+        
+
+
+           }
+           catch(error){
+            console.error("Error fetching response:", error);
+              natsConnection?.publish(
+            "file-state-manager",
+            sc.encode(
+              JSON.stringify({
+                userId: parsedMessage.userId,
+                response: {llmResponse:"Error while fetching the response"},
+                type: MessageType.Notification,
+                sessionId: parsedMessage.sessionId,
+              })
+            )
+          );
+           }
+         
         const Session = await prisma.session.findFirst({
           where: {
             userId: parsedMessage.userId!,
@@ -184,6 +202,7 @@ const run = async () => {
           });
         }
       }
+    }
         await producer.send({
           topic: "llm-response",
           messages: [
