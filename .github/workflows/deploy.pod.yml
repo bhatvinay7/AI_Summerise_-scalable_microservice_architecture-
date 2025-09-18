@@ -272,8 +272,8 @@ jobs:
             # echo "KAFKA_CFG_METADATA_LOG_DIR: /bitnami/kafka/meta " >> env.kafka
             # Log configs (CFG prefix required)
             echo "KAFKA_CFG_LOG_RETENTION_CHECK_INTERVAL_MS=120000" >> env.kafka
-            echo "KAFKA_CFG_LOG_RETENTION_MS=180000" >> env.kafka
-            echo "KAFKA_CFG_LOG_SEGMENT_BYTES=1073741824" >> env.kafka
+            echo "KAFKA_CFG_LOG_RETENTION_MS=18000" >> env.kafka
+            echo "KAFKA_CFG_LOG_SEGMENT_BYTES=10737418" >> env.kafka
             echo "KAFKA_CFG_LOG_SEGMENT_DELETE_DELAY_MS=12000" >> env.kafka
             echo "KAFKA_CFG_LOG_RETENTION_BYTES=1073741824" >> env.kafka
             echo "KAFKA_CFG_LOG_CLEANUP_POLICY=delete" >> env.kafka
