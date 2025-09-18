@@ -42,7 +42,7 @@ export default function ChatWindow() {
   const params = useParams();
   const userDetails = useSelector(userInfo);
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
-  const [currentChatHistory, setcurrentChatHistoey] = useState<
+  const [currentChatHistory, setcurrentChatHistory] = useState<
     ResponseMessage[]
   >([]);
   const [queryId,setQueryId]=useState<string>()
@@ -100,7 +100,7 @@ export default function ChatWindow() {
           setUpdates({ notification: data.response?.llmResponse as string });
 
         } else if (data.type === MessageType.Response) {
-          setcurrentChatHistoey((prev) => {
+          setcurrentChatHistory((prev) => {
             // Find the index of the message with the same sessionId
             const index = prev.findIndex(
               (msg) => msg.queryId === data.queryId
@@ -169,7 +169,7 @@ export default function ChatWindow() {
           queryId:queryId
         })
       );
-      setcurrentChatHistoey((prev) => {
+      setcurrentChatHistory((prev) => {
         const updated = [
           ...prev,
           {
