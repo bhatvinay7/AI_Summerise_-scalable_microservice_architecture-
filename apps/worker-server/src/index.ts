@@ -154,6 +154,7 @@ const run = async () => {
               response: {
                 create: {
                     llmResponse: response?.response ?? "",
+                    sessionId: sessionId,
                 },
               },
             },
@@ -170,6 +171,7 @@ const run = async () => {
               response: {
                 create: {
                     llmResponse: response?.response ?? "",
+                    sessionId: sessionId,
                 },
               },
             },
