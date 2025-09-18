@@ -4,6 +4,9 @@ import {Ellipsis} from 'lucide-react'
 import ChatInput from "./chatInput";
 import generateUUID from "../../utils/generateUniqueId";
 import { useDispatch, useSelector } from "react-redux";
+import MarkdownIt from "markdown-it";
+
+
 import {
   userInfo,
   getDetails,
@@ -39,6 +42,11 @@ interface ChatMessage {
 }
 
 export default function ChatWindow() {
+  const md = new MarkdownIt({
+    html: false,        
+    linkify: true,    
+    typographer: true,
+  });
   const params = useParams();
   const userDetails = useSelector(userInfo);
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
@@ -96,6 +104,7 @@ export default function ChatWindow() {
     ws.onmessage = (event) => {
       try {
         const data: ResponseMessage = JSON.parse(event.data);
+        console.log("Received message:", data);
         if (data.type === MessageType.Notification) {
           setUpdates({ notification: data.response?.llmResponse as string });
 
@@ -189,23 +198,22 @@ export default function ChatWindow() {
 
   return (
     <div className=" w-full relative flex flex-col items-center   h-screen">
-      <div className=" w-full h-[calc(100vh-140px)]  relative  flex flex-col items-center place- top-14">
-        <div className=" relative max-w-4/5 sm:max-w-1/2 self-center overflow-y-auto  top-14  flex flex-col items-center  p-2">
+      <div className=" w-full h-[calc(100vh-140px)]  relative  flex flex-col items-center overflow-auto top-0 bottom-[60px]">
+        <div className=" relative w-full sm:max-w-1/2 self-center   top-14  flex flex-col items-center  p-2">
           {currentChatHistory?.map((each: ResponseMessage) => {
         return (
           <div
             key={each?.query?.id}
-            className="w-full h-auto min-h-20 flex flex-col scrollBar overflow-x-auto  items-center gap-y-4 p-3 "
+            className="w-full h-auto min-h-62  flex flex-col scrollBar  overflow-auto  items-center gap-y-4 p-3 "
           >
 
-            <div className=" max-w-[75%] min-w-[40px] relative scrollBar overflow-x-auto  self-end right-0 rounded-xl bg-[#3e3e3f] text-white  px-4 py-2 shadow-md">
+            <div className=" max-w-[75%] min-w-[40px] relative scrollBar overflow-x-auto  self-end right-0 rounded-xl bg-[#424252] text-white  px-4 py-2 shadow-md">
               {each.query.userquery}
             </div>
 
-          
             {each.response?.llmResponse ? (
-              <div className="max-w-[75%] self-start rounded-sm bg-[#4b4747]  text-gray-200 px-4 py-3 shadow-md">
-                <p className="whitespace-pre-wrap">{each.response?.llmResponse}</p>
+              <div className="w-full flex flex-col ">
+                <div className=" w-full self-start rounded-sm bg-[#292727]  text-gray-200 px-4 py-3 shadow-md" dangerouslySetInnerHTML={{ __html: md.render(each.response?.llmResponse) }} />
               </div>
             ) :each.query.userquery ? (
               <Ellipsis className="text-white/40 animate-pulse self-start w-6 h-6" />

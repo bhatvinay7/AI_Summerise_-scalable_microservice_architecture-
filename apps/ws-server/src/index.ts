@@ -163,6 +163,7 @@ async function setupAndRun() {
                     userId,
                     sessionId: message.sessionId,
                     message: message.message,
+                    queryId:message.queryId,
                   }),
                 },
               ],
