@@ -19,13 +19,11 @@ app.use(express.json());
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
 app.use(express.json());
-
 app.use("/user", userRouter);
 app.use(authRouter);
 app.use("/uploadFile", fileuploadRouter);
 app.use("/getUserSessions", getSessionRouter);
 app.listen(port,"0.0.0.0", () => {
-  console.log(`Server running at `);
+  console.log(`Server running at ${port}`);
 });

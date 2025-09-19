@@ -1,5 +1,6 @@
 import Home from '../components/ui/home'
-export default function Page() {
+export default async function Page() {
+  
   // const handleSend = ({ text, file }: { text: string; file: string }) => {
   //   const next = {
   //     id: Date.now(),
@@ -10,7 +11,9 @@ export default function Page() {
 
   return (
     <div className=" h-[vh] w-full overflow-hidden bg-[#484841] text-white ">
-      <Home/>
+      <Home
+      props={{data:[]}}
+      />
     </div>
   );
 }

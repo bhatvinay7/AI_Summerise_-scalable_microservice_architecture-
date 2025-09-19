@@ -12,8 +12,6 @@ import {
   getDetails,
 } from "../../lib/redux/featuresSlice/userDetails";
 import { useParams } from "next/navigation";
-import { set } from "zod";
-import { clear } from "console";
 
 interface FileUpload {
   file: File | null;
@@ -43,7 +41,7 @@ interface ChatMessage {
   response: { llmResponse: string };
 }
 
-export default function ChatWindow() {
+export default function ChatWindow({props}:{props:{data:any}}) {
   const md = new MarkdownIt({
     html: false,        
     linkify: true,    

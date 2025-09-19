@@ -9,7 +9,7 @@ import SessionSearch from "./sessionSearch";
 import SidebatToggle from "./sidebarToggle";
 import { useSelector} from 'react-redux';
 import { sideBarState } from '../../lib/redux/featuresSlice/slideBarSlice';
-export default function Home() {
+export default function Home({props}:{props:{data:any}}) {
   const state=useSelector(sideBarState)
   return (
     <AnimatePresence >
@@ -50,7 +50,9 @@ export default function Home() {
              </AnimatePresence> */}
           {/* </div> */} 
 
-          <ChatWindow />
+          <ChatWindow 
+          props={{data:props.data}}
+          />
         </main>
       </motion.div>
              </AnimatePresence>
