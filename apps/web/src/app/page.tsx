@@ -9,7 +9,7 @@ export default function Page() {
   //   };
 
   return (
-    <div className=" h-[vh] w-full overflow-hidden bg-[#2f2f2d] text-white ">
+    <div className=" h-[vh] w-full overflow-hidden bg-[#484841] text-white ">
       <Home/>
     </div>
   );

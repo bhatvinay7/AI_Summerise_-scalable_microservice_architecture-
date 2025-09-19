@@ -6,7 +6,7 @@ import MessageBuble from "./MessageBuble";
 import Session from "./sessions";
 import ChatWindow from "./ChatWindow";
 import SessionSearch from "./sessionSearch";
-import SidebatToggle from "./sidebatToggle";
+import SidebatToggle from "./sidebarToggle";
 import { useSelector} from 'react-redux';
 import { sideBarState } from '../../lib/redux/featuresSlice/slideBarSlice';
 export default function Home() {

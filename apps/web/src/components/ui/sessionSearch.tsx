@@ -1,6 +1,6 @@
 import React from "react";
 import { Search } from "lucide-react";
-import SidebatToggle from "./sidebatToggle";
+import SidebatToggle from "./sidebarToggle";
 export default function SessionSearch() {
   
   return (

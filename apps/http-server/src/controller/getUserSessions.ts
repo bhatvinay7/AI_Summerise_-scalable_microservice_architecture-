@@ -5,7 +5,6 @@ const getSessions=async(req:Request,res:Response)=>{
      const sessions=await prisma.session.findMany({
          select:{
             id:true,
-            createdAt:true,
             sessionName:true
          },
          where:{

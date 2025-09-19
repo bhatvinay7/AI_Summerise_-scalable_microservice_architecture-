@@ -28,8 +28,6 @@ const getSessionData=async(req:Request,res:Response)=>{
                             
                         }
                     },
-                  
-
                 }
 
             })

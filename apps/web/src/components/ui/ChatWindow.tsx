@@ -1,6 +1,6 @@
 "use client";
 import React, { useRef, useState, useEffect, useCallback } from "react";
-import {Ellipsis} from 'lucide-react'
+import {Ellipsis,Dot} from 'lucide-react'
 import ChatInput from "./chatInput";
 import generateUUID from "../../utils/generateUniqueId";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,6 +12,8 @@ import {
   getDetails,
 } from "../../lib/redux/featuresSlice/userDetails";
 import { useParams } from "next/navigation";
+import { set } from "zod";
+import { clear } from "console";
 
 interface FileUpload {
   file: File | null;
@@ -53,6 +55,7 @@ export default function ChatWindow() {
   const [currentChatHistory, setcurrentChatHistory] = useState<
     ResponseMessage[]
   >([]);
+  const [socketState,setSocketState]=useState<string|null>(null)
   const [queryId,setQueryId]=useState<string>()
   const dispatch = useDispatch();
 
@@ -64,9 +67,24 @@ export default function ChatWindow() {
   const [sessionId, setSessionId] = useState<string | null>(
     params.sessionId ? (params.sessionId as string) : generateUUID()
   );
+  const [timeOut,setTimeOut]=useState<boolean>(true)
 
   const wsRef = useRef<WebSocket | null>(null);
   // const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  
+  useEffect(()=>{
+       let timeOut= setTimeout(()=>{
+        if(socketState==="connected"){
+          setTimeOut(false)
+
+       }
+
+      },3000)
+       
+      return()=>{
+        clearTimeout(timeOut)
+      }
+  },[socketState])
 
   useEffect(() => {
     dispatch(getDetails() as any);
@@ -89,16 +107,7 @@ export default function ChatWindow() {
     wsRef.current = ws;
 
     ws.onopen = () => {
-      console.log("WebSocket connected");
-      // Join session if needed
-      // ws.send(
-      //   JSON.stringify({
-      //     sessionId,
-      //     join: true,
-      //     userId: userDetails.userId,
-      //     token: userDetails.token,
-      //   })
-      // );
+    setSocketState("connected")
     };
 
     ws.onmessage = (event) => {
@@ -110,12 +119,12 @@ export default function ChatWindow() {
 
         } else if (data.type == MessageType.Response) {
           setcurrentChatHistory((prev) => {
-            // Find the index of the message with the same sessionId
+            // Find the index of the message with the same queryId
             const index = prev.findIndex(
               (msg) => msg.queryId === data.queryId
             );
             if (index !== -1) {
-              // If found, update the existing message
+              // update the current sessionId
               if(localStorage.getItem("sessionId")){
                 localStorage.setItem("sessionId",data?.sessionId!)
               }
@@ -139,15 +148,16 @@ export default function ChatWindow() {
             return prev;
           });
         }
-      } catch (err) {
-        console.error("Invalid message from WS:", err);
+      } catch (err:any) {
+        setSocketState("errror")
       }
     };
 
-    ws.onerror = (err) => console.error("WebSocket error:", err);
-
+    ws.onerror = (err) =>{ console.error("WebSocket error:", err)
+     setSocketState("errror") 
+    }
     ws.onclose = (event) => {
-      console.log("WebSocket closed, attempting reconnect...", event.reason);
+      setSocketState("disconnected")
       wsRef.current = null;
       // reconnectTimeoutRef.current = setTimeout(connectWebSocket, 10000); // reconnect after 3s
     };
@@ -185,7 +195,7 @@ export default function ChatWindow() {
             sessionId: sessionId,
             userId: userDetails.userId as number,
             query: { userquery: userQuery.query, id: null },
-            response: { llmResponse: null }, // update message
+            response: { llmResponse: null }, // update message later when response comes
             queryId:queryId as string
           },
         ];
@@ -198,6 +208,12 @@ export default function ChatWindow() {
 
   return (
     <div className=" w-full relative flex flex-col items-center   h-screen">
+      {
+        socketState  ?
+      <div aria-labelledby={socketState} className=" w-fit h-fit absolute rounded-full right-2 top-2 bg-black/45   text-center ">
+      {socketState==="connected"?<Dot className="text-green-700 w-5 h-5 animate-ping"/>:socketState==="disconnected"?<Dot className="text-red-900 w-8 h-8 animate-ping"/>:socketState==="errror"?"Error in connection":<Dot className="text-yellow-400 w-8 h-8 animate-spin"/>}
+      </div>:<></>
+      }
       <div className=" w-full h-[calc(100vh-140px)]  relative  flex flex-col items-center overflow-auto top-0 bottom-[60px]">
         <div className=" relative w-full sm:max-w-1/2 self-center   top-14  flex flex-col items-center  p-2">
           {currentChatHistory?.map((each: ResponseMessage) => {
@@ -222,6 +238,7 @@ export default function ChatWindow() {
         );
       })}
        
+      {socketState && timeOut ? <div className="w-fit self-start flex gap-1 items-center p-1.5 rounded-sm text-black/50 text-sm bg-black/60"><p className="text-white">{socketState}</p><Ellipsis className=" w-3 h-3 text-white/75  "></Ellipsis></div>:<></>}
         </div>
       </div>
 

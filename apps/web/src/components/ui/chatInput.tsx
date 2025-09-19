@@ -113,13 +113,13 @@ useEffect(()=>{
   }, [text, currentFile]);
 
   return (
-    <div className=" w-9/10 md:w-4/5 lg:w-2/5 h-auto relative border-white/20 min-h-8 sm:min-h-10 flex flex-col p-1 space-y-1 gap-y-1 bg-[#2f2f2d] border placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-white/20 rounded-xl  ">
+    <div className=" w-9/10 md:w-4/5 lg:w-9/20 h-auto relative border-white/20 min-h-6 sm:min-h-6 flex flex-col p-1 space-y-0.5 gap-y-1 bg-[#434334] border placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-white/20 rounded-md  ">
       <div className={`${fileArray ? "flex" : "hidden"} gap-x-1`}>
         {fileArray?.map((each, index: number) => {
           return (
             <div
               key={index}
-              className="p-1 w-10 h-10 rounded-2xl border border-white/10 flex justify-center relative items-center inset-2 bg-white/10 hover:bg-white/15"
+              className="p-x-0.5 w-9 h-9 rounded-2xl border border-white/10 flex justify-center relative items-center inset-2 bg-white/10 hover:bg-white/15"
             >
               {each.isUploading && (
                 <LoaderCircle className="w-7 h-7 animate-spin delay-700 text-slate-200/60 z-[35] " />
@@ -136,8 +136,8 @@ useEffect(()=>{
       </div>
     
 
-      <div className="sticky bottom-10 flex flex-col left-0 w-full   min-h-4 h-auto  ">
-        <div className="flex  w-full self-center h-auto relative justify-center overflow-auto inset-1.5  p-1.5 left-0.5 top-3 max-auto    ">
+      <div className="sticky bottom-10 flex flex-col left-0 w-full   min-h-1 h-auto  ">
+        <div className="flex  w-full self-center h-auto relative justify-center overflow-auto inset-1.5  p-1 left-0.5 top-2 max-auto    ">
           <textarea
             ref={textareaRef}
             value={text}
@@ -146,7 +146,7 @@ useEffect(()=>{
             }}
             rows={1}
             placeholder="Type a message…"
-            className=" w-19/20   bg-[#2f2f2d] text-white/75  relative  min-h-2  p-1 scrollBar max-h-52 resize-none  outline-none "
+            className=" w-19/20   bg-[#434334] text-white/45  relative  min-h-1  p-1 scrollBar max-h-52 resize-none  outline-none "
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
@@ -157,7 +157,7 @@ useEffect(()=>{
         </div>
       </div>
       <div className="  w-19/20 self-center flex relative   p-1 -bottom-1 ">
-        <div className="flex items-center justify-between h-auto w-full  relative gap-1 p-1">
+        <div className="flex items-center justify-between h-auto w-full  relative gap-1 ">
           <button
   type="button"
   disabled={fileArray.length == 3}
@@ -169,7 +169,7 @@ useEffect(()=>{
         ) as HTMLInputElement),
         fileRef.current?.click());
   }}
-  className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl border border-white/10 bg-[#2f2f2d] hover:bg-white/10 transition"
+  className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl border border-white/10 bg-[#424237] hover:bg-white/10 transition"
   title="Attach file"
 >
   <Paperclip className="w-5 h-5 text-white/80" />
@@ -199,7 +199,7 @@ useEffect(()=>{
   aria-label="button"
   type="button"
   onClick={handleSend}
-  className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#2f2f2d] hover:bg-white/15 border border-white/10 transition"
+  className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#424237] hover:bg-white/15 border border-white/10 transition"
 >
   <Send className="w-4 h-4  text-white/80" />
 </button>
