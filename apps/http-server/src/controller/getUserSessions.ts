@@ -12,7 +12,7 @@ const getSessions=async(req:Request,res:Response)=>{
          }
      })
 
-     return res.status(200).json({data:sessions})
+     return res.status(200).json({sessions})
      }
      catch(error:any){
         return res.status(500).json({message:error.message  })

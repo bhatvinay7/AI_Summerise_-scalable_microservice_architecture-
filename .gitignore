@@ -77,7 +77,7 @@ dmypy.json
 
 # Pytest
 .*pytest_cache/
-
+**/.next
 # Coverage reports
 *htmlcov/
 *.coverage

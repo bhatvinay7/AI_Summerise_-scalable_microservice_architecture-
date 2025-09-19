@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 const  prisma= require('prisma/client')
+import dotenv from 'dotenv'
+dotenv.config()
 import jwt from 'jsonwebtoken';
 const user=async (req:Request,res:Response)=>{
        try{
@@ -60,7 +62,7 @@ const userLogin=async (req:Request,res:Response)=>{
               where: { id: user.id },
               data: { refreshToken: refreshToken },
             });
-            res.cookie('token',refreshToken,{httpOnly: true,secure: true, sameSite: "none",domain: ".chatt.services",});
+            res.cookie('token',refreshToken,{httpOnly: true,secure: true, sameSite:"none",domain:".chatt.services",path:'/'});
             res.status(200).json({message:"User logged in successfully",accessToken:accessToken})
        }
        catch(error:any){

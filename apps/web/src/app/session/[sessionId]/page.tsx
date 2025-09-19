@@ -1,22 +1,28 @@
 import React from "react";
 import Home from '../../../components/ui/home'
-import { useParams } from 'next/navigation';
+import { cookies } from "next/headers";
 import { getUserSessionData } from '../../../utils/getUserSessions';
-export default async function Sessionpage() {
+import { getUserSessions, Response } from "../../../utils/getUserSessions";
+
+export default async function Sessionpage({ params }: { params:Promise<{ sessionId: string }> }) {
   try{
-    const params = useParams();
-    const response= await getUserSessionData(params.sessionId as string)
+    const session=await params
+    const cookieStore = await cookies();  
+    const token=cookieStore.get('token')?.value as string
+    const response= await getUserSessionData(session.sessionId,token)
+    const sessions= await getUserSessions(token)
     return (
-      <div className="h-[vh] w-full overflow-hidden bg-[#2f2f2d] text-white">
+      <div className="h-[vh] w-full overflow-hidden bg-[#333331] text-white">
         <Home
-        props={{data:response}}
+        props={{data:response as Response,response:sessions}}
         />
       </div>
     );
   }
   catch(error:any){
+    console.log("error",error)
     return (
-      <div className="h-[vh] w-full overflow-hidden flex justify-center bg-[#2f2f2d] text-white">
+      <div className="h-[vh] w-full overflow-hidden flex justify-center items-center text-white">
       <p className="p-2 text-red-400 ">Requested session  not found</p>
       </div>
     );

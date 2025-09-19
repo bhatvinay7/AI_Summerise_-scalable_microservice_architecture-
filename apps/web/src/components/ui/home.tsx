@@ -9,7 +9,7 @@ import SessionSearch from "./sessionSearch";
 import SidebatToggle from "./sidebarToggle";
 import { useSelector} from 'react-redux';
 import { sideBarState } from '../../lib/redux/featuresSlice/slideBarSlice';
-export default function Home({props}:{props:{data:any}}) {
+export default function Home({props}:{props:{data:any,response:any}}) {
   const state=useSelector(sideBarState)
   return (
     <AnimatePresence >
@@ -26,7 +26,9 @@ export default function Home({props}:{props:{data:any}}) {
         <aside className={`${state ?"block absolute sm:sticky " :"hidden"}  top-0 w-full p-1 md:w-[310px] z-[44]   transition-[w] delay-700 h-screen  bg-[#2a2b2a] flex flex-col gap-1.5   border-r border-white/15`}>
           <SessionSearch />
           <div className='w-full h-[calc(100%-100px)] overflow-y-scroll sticky  top-24' >
-          <Session />
+          <Session
+          props={{response:props.response}}
+          />
 
           </div>  
         </aside>

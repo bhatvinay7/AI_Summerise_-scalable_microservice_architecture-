@@ -3,7 +3,8 @@ import {Request,Response} from "express";
 const prisma:PrismaClient= require('prisma/client')
 const getSessionData=async(req:Request,res:Response)=>{
       try{
-          const sessionId=req.params.sessionId
+
+            const sessionId=req.cookies.sessionId;
             if(!sessionId){
                 return res.status(400).json({message:"Session ID is required"})
             }
@@ -31,12 +32,12 @@ const getSessionData=async(req:Request,res:Response)=>{
                 }
 
             })
-            return res.status(200).json({data:sessionData})
+
+            return res.status(200).json({sessionData})
       }
       catch(error:any){
         return res.status(500).json({message:error.message})
       }
-
 }
 
 export default getSessionData

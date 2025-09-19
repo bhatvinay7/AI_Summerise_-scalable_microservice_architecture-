@@ -5,7 +5,7 @@ import ChatInput from "./chatInput";
 import generateUUID from "../../utils/generateUniqueId";
 import { useDispatch, useSelector } from "react-redux";
 import MarkdownIt from "markdown-it";
-
+import {Response} from '../../utils/getUserSessions'
 
 import {
   userInfo,
@@ -41,7 +41,7 @@ interface ChatMessage {
   response: { llmResponse: string };
 }
 
-export default function ChatWindow({props}:{props:{data:any}}) {
+export default function ChatWindow({props}:{props:{data:Response}}) {
   const md = new MarkdownIt({
     html: false,        
     linkify: true,    
@@ -213,7 +213,23 @@ export default function ChatWindow({props}:{props:{data:any}}) {
       </div>:<></>
       }
       <div className=" w-full h-[calc(100vh-140px)]  relative  flex flex-col items-center overflow-auto top-0 bottom-[60px]">
-        <div className=" relative w-full sm:max-w-1/2 self-center   top-14  flex flex-col items-center  p-2">
+        <div className=" relative w-full sm:max-w-1/2 self-center   top-14  flex flex-col gap-y-1 items-center  p-2">
+         {props?.data ? props?.data?.query?.map((each:any)=>{
+          return(
+          <div
+            key={each?.query?.id}
+            className="w-full h-auto min-h-62  flex flex-col scrollBar  overflow-auto  items-center gap-y-4 p-3 "
+          >
+
+            <div className=" max-w-[75%] min-w-[40px] relative scrollBar overflow-x-auto  self-end right-0 rounded-xl bg-[#424252] text-white  px-4 py-2 shadow-md">
+              {each.query.userquery}
+            </div>
+              <div className="w-full flex flex-col ">
+                <div className=" w-full self-start rounded-sm bg-[#292727]  text-gray-200 px-4 py-3 shadow-md" dangerouslySetInnerHTML={{ __html: md.render(each.response?.llmResponse) }} />
+              </div>
+          </div>
+          
+         )}):<></>}
           {currentChatHistory?.map((each: ResponseMessage) => {
         return (
           <div

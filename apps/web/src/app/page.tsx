@@ -1,18 +1,14 @@
 import Home from '../components/ui/home'
+import { getUserSessions, Response } from "../utils/getUserSessions";
+import { cookies } from "next/headers";
 export default async function Page() {
-  
-  // const handleSend = ({ text, file }: { text: string; file: string }) => {
-  //   const next = {
-  //     id: Date.now(),
-  //     side: "right",
-  //     text: text || "",
-  //     fileName: file,
-  //   };
-
-  return (
-    <div className=" h-[vh] w-full overflow-hidden bg-[#484841] text-white ">
+const cookieStore = await cookies();
+const token=cookieStore.get('token')?.value as string
+const sessions= await getUserSessions(token)
+return (
+    <div className=" h-[vh] w-full overflow-hidden bg-[#333331] text-white ">
       <Home
-      props={{data:[]}}
+      props={{data:[],response:sessions}}
       />
     </div>
   );

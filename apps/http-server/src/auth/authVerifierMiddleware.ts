@@ -20,6 +20,7 @@ export function authMiddleware(req: AuthRequest, res: Response, next: NextFuncti
     // 1. Get token from headers
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1] || req.cookies?.token;// Bearer <token>
+    console.log(req.cookies)
 
     if (!token) {
       return res.status(401).json({ message: "Access token missing" });

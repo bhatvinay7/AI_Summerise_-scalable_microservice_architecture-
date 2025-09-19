@@ -11,6 +11,16 @@ exports.id = "vendor-chunks/es-object-atoms@1.1.1";
 exports.ids = ["vendor-chunks/es-object-atoms@1.1.1"];
 exports.modules = {
 
+/***/ "(rsc)/../../node_modules/.pnpm/es-object-atoms@1.1.1/node_modules/es-object-atoms/index.js":
+/*!********************************************************************************************!*\
+  !*** ../../node_modules/.pnpm/es-object-atoms@1.1.1/node_modules/es-object-atoms/index.js ***!
+  \********************************************************************************************/
+/***/ ((module) => {
+
+eval("\n\n/** @type {import('.')} */\nmodule.exports = Object;\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiKHJzYykvLi4vLi4vbm9kZV9tb2R1bGVzLy5wbnBtL2VzLW9iamVjdC1hdG9tc0AxLjEuMS9ub2RlX21vZHVsZXMvZXMtb2JqZWN0LWF0b21zL2luZGV4LmpzIiwibWFwcGluZ3MiOiJBQUFhOztBQUViLFdBQVcsYUFBYTtBQUN4QiIsInNvdXJjZXMiOlsiQzpcXHZpbmF5IGJoYXQgbXVza2lcXE5vdGVzXFxub3Rlc1xcbm9kZV9tb2R1bGVzXFwucG5wbVxcZXMtb2JqZWN0LWF0b21zQDEuMS4xXFxub2RlX21vZHVsZXNcXGVzLW9iamVjdC1hdG9tc1xcaW5kZXguanMiXSwic291cmNlc0NvbnRlbnQiOlsiJ3VzZSBzdHJpY3QnO1xuXG4vKiogQHR5cGUge2ltcG9ydCgnLicpfSAqL1xubW9kdWxlLmV4cG9ydHMgPSBPYmplY3Q7XG4iXSwibmFtZXMiOltdLCJpZ25vcmVMaXN0IjpbMF0sInNvdXJjZVJvb3QiOiIifQ==\n//# sourceURL=webpack-internal:///(rsc)/../../node_modules/.pnpm/es-object-atoms@1.1.1/node_modules/es-object-atoms/index.js\n");
+
+/***/ }),
+
 /***/ "(ssr)/../../node_modules/.pnpm/es-object-atoms@1.1.1/node_modules/es-object-atoms/index.js":
 /*!********************************************************************************************!*\
   !*** ../../node_modules/.pnpm/es-object-atoms@1.1.1/node_modules/es-object-atoms/index.js ***!

@@ -4,7 +4,7 @@ async function getTokenInfo() {
     const cookieStore = await cookies();
 
     const token = cookieStore.get('token')?.value ?? null;
-    console.log(cookieStore.get('token'))
+    console.log(cookieStore)
     return token;
   } catch (error: any) {
     return null

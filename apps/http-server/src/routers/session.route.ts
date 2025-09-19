@@ -5,5 +5,5 @@ const router:Router=express.Router()
 
 
 router.get('/session',getSession)
-router.get('/getSessionData/:sessionId',getSessionData)
+router.get('/getSessionData',getSessionData)
 export default router

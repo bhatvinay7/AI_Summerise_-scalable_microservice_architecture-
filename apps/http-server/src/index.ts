@@ -2,6 +2,8 @@ import express from "express";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import cors from "cors";
+import cookieParser from "cookie-parser";
+
 dotenv.config();
 const app = express();
 const port = 3001;
@@ -15,6 +17,7 @@ const corsOptions = {
   credentials: true,
   allowedHeaders: ["Content-Type", "Authorization"],
 };
+app.use(cookieParser());
 app.use(express.json());
 app.use(cors(corsOptions));
 app.use(bodyParser.json());

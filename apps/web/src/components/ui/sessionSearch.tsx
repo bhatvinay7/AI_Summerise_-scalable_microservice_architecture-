@@ -2,7 +2,6 @@ import React from "react";
 import { Search } from "lucide-react";
 import SidebatToggle from "./sidebarToggle";
 export default function SessionSearch() {
-  
   return (
     <div className=" sticky w-full top-0 z-10 p-1 flex flex-col justify-center  border-b  border-white/10 bg-[#2a2b2a] ">
       <div className="  top-1 left-1 relative w-fit">
