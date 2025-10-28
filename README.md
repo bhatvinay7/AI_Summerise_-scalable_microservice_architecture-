@@ -96,8 +96,8 @@ sequenceDiagram
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/getUserSessions/getUserSessions/session` | Get active sessions |
-| GET | `/getUserSessions/getUserSessions/getSessionData` | Fetch session data with summaries |
+| GET | `/getSessions/getUserSessions/session` | Get active sessions |
+| GET | `/getSessions/getUserSessions/getSessionData` | Fetch session data with summaries |
 
 ---
 
